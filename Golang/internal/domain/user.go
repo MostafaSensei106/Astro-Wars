@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/MostafaSensei106/Astro-Wars/Golang/internal/constants"
+	e "github.com/MostafaSensei106/Astro-Wars/Golang/internal/errors"
 )
 
 var ErrInvalidCredentials = errors.New("invalid credentials")
@@ -39,18 +40,22 @@ type UserStats struct {
 	LastPlayedAt  time.Time `json:"last_played_at" gorm:"type:timestamp;default:null"`
 }
 
+type AuthStrategy interface {
+	Execute(ctx context.Context, repo UserRepository) e.Result[*User, error]
+}
+
 type UserRepository interface {
-	Create(ctx context.Context, user *User) error
-	FindByUsername(ctx context.Context, username string) (*User, error)
-	Update(ctx context.Context, user *User) (*User, error)
-	Delete(ctx context.Context, id string) error
+	Create(ctx context.Context, user *User) e.Result[*User, error]
+	FindByUsername(ctx context.Context, username string) e.Result[*User, error]
+	Update(ctx context.Context, user *User) e.Result[*User, error]
+	Delete(ctx context.Context, id string) e.Result[bool, error]
 }
 
 type UserUsecase interface {
-	FindByUsername(ctx context.Context, username string) (*User, error)
-	CreateUser(ctx context.Context, user *User) error
-	UpdateUser(ctx context.Context, user *User) (*User, error)
-	DeleteUser(ctx context.Context, id string) error
+	FindByUsername(ctx context.Context, username string) e.Result[*User, error]
+	CreateUser(ctx context.Context, user *User) e.Result[*User, error]
+	UpdateUser(ctx context.Context, user *User) e.Result[*User, error]
+	DeleteUser(ctx context.Context, id string) e.Result[bool, error]
 }
 
 func (u *User) TrackActivity() {
@@ -118,4 +123,82 @@ func (u *User) AddCoins(coins int) {
 	if coins > 0 {
 		u.Stats.Coins += coins
 	}
+}
+
+// LoginStrategy implements AuthStrategy for normal login
+type LoginStrategy struct {
+	Username string
+	Password string
+	HashFunc func(password, hash string) bool
+}
+
+func (s *LoginStrategy) Execute(ctx context.Context, repo UserRepository) e.Result[*User, error] {
+	result := repo.FindByUsername(ctx, s.Username)
+	if result.IsFailure() {
+		return result
+	}
+	user := *result.DataOrNull()
+	if !s.HashFunc(s.Password, user.PasswordHash) {
+		return e.Failure[*User](ErrInvalidCredentials)
+	}
+	return e.Success[*User, error](user)
+}
+
+// RegisterStrategy implements AuthStrategy for user registration
+type RegisterStrategy struct {
+	User     *User
+	Password string
+	HashFunc func(password string) (string, error)
+}
+
+func (s *RegisterStrategy) Execute(ctx context.Context, repo UserRepository) e.Result[*User, error] {
+	hash, err := s.HashFunc(s.Password)
+	if err != nil {
+		return e.Failure[*User](err)
+	}
+	s.User.PasswordHash = hash
+	createResult := repo.Create(ctx, s.User)
+	if createResult.IsFailure() {
+		return createResult
+	}
+	return e.Success[*User, error](s.User)
+}
+
+// GuestLoginStrategy implements AuthStrategy for guest login
+type GuestLoginStrategy struct {
+	GenerateGuestID func() string
+}
+
+func (s *GuestLoginStrategy) Execute(ctx context.Context, repo UserRepository) e.Result[*User, error] {
+	guestUser := &User{
+		Username:     s.GenerateGuestID(),
+		Fullname:     "Guest",
+		PasswordHash: "", // Guests do not need a password
+		GdgInfo: GDGInfo{
+			SystemRole:    "guest",
+			CommunityRole: "none",
+		},
+	}
+	createResult := repo.Create(ctx, guestUser)
+	if createResult.IsFailure() {
+		return createResult
+	}
+	return e.Success[*User, error](guestUser)
+}
+
+// AuthContext acts as the Strategy Context
+type AuthContext struct {
+	strategy AuthStrategy
+}
+
+func NewAuthContext(strategy AuthStrategy) *AuthContext {
+	return &AuthContext{strategy: strategy}
+}
+
+func (ac *AuthContext) SetStrategy(strategy AuthStrategy) {
+	ac.strategy = strategy
+}
+
+func (ac *AuthContext) Authenticate(ctx context.Context, repo UserRepository) e.Result[*User, error] {
+	return ac.strategy.Execute(ctx, repo)
 }
