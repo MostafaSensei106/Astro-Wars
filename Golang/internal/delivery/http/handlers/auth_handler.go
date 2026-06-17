@@ -60,7 +60,7 @@ func New(usecase domain.UserUseCase, jwtSvc *jwt.JWTService) *AuthHandler {
 // @Accept       json
 // @Produce      json
 // @Param        request body loginRequest true "Login Credentials. Both 'username' and 'password' are required."
-// @Router       /auth/login [post]
+// @Router       /api/v1/auth/login [post]
 func (h *AuthHandler) Login(c *gin.Context) {
 	var req loginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -95,7 +95,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        request body registerRequest true "Registration Details. 'fullname', 'username', 'password', 'college', 'department', and 'academic_year' (1-5) are required. 'gdg_track' is optional."
-// @Router       /auth/register [post]
+// @Router       /api/v1/auth/register [post]
 func (h *AuthHandler) Register(c *gin.Context) {
 	var req registerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -138,7 +138,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 // @Description  Creates a temporary guest account. Does not require a request body. Returns a JWT token and the guest user's data.
 // @Tags         auth
 // @Produce      json
-// @Router       /auth/guest [post]
+// @Router       /api/v1/auth/guest [post]
 func (h *AuthHandler) GuestLogin(c *gin.Context) {
 	if c.Request.ContentLength > 0 {
 		delivery.NewResponser(c).Status(http.StatusBadRequest).WithError(http.StatusText(http.StatusBadRequest), "Guest login does not accept a request body").Send()
@@ -165,7 +165,7 @@ func (h *AuthHandler) GuestLogin(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        request body forgetPasswordRequest true "User Email. 'email' field is required."
-// @Router       /auth/forget-password [post]
+// @Router       /api/v1/auth/forget-password [post]
 func (h *AuthHandler) ForgetPassword(c *gin.Context) {
 	var req forgetPasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -182,7 +182,7 @@ func (h *AuthHandler) ForgetPassword(c *gin.Context) {
 // @Tags         auth
 // @Produce      json
 // @Security BearerAuth
-// @Router       /auth/logout [post]
+// @Router       /api/v1/auth/logout [post]
 func (h *AuthHandler) Logout(c *gin.Context) {
 	// 1. Invalidate JWT Token
 	authHeader := c.GetHeader("Authorization")
@@ -209,19 +209,12 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 // @Description  Removes a user account by their ID.
 // @Tags         auth
 // @Produce      json
-// @Param        id path string true "User ID. Required parameter to identify the user."
 // @Security BearerAuth
-// @Router       /auth/account/{id} [delete]
+// @Router       /api/v1/auth/account/ [delete]
 func (h *AuthHandler) DeleteAccount(c *gin.Context) {
 	userID := c.MustGet(constants.JwtField).(string)
-	id := c.Param("id")
 
-	if userID != id {
-		delivery.NewResponser(c).Status(http.StatusForbidden).WithError(http.StatusText(http.StatusForbidden), "You can only delete your own account").Send()
-		return
-	}
-
-	result := h.usecase.DeleteUser(c.Request.Context(), id)
+	result := h.usecase.DeleteUser(c.Request.Context(), userID)
 
 	result.OnSuccess(func(success bool) {
 		delivery.NewResponser(c).WithData(gin.H{"message": "Account deleted successfully"}).Send()

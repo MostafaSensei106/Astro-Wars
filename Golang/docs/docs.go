@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/account/{id}": {
+        "/api/v1/auth/account/": {
             "delete": {
                 "security": [
                     {
@@ -30,19 +30,10 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Delete Account",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID. Required parameter to identify the user.",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {}
             }
         },
-        "/auth/forget-password": {
+        "/api/v1/auth/forget-password": {
             "post": {
                 "description": "Initiates password recovery (Currently placeholder).",
                 "consumes": [
@@ -69,7 +60,7 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/auth/guest": {
+        "/api/v1/auth/guest": {
             "post": {
                 "description": "Creates a temporary guest account. Does not require a request body. Returns a JWT token and the guest user's data.",
                 "produces": [
@@ -82,7 +73,7 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/auth/login": {
+        "/api/v1/auth/login": {
             "post": {
                 "description": "Authenticates a user using their username and password. Returns a JWT token and the user's data upon successful authentication.",
                 "consumes": [
@@ -109,14 +100,14 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/auth/logout": {
+        "/api/v1/auth/logout": {
             "post": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Invalidates the user session. (Implementation depends on token handling logic, currently returns success message).",
+                "description": "Invalidates the user session by blacklisting the current JWT token.",
                 "produces": [
                     "application/json"
                 ],
@@ -127,7 +118,7 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/auth/register": {
+        "/api/v1/auth/register": {
             "post": {
                 "description": "Creates a new user account with the provided details. Returns a JWT token and the created user's data upon successful registration.",
                 "consumes": [

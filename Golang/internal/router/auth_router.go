@@ -23,7 +23,7 @@ func SetupAuthRoutes(rg *gin.RouterGroup, authHandler *handlers.AuthHandler, jwt
 			authGroup.Use(middleware.AuthMiddleware(jwtSvc))
 			{
 				authGroup.POST("/logout", authHandler.Logout)
-				authGroup.DELETE("/account/:id", authHandler.DeleteAccount)
+				authGroup.DELETE("/account", authHandler.DeleteAccount)
 			}
 		}
 	}

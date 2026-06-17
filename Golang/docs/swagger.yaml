@@ -69,15 +69,9 @@ info:
   title: Astro Wars API
   version: "1.0"
 paths:
-  /auth/account/{id}:
+  /api/v1/auth/account/:
     delete:
       description: Removes a user account by their ID.
-      parameters:
-      - description: User ID. Required parameter to identify the user.
-        in: path
-        name: id
-        required: true
-        type: string
       produces:
       - application/json
       responses: {}
@@ -86,7 +80,7 @@ paths:
       summary: Delete Account
       tags:
       - auth
-  /auth/forget-password:
+  /api/v1/auth/forget-password:
     post:
       consumes:
       - application/json
@@ -104,7 +98,7 @@ paths:
       summary: Forget Password
       tags:
       - auth
-  /auth/guest:
+  /api/v1/auth/guest:
     post:
       description: Creates a temporary guest account. Does not require a request body.
         Returns a JWT token and the guest user's data.
@@ -114,7 +108,7 @@ paths:
       summary: Guest Login
       tags:
       - auth
-  /auth/login:
+  /api/v1/auth/login:
     post:
       consumes:
       - application/json
@@ -133,10 +127,9 @@ paths:
       summary: User Login
       tags:
       - auth
-  /auth/logout:
+  /api/v1/auth/logout:
     post:
-      description: Invalidates the user session. (Implementation depends on token
-        handling logic, currently returns success message).
+      description: Invalidates the user session by blacklisting the current JWT token.
       produces:
       - application/json
       responses: {}
@@ -145,7 +138,7 @@ paths:
       summary: User Logout
       tags:
       - auth
-  /auth/register:
+  /api/v1/auth/register:
     post:
       consumes:
       - application/json
