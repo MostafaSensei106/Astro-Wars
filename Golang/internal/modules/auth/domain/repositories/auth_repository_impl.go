@@ -3,6 +3,8 @@ package repositories
 import (
 	"context"
 
+	coreError "github.com/MostafaSensei106/Astro-Wars/Golang/internal/core/error"
+	"github.com/MostafaSensei106/Astro-Wars/Golang/internal/core/result"
 	"github.com/MostafaSensei106/Astro-Wars/Golang/internal/modules/auth/data/models"
 	dataRepo "github.com/MostafaSensei106/Astro-Wars/Golang/internal/modules/auth/data/repositories"
 	"github.com/MostafaSensei106/Astro-Wars/Golang/internal/modules/auth/domain/entities"
@@ -19,15 +21,18 @@ func New(db *gorm.DB) dataRepo.AuthRepository {
 	}
 }
 
-func (a *authRepository) Create(ctx context.Context, user *entities.User) error {
+func (a *authRepository) Create(ctx context.Context, user *entities.User) result.Result[*entities.User, coreError.Failure] {
 	userModel := models.FromEntity(user)
-	return a.db.WithContext(ctx).Create(userModel).Error
+	if err := a.db.WithContext(ctx).Create(userModel).Error; err != nil {
+		return result.Failure[*entities.User, coreError.Failure](coreError.BaseFailure{Message: err.Error()})
+	}
+	return result.Success[*entities.User, coreError.Failure](userModel.ToEntity())
 }
 
-func (a *authRepository) FindByEmail(ctx context.Context, email string) (*entities.User, error) {
+func (a *authRepository) FindByEmail(ctx context.Context, email string) result.Result[*entities.User, coreError.Failure] {
 	var userModel models.UserModel
 	if err := a.db.WithContext(ctx).Where("email = ?", email).First(&userModel).Error; err != nil {
-		return nil, err
+		return result.Failure[*entities.User, coreError.Failure](coreError.BaseFailure{Message: err.Error()})
 	}
-	return userModel.ToEntity(), nil
+	return result.Success[*entities.User, coreError.Failure](userModel.ToEntity())
 }

@@ -1,9 +1,8 @@
-package entities
+package domain
 
 type User struct {
 	ID           string
 	Name         string
 	Email        string
-	Password     string // Plain text password used during registration/login
 	PasswordHash string
 }
