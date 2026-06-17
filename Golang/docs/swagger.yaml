@@ -1,0 +1,203 @@
+basePath: /api/v1
+definitions:
+  delivery.ErrorInfo:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    type: object
+  delivery.Meta:
+    properties:
+      last_page:
+        type: integer
+      next:
+        type: integer
+      page:
+        type: integer
+      per_page:
+        type: integer
+      prev:
+        type: integer
+      total:
+        type: integer
+    type: object
+  delivery.Response:
+    properties:
+      data: {}
+      errors:
+        $ref: '#/definitions/delivery.ErrorInfo'
+      meta:
+        $ref: '#/definitions/delivery.Meta'
+      success:
+        type: boolean
+    type: object
+  domain.GDGInfo:
+    properties:
+      academic_year:
+        description: Academic year between 1 and 5 (Required)
+        example: 3
+        type: integer
+      college:
+        description: User's college (Optional, can be null)
+        example: Engineering
+        type: string
+        x-nullable: true
+      community_role:
+        description: Role in the community (Required)
+        example: member
+        type: string
+      department:
+        description: User's department (Optional, can be null)
+        example: Computer Science
+        type: string
+        x-nullable: true
+      gdg_track:
+        description: GDG Track (Optional, can be null)
+        example: Web Development
+        type: string
+        x-nullable: true
+      system_role:
+        description: Role in the system (Required)
+        example: player
+        type: string
+    type: object
+  domain.User:
+    properties:
+      created_at:
+        type: string
+      fullname:
+        description: Full name of the user (Required)
+        example: John Doe
+        type: string
+      id:
+        type: string
+      info:
+        allOf:
+        - $ref: '#/definitions/domain.GDGInfo'
+        description: Embedded GDG information (Required)
+      stats:
+        allOf:
+        - $ref: '#/definitions/domain.UserStats'
+        description: Embedded user statistics (Required)
+      updated_at:
+        type: string
+      username:
+        description: Unique username (Required)
+        example: john_doe
+        type: string
+    type: object
+  domain.UserStats:
+    properties:
+      coins:
+        description: User coins (Required)
+        example: 250
+        type: integer
+      current_streak:
+        description: Current login streak (Required)
+        example: 3
+        type: integer
+      experience:
+        description: User experience points (Required)
+        example: 1500
+        type: integer
+      last_played_at:
+        description: Last played timestamp (Optional, can be null)
+        example: "2023-10-01T15:00:00Z"
+        type: string
+        x-nullable: true
+      level:
+        description: User level (Required)
+        example: 5
+        type: integer
+      max_streak:
+        description: Max login streak (Required)
+        example: 10
+        type: integer
+      points:
+        description: User points (Required)
+        example: 1200
+        type: integer
+    type: object
+  handlers.authResponse:
+    properties:
+      token:
+        description: JWT Authentication Token (Required in response)
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/domain.User'
+        description: The authenticated user's profile data (Required in response)
+    type: object
+  handlers.forgetPasswordRequest:
+    properties:
+      email:
+        description: User's email address (Required)
+        example: user@example.com
+        type: string
+    required:
+    - email
+    type: object
+  handlers.loginRequest:
+    properties:
+      password:
+        description: User's password (Required)
+        example: P@ssw0rd123
+        type: string
+      username:
+        description: User's username (Required)
+        example: mostafa_sensei
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  handlers.registerRequest:
+    properties:
+      academic_year:
+        description: Academic year from 1 to 5 (Required)
+        example: 3
+        maximum: 5
+        minimum: 1
+        type: integer
+      college:
+        description: User's college (Required)
+        example: Computers & Info
+        type: string
+      department:
+        description: User's department (Required)
+        example: Computer Science
+        type: string
+      fullname:
+        description: Full Name (Required)
+        example: Mostafa Ahmed
+        type: string
+      gdg_track:
+        description: GDG Track name (Optional, can be null)
+        example: Flutter
+        type: string
+        x-nullable: true
+      password:
+        description: Password for login (Required)
+        example: P@ssw0rd123
+        type: string
+      username:
+        description: Username for login (Required)
+        example: mostafa_sensei
+        type: string
+    required:
+    - academic_year
+    - college
+    - department
+    - fullname
+    - password
+    - username
+    type: object
+info:
+  contact: {}
+  description: Astro Wars Backend API
+  title: Astro Wars API
+  version: "1.0"
+paths: {}
+swagger: "2.0"

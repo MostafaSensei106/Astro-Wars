@@ -27,7 +27,7 @@ func Execute() {
 	jwtSvc := jwt.NewJWTService(env.GetString("CHOCHO_JWT_SECRET", "defaultsecretkey"), "astrowars-backend")
 	userRepo := repository.New(db)
 	userUsecase := usecase.New(userRepo)
-	authHandler := handlers.NewAuthHandler(userUsecase, jwtSvc)
+	authHandler := handlers.New(userUsecase, jwtSvc)
 
 	r := gin.Default()
 	gin.SetMode(gin.ReleaseMode)

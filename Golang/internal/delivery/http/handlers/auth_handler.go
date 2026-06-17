@@ -30,13 +30,13 @@ type authResponse struct {
 
 // registerRequest represents the data required to register a new user.
 type registerRequest struct {
-	Fullname     string  `json:"fullname" binding:"required" example:"Mostafa Ahmed"`     // Full Name (Required)
-	Username     string  `json:"username" binding:"required" example:"mostafa_sensei"`    // Username for login (Required)
-	Password     string  `json:"password" binding:"required" example:"P@ssw0rd123"`       // Password for login (Required)
-	College      string  `json:"college" binding:"required" example:"Computers & Info"`   // User's college (Required)
-	Department   string  `json:"department" binding:"required" example:"Computer Science"`// User's department (Required)
-	AcademicYear int     `json:"academic_year" binding:"required,min=1,max=5" example:"3"`// Academic year from 1 to 5 (Required)
-	GdgTrack     *string `json:"gdg_track" example:"Flutter" extensions:"x-nullable"`     // GDG Track name (Optional, can be null)
+	Fullname     string  `json:"fullname" binding:"required" example:"Mostafa Ahmed"`      // Full Name (Required)
+	Username     string  `json:"username" binding:"required" example:"mostafa_sensei"`     // Username for login (Required)
+	Password     string  `json:"password" binding:"required" example:"P@ssw0rd123"`        // Password for login (Required)
+	College      string  `json:"college" binding:"required" example:"Computers & Info"`    // User's college (Required)
+	Department   string  `json:"department" binding:"required" example:"Computer Science"` // User's department (Required)
+	AcademicYear int     `json:"academic_year" binding:"required,min=1,max=5" example:"3"` // Academic year from 1 to 5 (Required)
+	GdgTrack     *string `json:"gdg_track" example:"Flutter" extensions:"x-nullable"`      // GDG Track name (Optional, can be null)
 }
 
 // forgetPasswordRequest represents the request body for password recovery
@@ -44,7 +44,7 @@ type forgetPasswordRequest struct {
 	Email string `json:"email" binding:"required" example:"user@example.com"` // User's email address (Required)
 }
 
-func NewAuthHandler(usecase domain.UserUseCase, jwtSvc *jwt.JWTService) *AuthHandler {
+func New(usecase domain.UserUseCase, jwtSvc *jwt.JWTService) *AuthHandler {
 	return &AuthHandler{
 		usecase: usecase,
 		jwtSvc:  jwtSvc,
