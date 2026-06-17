@@ -51,7 +51,7 @@ type UserRepository interface {
 	Delete(ctx context.Context, id string) e.Result[bool, error]
 }
 
-type UserUsecase interface {
+type UserUseCase interface {
 	FindByUsername(ctx context.Context, username string) e.Result[*User, error]
 	CreateUser(ctx context.Context, user *User) e.Result[*User, error]
 	UpdateUser(ctx context.Context, user *User) e.Result[*User, error]
