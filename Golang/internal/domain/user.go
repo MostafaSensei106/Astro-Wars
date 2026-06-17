@@ -142,7 +142,7 @@ func (s *LoginStrategy) Execute(ctx context.Context, repo UserRepository) e.Resu
 	}
 	user := *result.DataOrNull()
 	if !s.HashFunc(s.Password, user.PasswordHash) {
-		return e.Failure[*User, error](ErrInvalidCredentials)
+		return e.Failure[*User](ErrInvalidCredentials)
 	}
 	return e.Success[*User, error](user)
 }
@@ -157,7 +157,7 @@ type RegisterStrategy struct {
 func (s *RegisterStrategy) Execute(ctx context.Context, repo UserRepository) e.Result[*User, error] {
 	hash, err := s.HashFunc(s.Password)
 	if err != nil {
-		return e.Failure[*User, error](err)
+		return e.Failure[*User](err)
 	}
 	s.User.PasswordHash = hash
 	createResult := repo.Create(ctx, s.User)
