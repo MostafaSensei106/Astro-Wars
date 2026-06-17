@@ -1,4 +1,36 @@
 definitions:
+  delivery.ErrorInfo:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    type: object
+  delivery.Meta:
+    properties:
+      last_page:
+        type: integer
+      next:
+        type: integer
+      page:
+        type: integer
+      per_page:
+        type: integer
+      prev:
+        type: integer
+      total:
+        type: integer
+    type: object
+  delivery.Response:
+    properties:
+      data: {}
+      errors:
+        $ref: '#/definitions/delivery.ErrorInfo'
+      meta:
+        $ref: '#/definitions/delivery.Meta'
+      success:
+        type: boolean
+    type: object
   handlers.UserProfileRequest:
     properties:
       academic_year:
@@ -76,6 +108,108 @@ definitions:
     - fullname
     - password
     - username
+    type: object
+  handlers.runRequest:
+    properties:
+      accuracy:
+        example: 85.5
+        type: number
+      bosses_defeated:
+        example: 1
+        type: integer
+      bugs_squashed:
+        example: 45
+        type: integer
+      cause_of_death:
+        example: NullPointerException Boss
+        type: string
+      coffee_cups:
+        example: 3
+        type: integer
+      duration:
+        example: 120
+        type: integer
+      max_flow_state:
+        example: 15
+        type: integer
+      score:
+        example: 1500
+        type: integer
+      stage_reached:
+        example: Staging Environment
+        type: string
+    required:
+    - cause_of_death
+    - duration
+    - score
+    type: object
+  handlers.runResponse:
+    properties:
+      accuracy:
+        example: 85.5
+        type: number
+      bosses_defeated:
+        example: 1
+        type: integer
+      bugs_squashed:
+        example: 45
+        type: integer
+      cause_of_death:
+        example: NullPointerException Boss
+        type: string
+      coffee_cups:
+        example: 3
+        type: integer
+      created_at:
+        example: "2024-01-01T12:00:00Z"
+        type: string
+      duration:
+        example: 120
+        type: integer
+      id:
+        example: uuid-1234
+        type: string
+      max_flow_state:
+        example: 15
+        type: integer
+      score:
+        example: 1500
+        type: integer
+      stage_reached:
+        example: Staging Environment
+        type: string
+    type: object
+  handlers.spacecraftRequest:
+    properties:
+      name:
+        example: Vim Fighter
+        type: string
+      rarity:
+        example: Epic
+        type: string
+    required:
+    - name
+    type: object
+  handlers.spacecraftResponse:
+    properties:
+      id:
+        example: uuid-5678
+        type: string
+      is_active:
+        example: true
+        type: boolean
+      level:
+        example: 5
+        type: integer
+      name:
+        example: Vim Fighter
+        type: string
+      rarity:
+        example: Epic
+        type: string
+      unlocked_at:
+        example: "2024-01-01T12:00:00Z"
+        type: string
     type: object
 info:
   contact: {}
@@ -207,6 +341,339 @@ paths:
       summary: Update User Profile
       tags:
       - profile
+  /api/v1/runs/:
+    get:
+      description: Retrieves all runs for the authenticated user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of runs retrieved successfully.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/handlers.runResponse'
+                  type: array
+              type: object
+        "401":
+          description: Unauthorized.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+        "500":
+          description: Internal Server Error.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Get User Runs
+      tags:
+      - runs
+    post:
+      consumes:
+      - application/json
+      description: Saves the stats of a completed game run for the authenticated user.
+      parameters:
+      - description: Run Statistics
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.runRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Run saved successfully.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/handlers.runResponse'
+              type: object
+        "400":
+          description: Bad Request.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+        "401":
+          description: Unauthorized.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+        "500":
+          description: Internal Server Error.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Save Game Run
+      tags:
+      - runs
+  /api/v1/spacecrafts/:
+    get:
+      description: Retrieves all spacecrafts owned by the authenticated user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of spacecrafts retrieved successfully.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/handlers.spacecraftResponse'
+                  type: array
+              type: object
+        "401":
+          description: Unauthorized.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+        "500":
+          description: Internal Server Error.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Get Spacecrafts
+      tags:
+      - spacecrafts
+    post:
+      consumes:
+      - application/json
+      description: Adds a new spacecraft to the user's garage.
+      parameters:
+      - description: Spacecraft Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.spacecraftRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Spacecraft added successfully.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/handlers.spacecraftResponse'
+              type: object
+        "400":
+          description: Bad Request.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+        "401":
+          description: Unauthorized.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+        "500":
+          description: Internal Server Error.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Add Spacecraft
+      tags:
+      - spacecrafts
+  /api/v1/spacecrafts/{id}/equip:
+    patch:
+      description: Equips a specific spacecraft for the authenticated user, unequipping
+        all others.
+      parameters:
+      - description: Spacecraft ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Spacecraft equipped successfully.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/handlers.spacecraftResponse'
+              type: object
+        "400":
+          description: Error equipping spacecraft.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+        "401":
+          description: Error equipping spacecraft.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+        "403":
+          description: Error equipping spacecraft.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+        "404":
+          description: Error equipping spacecraft.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+        "500":
+          description: Internal Server Error.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Equip Spacecraft
+      tags:
+      - spacecrafts
+  /api/v1/spacecrafts/{id}/upgrade:
+    patch:
+      description: Upgrades a specific spacecraft's level for the authenticated user.
+      parameters:
+      - description: Spacecraft ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Spacecraft upgraded successfully.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/handlers.spacecraftResponse'
+              type: object
+        "400":
+          description: Error upgrading spacecraft.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+        "401":
+          description: Error upgrading spacecraft.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+        "403":
+          description: Error upgrading spacecraft.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+        "404":
+          description: Error upgrading spacecraft.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+        "500":
+          description: Internal Server Error.
+          schema:
+            allOf:
+            - $ref: '#/definitions/delivery.Response'
+            - properties:
+                errors:
+                  $ref: '#/definitions/delivery.ErrorInfo'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Upgrade Spacecraft
+      tags:
+      - spacecrafts
 securityDefinitions:
   BearerAuth:
     in: header
