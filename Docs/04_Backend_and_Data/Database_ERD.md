@@ -8,6 +8,7 @@
 erDiagram
     USERS ||--o{ RUNS : "has history of"
     USERS ||--o{ UPGRADES : "owns"
+    USERS ||--o{ SPACECRAFTS : "pilots"
     USERS ||--o{ COMMUNITY_HISTORY : "has roles in"
     
     USERS {
@@ -36,9 +37,15 @@ erDiagram
     RUNS {
         uuid id PK
         uuid user_id FK
-        int commits_earned
-        int duration_seconds
-        string cause_of_death "السبب (مثلاً: NullPointerException Enemy)"
+        int commits_earned "السكور الأساسي"
+        int duration_seconds "زمن المحاولة بالثواني"
+        string cause_of_death "سبب الخسارة (مثلا: IndexOutOfBound)"
+        string stage_reached "وصل لأي بيئة (Localhost/Staging/Production)"
+        int bugs_squashed "عدد البقز/الأعداء المدمرة"
+        int bosses_defeated "عدد الزعماء المدمرين"
+        int max_flow_state "أطول كومبو (سلسلة ضربات متتالية)"
+        float accuracy "دقة التصويب"
+        int coffee_cups "عدد أكواب القهوة (المساعدات) المجمعة"
         timestamp run_date
     }
 
@@ -47,6 +54,16 @@ erDiagram
         uuid user_id FK
         string upgrade_type "نوع الترقية (مثل: CPU, RAM)"
         int current_level
+    }
+
+    SPACECRAFTS {
+        uuid id PK
+        uuid user_id FK
+        string name "اسم المركبة (مثلا: Vim Fighter)"
+        string rarity "الندرة (مثلا: Common, Epic)"
+        int level "مستوى المركبة الحالي"
+        boolean is_equipped "هل هي المجهزة حاليا؟"
+        timestamp unlocked_at "تاريخ فتحها/شرائها"
     }
 ```
 

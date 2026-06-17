@@ -136,9 +136,79 @@
                 ],
                 "responses": {}
             }
+        },
+        "/api/v1/profile/": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieves the profile information of the currently authenticated user based on their JWT token.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "profile"
+                ],
+                "summary": "Get User Profile",
+                "responses": {}
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Updates the profile details (Fullname and Academic Year) of the currently authenticated user. Guest users are not allowed to update their profile.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "profile"
+                ],
+                "summary": "Update User Profile",
+                "parameters": [
+                    {
+                        "description": "User Profile Update Data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.UserProfileRequest"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
         }
     },
     "definitions": {
+        "handlers.UserProfileRequest": {
+            "type": "object",
+            "required": [
+                "academic_year",
+                "fullname"
+            ],
+            "properties": {
+                "academic_year": {
+                    "type": "integer",
+                    "maximum": 5,
+                    "minimum": 1,
+                    "example": 3
+                },
+                "fullname": {
+                    "type": "string",
+                    "example": "Mostafa Ahmed"
+                }
+            }
+        },
         "handlers.forgetPasswordRequest": {
             "type": "object",
             "required": [

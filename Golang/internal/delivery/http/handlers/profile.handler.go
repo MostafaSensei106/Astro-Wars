@@ -31,13 +31,13 @@ func NewProfileHandler(usecase domain.UserUseCase, jwtSrv *jwt.JWTService) *Prof
 	}
 }
 
-// Profile godoc
-// @Summary      User Profile
-// @Description
+// GetProfile godoc
+// @Summary      Get User Profile
+// @Description  Retrieves the profile information of the currently authenticated user based on their JWT token.
+// @Tags         profile
 // @Accept       json
 // @Produce      json
-// @Param
-// @Security BearerAuth
+// @Security     BearerAuth
 // @Router       /api/v1/profile/ [get]
 func (h *ProfileHandler) GetProfile(c *gin.Context) {
 	id := c.MustGet(constants.JwtField).(string)
@@ -46,17 +46,18 @@ func (h *ProfileHandler) GetProfile(c *gin.Context) {
 	result.OnSuccess(func(u *domain.User) {
 		delivery.NewResponser(c).WithData(&u).Send()
 	}).OnFailure(func(err error) {
-		delivery.NewResponser(c).Status(http.StatusInternalServerError).WithError(http.StatusText(http.StatusInternalServerError), err.Error())
+		delivery.NewResponser(c).Status(http.StatusInternalServerError).WithError(http.StatusText(http.StatusInternalServerError), err.Error()).Send()
 	})
 }
 
-// Profile godoc
-// @Summary      User Profile
-// @Description
+// UpdateProfile godoc
+// @Summary      Update User Profile
+// @Description  Updates the profile details (Fullname and Academic Year) of the currently authenticated user. Guest users are not allowed to update their profile.
+// @Tags         profile
 // @Accept       json
 // @Produce      json
-// @Param
-// @Security BearerAuth
+// @Param        request body UserProfileRequest true "User Profile Update Data"
+// @Security     BearerAuth
 // @Router       /api/v1/profile/ [patch]
 func (h *ProfileHandler) UpdateProfile(c *gin.Context) {
 	var req UserProfileRequest
@@ -74,13 +75,21 @@ func (h *ProfileHandler) UpdateProfile(c *gin.Context) {
 		return
 	}
 
-	updateResult := h.us.UpdateUser(c, *result.DataOrNull())
+	user := *result.DataOrNull()
+
+	// Prevent Guest users from editing profile
+	if user.Fullname == "Guest" || user.Username == "Guest" {
+		delivery.NewResponser(c).Status(http.StatusForbidden).WithError(http.StatusText(http.StatusForbidden), "Guest User Can Not Edit Profile").Send()
+		return
+	}
+
+	// Apply updates
+	user.Fullname = req.FullName
+	user.GdgInfo.AcademicYear = req.AcademicYear
+
+	updateResult := h.us.UpdateUser(c, user)
 
 	updateResult.OnSuccess(func(u *domain.User) {
-		if u.Fullname == "Guest" {
-			delivery.NewResponser(c).Status(http.StatusForbidden).WithError(http.StatusText(http.StatusForbidden), "Gest User Can Not Edit Profile").Send()
-			return
-		}
 		delivery.NewResponser(c).WithData(&u).Send()
 	}).OnFailure(func(err error) {
 		delivery.NewResponser(c).Status(http.StatusInternalServerError).WithError(http.StatusText(http.StatusInternalServerError), err.Error()).Send()

@@ -1,4 +1,18 @@
 definitions:
+  handlers.UserProfileRequest:
+    properties:
+      academic_year:
+        example: 3
+        maximum: 5
+        minimum: 1
+        type: integer
+      fullname:
+        example: Mostafa Ahmed
+        type: string
+    required:
+    - academic_year
+    - fullname
+    type: object
   handlers.forgetPasswordRequest:
     properties:
       email:
@@ -158,6 +172,41 @@ paths:
       summary: User Registration
       tags:
       - auth
+  /api/v1/profile/:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the profile information of the currently authenticated
+        user based on their JWT token.
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Get User Profile
+      tags:
+      - profile
+    patch:
+      consumes:
+      - application/json
+      description: Updates the profile details (Fullname and Academic Year) of the
+        currently authenticated user. Guest users are not allowed to update their
+        profile.
+      parameters:
+      - description: User Profile Update Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UserProfileRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Update User Profile
+      tags:
+      - profile
 securityDefinitions:
   BearerAuth:
     in: header
