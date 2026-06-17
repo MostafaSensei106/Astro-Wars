@@ -70,6 +70,11 @@ func (u *userUseCase) GuestLogin(ctx context.Context) errors.Result[*domain.User
 	return authCtx.Authenticate(ctx, u.repo)
 }
 
+// Logout implements [domain.UserUseCase].
+func (u *userUseCase) Logout(ctx context.Context, id string) errors.Result[bool, error] {
+	return errors.Success[bool, error](true)
+}
+
 func New(repo domain.UserRepository) domain.UserUseCase {
 	return &userUseCase{repo: repo}
 }

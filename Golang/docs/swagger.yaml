@@ -1,135 +1,4 @@
-basePath: /api/v1
 definitions:
-  delivery.ErrorInfo:
-    properties:
-      code:
-        type: string
-      message:
-        type: string
-    type: object
-  delivery.Meta:
-    properties:
-      last_page:
-        type: integer
-      next:
-        type: integer
-      page:
-        type: integer
-      per_page:
-        type: integer
-      prev:
-        type: integer
-      total:
-        type: integer
-    type: object
-  delivery.Response:
-    properties:
-      data: {}
-      errors:
-        $ref: '#/definitions/delivery.ErrorInfo'
-      meta:
-        $ref: '#/definitions/delivery.Meta'
-      success:
-        type: boolean
-    type: object
-  domain.GDGInfo:
-    properties:
-      academic_year:
-        description: Academic year between 1 and 5 (Required)
-        example: 3
-        type: integer
-      college:
-        description: User's college (Optional, can be null)
-        example: Engineering
-        type: string
-        x-nullable: true
-      community_role:
-        description: Role in the community (Required)
-        example: member
-        type: string
-      department:
-        description: User's department (Optional, can be null)
-        example: Computer Science
-        type: string
-        x-nullable: true
-      gdg_track:
-        description: GDG Track (Optional, can be null)
-        example: Web Development
-        type: string
-        x-nullable: true
-      system_role:
-        description: Role in the system (Required)
-        example: player
-        type: string
-    type: object
-  domain.User:
-    properties:
-      created_at:
-        type: string
-      fullname:
-        description: Full name of the user (Required)
-        example: John Doe
-        type: string
-      id:
-        type: string
-      info:
-        allOf:
-        - $ref: '#/definitions/domain.GDGInfo'
-        description: Embedded GDG information (Required)
-      stats:
-        allOf:
-        - $ref: '#/definitions/domain.UserStats'
-        description: Embedded user statistics (Required)
-      updated_at:
-        type: string
-      username:
-        description: Unique username (Required)
-        example: john_doe
-        type: string
-    type: object
-  domain.UserStats:
-    properties:
-      coins:
-        description: User coins (Required)
-        example: 250
-        type: integer
-      current_streak:
-        description: Current login streak (Required)
-        example: 3
-        type: integer
-      experience:
-        description: User experience points (Required)
-        example: 1500
-        type: integer
-      last_played_at:
-        description: Last played timestamp (Optional, can be null)
-        example: "2023-10-01T15:00:00Z"
-        type: string
-        x-nullable: true
-      level:
-        description: User level (Required)
-        example: 5
-        type: integer
-      max_streak:
-        description: Max login streak (Required)
-        example: 10
-        type: integer
-      points:
-        description: User points (Required)
-        example: 1200
-        type: integer
-    type: object
-  handlers.authResponse:
-    properties:
-      token:
-        description: JWT Authentication Token (Required in response)
-        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-        type: string
-      user:
-        allOf:
-        - $ref: '#/definitions/domain.User'
-        description: The authenticated user's profile data (Required in response)
-    type: object
   handlers.forgetPasswordRequest:
     properties:
       email:
@@ -199,5 +68,106 @@ info:
   description: Astro Wars Backend API
   title: Astro Wars API
   version: "1.0"
-paths: {}
+paths:
+  /auth/account/{id}:
+    delete:
+      description: Removes a user account by their ID.
+      parameters:
+      - description: User ID. Required parameter to identify the user.
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Delete Account
+      tags:
+      - auth
+  /auth/forget-password:
+    post:
+      consumes:
+      - application/json
+      description: Initiates password recovery (Currently placeholder).
+      parameters:
+      - description: User Email. 'email' field is required.
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.forgetPasswordRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: Forget Password
+      tags:
+      - auth
+  /auth/guest:
+    post:
+      description: Creates a temporary guest account. Does not require a request body.
+        Returns a JWT token and the guest user's data.
+      produces:
+      - application/json
+      responses: {}
+      summary: Guest Login
+      tags:
+      - auth
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user using their username and password. Returns
+        a JWT token and the user's data upon successful authentication.
+      parameters:
+      - description: Login Credentials. Both 'username' and 'password' are required.
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.loginRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: User Login
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      description: Invalidates the user session. (Implementation depends on token
+        handling logic, currently returns success message).
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: User Logout
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user account with the provided details. Returns a
+        JWT token and the created user's data upon successful registration.
+      parameters:
+      - description: Registration Details. 'fullname', 'username', 'password', 'college',
+          'department', and 'academic_year' (1-5) are required. 'gdg_track' is optional.
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.registerRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: User Registration
+      tags:
+      - auth
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

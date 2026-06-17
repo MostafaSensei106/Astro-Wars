@@ -14,29 +14,29 @@ var ErrInvalidCredentials = errors.New("invalid credentials")
 
 type User struct {
 	BaseEntity
-	Fullname     string    `json:"fullname" gorm:"type:varchar(100);not null" example:"John Doe"` // Full name of the user (Required)
+	Fullname     string    `json:"fullname" gorm:"type:varchar(100);not null" example:"John Doe"`            // Full name of the user (Required)
 	Username     string    `json:"username" gorm:"type:varchar(50);uniqueIndex;not null" example:"john_doe"` // Unique username (Required)
-	PasswordHash string    `json:"-" gorm:"type:varchar(255);not null"` // Excluded from JSON responses
-	Stats        UserStats `json:"stats"    gorm:"embedded"` // Embedded user statistics (Required)
-	GdgInfo      GDGInfo   `json:"info" gorm:"embedded"` // Embedded GDG information (Required)
+	PasswordHash string    `json:"-" gorm:"type:varchar(255);not null"`                                      // Excluded from JSON responses
+	Stats        UserStats `json:"stats"    gorm:"embedded"`                                                 // Embedded user statistics (Required)
+	GdgInfo      GDGInfo   `json:"info" gorm:"embedded"`                                                     // Embedded GDG information (Required)
 }
 
 type GDGInfo struct {
-	College       *string `json:"college" gorm:"type:varchar(100);" example:"Engineering" extensions:"x-nullable"` // User's college (Optional, can be null)
-	Department    *string `json:"department" gorm:"type:varchar(100);" example:"Computer Science" extensions:"x-nullable"` // User's department (Optional, can be null)
+	College       *string `json:"college" gorm:"type:varchar(100);" example:"Engineering" extensions:"x-nullable"`                     // User's college (Optional, can be null)
+	Department    *string `json:"department" gorm:"type:varchar(100);" example:"Computer Science" extensions:"x-nullable"`             // User's department (Optional, can be null)
 	AcademicYear  int     `json:"academic_year" gorm:"type:int;default:1;check:academic_year >= 1 AND academic_year <= 5" example:"3"` // Academic year between 1 and 5 (Required)
-	GdgTrack      *string `json:"gdg_track" gorm:"type:varchar(50);" example:"Web Development" extensions:"x-nullable"` // GDG Track (Optional, can be null)
-	SystemRole    string  `json:"system_role" gorm:"type:varchar(20);default:player;not null" example:"player"` // Role in the system (Required)
-	CommunityRole string  `json:"community_role" gorm:"type:varchar(50);default:member;not null" example:"member"` // Role in the community (Required)
+	GdgTrack      *string `json:"gdg_track" gorm:"type:varchar(50);" example:"Web Development" extensions:"x-nullable"`                // GDG Track (Optional, can be null)
+	SystemRole    string  `json:"system_role" gorm:"type:varchar(20);default:player;not null" example:"player"`                        // Role in the system (Required)
+	CommunityRole string  `json:"community_role" gorm:"type:varchar(50);default:member;not null" example:"member"`                     // Role in the community (Required)
 }
 
 type UserStats struct {
-	Level         int       `json:"level"          gorm:"type:int;not null;default:1" example:"5"` // User level (Required)
-	Experience    int       `json:"experience"     gorm:"type:int;not null;default:0" example:"1500"` // User experience points (Required)
-	Coins         int       `json:"coins"          gorm:"type:int;not null;default:0" example:"250"` // User coins (Required)
-	Points        int       `json:"points"         gorm:"type:int;not null;default:0" example:"1200"` // User points (Required)
-	CurrentStreak int       `json:"current_streak" gorm:"type:int;not null;default:0" example:"3"` // Current login streak (Required)
-	MaxStreak     int       `json:"max_streak"     gorm:"type:int;not null;default:0" example:"10"` // Max login streak (Required)
+	Level         int       `json:"level"          gorm:"type:int;not null;default:1" example:"5"`                                            // User level (Required)
+	Experience    int       `json:"experience"     gorm:"type:int;not null;default:0" example:"1500"`                                         // User experience points (Required)
+	Coins         int       `json:"coins"          gorm:"type:int;not null;default:0" example:"250"`                                          // User coins (Required)
+	Points        int       `json:"points"         gorm:"type:int;not null;default:0" example:"1200"`                                         // User points (Required)
+	CurrentStreak int       `json:"current_streak" gorm:"type:int;not null;default:0" example:"3"`                                            // Current login streak (Required)
+	MaxStreak     int       `json:"max_streak"     gorm:"type:int;not null;default:0" example:"10"`                                           // Max login streak (Required)
 	LastPlayedAt  time.Time `json:"last_played_at" gorm:"type:timestamp;default:null" example:"2023-10-01T15:00:00Z" extensions:"x-nullable"` // Last played timestamp (Optional, can be null)
 }
 
@@ -59,6 +59,7 @@ type UserUseCase interface {
 	Login(ctx context.Context, username, password string) e.Result[*User, error]
 	Register(ctx context.Context, user *User, password string) e.Result[*User, error]
 	GuestLogin(ctx context.Context) e.Result[*User, error]
+	Logout(ctx context.Context, id string) e.Result[bool, error]
 }
 
 func (u *User) TrackActivity() {
