@@ -57,11 +57,7 @@ final class GetStartedRoute extends CupertinoRouteData with $GetStartedRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) => MultiBlocProvider(
-    providers: [
-      BlocProvider(create: (_) => getIt<RegisterCubit>()),
-      BlocProvider(create: (_) => getIt<AccountTypeCubit>()),
-      BlocProvider(create: (_) => getIt<OtpCubit>()),
-    ],
+    providers: [BlocProvider(create: (_) => getIt<RegisterCubit>())],
     child: const GetStartedPage(),
   );
 }
@@ -84,36 +80,4 @@ final class ChangePasswordRoute extends CupertinoRouteData
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       const ForgetPasswordPage();
-}
-
-@TypedGoRoute<TwoFactorAuthRoute>(path: RoutesNames.twoFactorAuth)
-final class TwoFactorAuthRoute extends CupertinoRouteData
-    with $TwoFactorAuthRoute {
-  const TwoFactorAuthRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const TwoFactorAuth();
-}
-
-@TypedGoRoute<FingerprintAuthRoute>(path: RoutesNames.fingerprintAuth)
-final class FingerprintAuthRoute extends CupertinoRouteData
-    with $FingerprintAuthRoute {
-  const FingerprintAuthRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) => BlocProvider(
-    create: (_) => getIt<SecurityCubit>(),
-    child: const FingerprintAuthPage(),
-  );
-}
-
-@TypedGoRoute<SecurityAlertsRoute>(path: RoutesNames.securityAlerts)
-final class SecurityAlertsRoute extends CupertinoRouteData
-    with $SecurityAlertsRoute {
-  const SecurityAlertsRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const SecurityAlertsPage();
 }

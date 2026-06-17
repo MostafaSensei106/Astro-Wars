@@ -48,6 +48,7 @@ import 'package:astro/core/utils/theme/data/base_theme_repository.dart'
     as _i877;
 import 'package:astro/core/utils/theme/data/theme_repository.dart' as _i297;
 import 'package:astro/core/utils/theme/logic/cubit/theme_cubit.dart' as _i377;
+import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
@@ -69,7 +70,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i338.BasePackageInfoAdapter>(
       () => _i101.PackageInfoPlusAdapter(gh<_i655.PackageInfo>()),
     );
+    gh.lazySingleton<_i401.BaseNetworkInfo>(
+      () => _i1041.NetworkInfo(gh<_i895.Connectivity>()),
+    );
     gh.lazySingleton<_i398.BaseHashService>(() => _i917.HashService());
+    gh.lazySingleton<_i464.NetworkCubit>(
+      () => _i464.NetworkCubit(gh<_i401.BaseNetworkInfo>()),
+    );
     gh.lazySingleton<_i58.BiometricsService>(() => _i376.FingerprintService());
     gh.lazySingleton<_i14.BaseToastService>(
       () => _i187.ToastificationService(
@@ -79,9 +86,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i71.SecureStorageService>(
       () => _i71.SecureStorageService(gh<_i558.FlutterSecureStorage>()),
-    );
-    gh.lazySingleton<_i401.BaseNetworkInfo>(
-      () => _i1041.NetworkInfo(gh<InvalidType>()),
     );
     gh.lazySingleton<_i955.BasePrefStorageService>(
       () => _i108.StorageFacade(
@@ -104,9 +108,6 @@ extension GetItInjectableX on _i174.GetIt {
         l10nService: gh<_i181.L10nService>(),
       ),
     );
-    gh.lazySingleton<_i464.NetworkCubit>(
-      () => _i464.NetworkCubit(gh<_i401.BaseNetworkInfo>()),
-    );
     return this;
   }
 
@@ -122,7 +123,11 @@ extension GetItInjectableX on _i174.GetIt {
   _i101.PackageInfoPlusAdapter get packageInfoPlusAdapter =>
       get<_i101.PackageInfoPlusAdapter>();
 
+  _i1041.NetworkInfo get networkInfo => get<_i1041.NetworkInfo>();
+
   _i917.HashService get hashService => get<_i917.HashService>();
+
+  _i464.NetworkCubit get networkCubit => get<_i464.NetworkCubit>();
 
   _i376.FingerprintService get fingerprintService =>
       get<_i376.FingerprintService>();
@@ -132,8 +137,6 @@ extension GetItInjectableX on _i174.GetIt {
 
   _i71.SecureStorageService get secureStorageService =>
       get<_i71.SecureStorageService>();
-
-  _i1041.NetworkInfo get networkInfo => get<_i1041.NetworkInfo>();
 
   _i108.StorageFacade get storageFacade => get<_i108.StorageFacade>();
 
@@ -146,6 +149,4 @@ extension GetItInjectableX on _i174.GetIt {
 
   _i784.LocalizationRepository get localizationRepository =>
       get<_i784.LocalizationRepository>();
-
-  _i464.NetworkCubit get networkCubit => get<_i464.NetworkCubit>();
 }

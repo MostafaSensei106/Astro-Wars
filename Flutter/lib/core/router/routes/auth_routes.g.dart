@@ -12,9 +12,6 @@ List<RouteBase> get $appRoutes => [
   $getStartedRoute,
   $forgetPasswordRoute,
   $changePasswordRoute,
-  $twoFactorAuthRoute,
-  $fingerprintAuthRoute,
-  $securityAlertsRoute,
 ];
 
 RouteBase get $welcomeRoute =>
@@ -126,84 +123,6 @@ mixin $ChangePasswordRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/change-password');
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-RouteBase get $twoFactorAuthRoute => GoRouteData.$route(
-  path: '/two-factor-auth',
-  factory: $TwoFactorAuthRoute._fromState,
-);
-
-mixin $TwoFactorAuthRoute on GoRouteData {
-  static TwoFactorAuthRoute _fromState(GoRouterState state) =>
-      const TwoFactorAuthRoute();
-
-  @override
-  String get location => GoRouteData.$location('/two-factor-auth');
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-RouteBase get $fingerprintAuthRoute => GoRouteData.$route(
-  path: '/fingerprint-auth',
-  factory: $FingerprintAuthRoute._fromState,
-);
-
-mixin $FingerprintAuthRoute on GoRouteData {
-  static FingerprintAuthRoute _fromState(GoRouterState state) =>
-      const FingerprintAuthRoute();
-
-  @override
-  String get location => GoRouteData.$location('/fingerprint-auth');
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-RouteBase get $securityAlertsRoute => GoRouteData.$route(
-  path: '/security-alerts',
-  factory: $SecurityAlertsRoute._fromState,
-);
-
-mixin $SecurityAlertsRoute on GoRouteData {
-  static SecurityAlertsRoute _fromState(GoRouterState state) =>
-      const SecurityAlertsRoute();
-
-  @override
-  String get location => GoRouteData.$location('/security-alerts');
 
   @override
   void go(BuildContext context) => context.go(location);
