@@ -8,7 +8,7 @@ import '../bloc/game_bloc.dart';
 import '../flame_game/astro_game.dart';
 
 class GamePage extends StatelessWidget {
-  const GamePage({Key? key}) : super(key: key);
+  const GamePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,10 @@ class GameView extends StatelessWidget {
                 builder: (context, state) {
                   return CardComponent(
                     color: Colors.black45,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -91,7 +94,9 @@ class GameView extends StatelessWidget {
                         ElevatedButtonComponent(
                           label: 'Restart',
                           onPressed: () {
-                            context.read<GameBloc>().add(const GameEvent.gameRestarted());
+                            context.read<GameBloc>().add(
+                              const GameEvent.gameRestarted(),
+                            );
                           },
                         ),
                       ],

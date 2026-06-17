@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_ar.dart';
 import 'app_localizations_en.dart';
 
 // ignore_for_file: type=lint
@@ -92,7 +93,178 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('ar'),
+    Locale('en'),
+  ];
+
+  /// No description provided for @error_full_name_invalid_characters.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid characters in full name'**
+  String get error_full_name_invalid_characters;
+
+  /// No description provided for @error_phone_number_cant_be_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number cannot be empty'**
+  String get error_phone_number_cant_be_empty;
+
+  /// No description provided for @error_password_cant_be_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Password cannot be empty'**
+  String get error_password_cant_be_empty;
+
+  /// No description provided for @error_password_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required'**
+  String get error_password_empty;
+
+  /// No description provided for @error_password_too_short_min_8_chars.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 8 characters'**
+  String get error_password_too_short_min_8_chars;
+
+  /// No description provided for @error_password_emojis.
+  ///
+  /// In en, this message translates to:
+  /// **'Password cannot contain emojis'**
+  String get error_password_emojis;
+
+  /// No description provided for @error_password_spaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Password cannot contain spaces'**
+  String get error_password_spaces;
+
+  /// No description provided for @error_password_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid password'**
+  String get error_password_invalid;
+
+  /// No description provided for @error_username_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Username is required'**
+  String get error_username_empty;
+
+  /// No description provided for @error_username_too_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Username is too short'**
+  String get error_username_too_short;
+
+  /// No description provided for @error_username_special_chars.
+  ///
+  /// In en, this message translates to:
+  /// **'Username cannot contain special characters'**
+  String get error_username_special_chars;
+
+  /// No description provided for @error_username_spaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Username cannot contain spaces'**
+  String get error_username_spaces;
+
+  /// No description provided for @error_username_emojis.
+  ///
+  /// In en, this message translates to:
+  /// **'Username cannot contain emojis'**
+  String get error_username_emojis;
+
+  /// No description provided for @error_username_arabic.
+  ///
+  /// In en, this message translates to:
+  /// **'Username cannot contain Arabic characters'**
+  String get error_username_arabic;
+
+  /// No description provided for @error_username_too_long.
+  ///
+  /// In en, this message translates to:
+  /// **'Username is too long'**
+  String get error_username_too_long;
+
+  /// No description provided for @error_username_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid username'**
+  String get error_username_invalid;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @please_wait.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait...'**
+  String get please_wait;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @session_expired.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Expired'**
+  String get session_expired;
+
+  /// No description provided for @session_expired_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Your session has expired. Please log in again.'**
+  String get session_expired_description;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// No description provided for @info.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get info;
+
+  /// No description provided for @success.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get success;
+
+  /// No description provided for @warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get warning;
+
+  /// No description provided for @error_full_name_cant_be_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name cannot be empty'**
+  String get error_full_name_cant_be_empty;
+
+  /// No description provided for @error_full_name_too_long_max_255_chars.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name cannot exceed 255 characters'**
+  String get error_full_name_too_long_max_255_chars;
 }
 
 class _AppLocalizationsDelegate
@@ -106,7 +278,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['ar', 'en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -115,6 +287,8 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'ar':
+      return AppLocalizationsAr();
     case 'en':
       return AppLocalizationsEn();
   }
