@@ -2,8 +2,6 @@ package cmd
 
 import (
 	"log"
-	"log/slog"
-	"os"
 
 	"github.com/gin-gonic/gin"
 
@@ -17,14 +15,10 @@ import (
 )
 
 func Execute() {
-
-	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-	slog.SetDefault(logger)
-
 	cfg := config{
 		port: ":8080",
 		db: dbConfig{
-			dns: env.GetString("CHOCHO_DB_DSN", "host=localhost user=root password=root dbname=chocho sslmode=disable"),
+			dns: env.GetString("ASWTRO_WARS_DB_DSN", "host=localhost user=root password=root dbname=astro sslmode=disable"),
 		},
 	}
 
@@ -36,11 +30,13 @@ func Execute() {
 	authHandler := handlers.NewAuthHandler(userUsecase, jwtSvc)
 
 	r := gin.Default()
+	gin.SetMode(gin.ReleaseMode)
 
+	router.SetupHelthCheck(&r.RouterGroup)
 	router.SetupAuthRoutes(&r.RouterGroup, authHandler)
 
 	log.Printf("🚀 Starting Astro Wars server on port %s", cfg.port)
-	if err := r.Run(":" + cfg.port); err != nil {
+	if err := r.Run(cfg.port); err != nil {
 		log.Fatalf("Failed to run server: %v", err)
 	}
 }

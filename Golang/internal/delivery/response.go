@@ -3,7 +3,7 @@ package delivery
 import "net/http"
 
 type Context interface {
-	JSON(code int, obj interface{})
+	JSON(code int, obj any)
 }
 
 type ErrorInfo struct {
@@ -21,10 +21,10 @@ type Meta struct {
 }
 
 type Response struct {
-	Success bool        `json:"success"`
-	Data    interface{} `json:"data,omitempty"`
-	Error   *ErrorInfo  `json:"errors,omitempty"`
-	Meta    *Meta       `json:"meta,omitempty"`
+	Success bool       `json:"success"`
+	Data    any        `json:"data,omitempty"`
+	Error   *ErrorInfo `json:"errors,omitempty"`
+	Meta    *Meta      `json:"meta,omitempty"`
 }
 
 type Responser struct {
@@ -48,7 +48,7 @@ func (r *Responser) Status(code int) *Responser {
 	return r
 }
 
-func (r *Responser) WithData(data interface{}) *Responser {
+func (r *Responser) WithData(data any) *Responser {
 	r.response.Data = data
 	return r
 }

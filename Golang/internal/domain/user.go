@@ -23,11 +23,11 @@ type User struct {
 
 type GDGInfo struct {
 	College       string  `json:"college" gorm:"type:varchar(100);not null"`
-	Department    string  `json:"department" gorm:"type:varchar(100):not null"`
+	Department    string  `json:"department" gorm:"type:varchar(100);not null"`
 	AcademicYear  int     `json:"academic_year" gorm:"type:int;default:1;check:academic_year >= 1 AND academic_year <= 5"`
-	GdgTrack      *string `json:"gdg_track" gorm:"type:varchar(50):"`
+	GdgTrack      *string `json:"gdg_track" gorm:"type:varchar(50)"`
 	SystemRole    string  `json:"system_role" gorm:"type:varchar(20);default:player;not null"`
-	CommunityRole string  `json:"community_role" gorm:"type:varchar(50);default:member:not null"` // core team - head - vice head -  facilitator - lead - co - lead - member
+	CommunityRole string  `json:"community_role" gorm:"type:varchar(50);default:member;not null"`
 }
 
 type UserStats struct {

@@ -3,6 +3,7 @@ package db
 import (
 	"log"
 
+	"github.com/MostafaSensei106/Astro-Wars/Golang/internal/domain"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -14,7 +15,7 @@ func ConnectPostgres(dsn string) *gorm.DB {
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
-	err = db.AutoMigrate()
+	err = db.AutoMigrate(&domain.User{})
 	if err != nil {
 		log.Fatalf("failed to migrate database: %v", err)
 	}
