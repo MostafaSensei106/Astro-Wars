@@ -16,24 +16,32 @@ type AuthHandler struct {
 	jwtSvc  *jwt.JWTService
 }
 
+// loginRequest represents the credentials required to authenticate a user.
 type loginRequest struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Username string `json:"username" binding:"required" example:"mostafa_sensei"` // User's username (Required)
+	Password string `json:"password" binding:"required" example:"P@ssw0rd123"`    // User's password (Required)
 }
 
+// authResponse represents the response sent upon successful authentication.
 type authResponse struct {
-	Token string       `json:"token"`
-	User  *domain.User `json:"user"`
+	Token string       `json:"token" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."` // JWT Authentication Token (Required in response)
+	User  *domain.User `json:"user"`                                                    // The authenticated user's profile data (Required in response)
 }
 
+// registerRequest represents the data required to register a new user.
 type registerRequest struct {
-	Fullname     string  `json:"fullname" binding:"required"`
-	Username     string  `json:"username" binding:"required"`
-	Password     string  `json:"password" binding:"required"`
-	College      string  `json:"college" binding:"required"`
-	Department   string  `json:"department" binding:"required"`
-	AcademicYear int     `json:"academic_year" binding:"required,min=1,max=5"`
-	GdgTrack     *string `json:"gdg_track" `
+	Fullname     string  `json:"fullname" binding:"required" example:"Mostafa Ahmed"`     // Full Name (Required)
+	Username     string  `json:"username" binding:"required" example:"mostafa_sensei"`    // Username for login (Required)
+	Password     string  `json:"password" binding:"required" example:"P@ssw0rd123"`       // Password for login (Required)
+	College      string  `json:"college" binding:"required" example:"Computers & Info"`   // User's college (Required)
+	Department   string  `json:"department" binding:"required" example:"Computer Science"`// User's department (Required)
+	AcademicYear int     `json:"academic_year" binding:"required,min=1,max=5" example:"3"`// Academic year from 1 to 5 (Required)
+	GdgTrack     *string `json:"gdg_track" example:"Flutter" extensions:"x-nullable"`     // GDG Track name (Optional, can be null)
+}
+
+// forgetPasswordRequest represents the request body for password recovery
+type forgetPasswordRequest struct {
+	Email string `json:"email" binding:"required" example:"user@example.com"` // User's email address (Required)
 }
 
 func NewAuthHandler(usecase domain.UserUseCase, jwtSvc *jwt.JWTService) *AuthHandler {
@@ -162,13 +170,11 @@ func (h *AuthHandler) GuestLogin(c *gin.Context) {
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        request body object{email=string} true "User Email. 'email' field is required."
+// @Param        request body forgetPasswordRequest true "User Email. 'email' field is required."
 // @Success      200 {object} delivery.Response "Successfully initiated password recovery (placeholder response)."
 // @Failure      400 {object} delivery.Response{errors=delivery.ErrorInfo} "Bad Request. Returned if the JSON body is invalid or missing the required 'email' field."
 func (h *AuthHandler) ForgetPassword(c *gin.Context) {
-	var req struct {
-		Email string `json:"emil" binding:"required"`
-	}
+	var req forgetPasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		delivery.NewResponser(c).Status(http.StatusBadRequest).WithError(http.StatusText(http.StatusBadRequest), err.Error()).Send()
 		return

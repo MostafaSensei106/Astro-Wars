@@ -33,6 +33,7 @@ func Execute() {
 	gin.SetMode(gin.ReleaseMode)
 
 	router.SetupHelthCheck(&r.RouterGroup)
+	router.SetupSwaggerDocs(&r.RouterGroup)
 	router.SetupAuthRoutes(&r.RouterGroup, authHandler, jwtSvc)
 
 	log.Printf("🚀 Starting Astro Wars server on port %s", cfg.port)
