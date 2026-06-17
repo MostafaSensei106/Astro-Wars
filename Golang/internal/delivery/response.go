@@ -4,6 +4,7 @@ import "net/http"
 
 type Context interface {
 	JSON(code int, obj any)
+	SecureJSON(code int, obj any)
 }
 
 type ErrorInfo struct {
@@ -30,6 +31,7 @@ type Response struct {
 type Responser struct {
 	ctx        Context
 	statusCode int
+	secure     bool
 	response   Response
 }
 
@@ -67,6 +69,15 @@ func (r *Responser) WithError(code string, message string) *Responser {
 	return r
 }
 
+func (r *Responser) SecureJSON() *Responser {
+	r.secure = true
+	return r
+}
+
 func (r *Responser) Send() {
+	if r.secure {
+		r.ctx.SecureJSON(r.statusCode, r.response)
+		return
+	}
 	r.ctx.JSON(r.statusCode, r.response)
 }

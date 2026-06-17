@@ -22,10 +22,10 @@ type User struct {
 }
 
 type GDGInfo struct {
-	College       string  `json:"college" gorm:"type:varchar(100);not null"`
-	Department    string  `json:"department" gorm:"type:varchar(100);not null"`
+	College       *string `json:"college" gorm:"type:varchar(100);"`
+	Department    *string `json:"department" gorm:"type:varchar(100);"`
 	AcademicYear  int     `json:"academic_year" gorm:"type:int;default:1;check:academic_year >= 1 AND academic_year <= 5"`
-	GdgTrack      *string `json:"gdg_track" gorm:"type:varchar(50)"`
+	GdgTrack      *string `json:"gdg_track" gorm:"type:varchar(50);"`
 	SystemRole    string  `json:"system_role" gorm:"type:varchar(20);default:player;not null"`
 	CommunityRole string  `json:"community_role" gorm:"type:varchar(50);default:member;not null"`
 }
@@ -177,10 +177,6 @@ func (s *GuestLoginStrategy) Execute(ctx context.Context, repo UserRepository) e
 		Username:     s.GenerateGuestID(),
 		Fullname:     "Guest",
 		PasswordHash: "", // Guests do not need a password
-		GdgInfo: GDGInfo{
-			SystemRole:    "guest",
-			CommunityRole: "none",
-		},
 	}
 	createResult := repo.Create(ctx, guestUser)
 	if createResult.IsFailure() {
