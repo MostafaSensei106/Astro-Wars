@@ -12,3 +12,9 @@ type BaseModel struct {
 	UpdatedAt time.Time      `json:"updated_at" gorm:"autoUpdateTime"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" `
 }
+
+type NoParams struct {
+}
+type BaseUseCase[Type any, Params any] interface {
+	Call(params Params) (Type, error)
+}
