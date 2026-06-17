@@ -4,9 +4,8 @@ import 'package:flame_bloc/flame_bloc.dart';
 import '../bloc/game_bloc.dart';
 import 'components/player_ship.dart';
 import 'components/enemy_bug.dart';
-import 'package:flame/components.dart';
 
-class AstroGame extends FlameGame with HasCollisionDetection, TapDetector {
+class AstroGame extends FlameGame with HasCollisionDetection, TapCallbacks {
   final GameBloc gameBloc;
 
   AstroGame({required this.gameBloc});
@@ -21,9 +20,7 @@ class AstroGame extends FlameGame with HasCollisionDetection, TapDetector {
     // Setup BLoC provider for Flame
     final blocProvider = FlameBlocProvider<GameBloc, GameState>.value(
       value: gameBloc,
-      children: [
-        player = PlayerShip(),
-      ],
+      children: [player = PlayerShip()],
     );
 
     await add(blocProvider);
@@ -44,8 +41,8 @@ class AstroGame extends FlameGame with HasCollisionDetection, TapDetector {
   }
 
   @override
-  void onTapDown(TapDownInfo info) {
-    super.onTapDown(info);
+  void onTapDown(TapDownEvent event) {
+    super.onTapDown(event);
     if (!gameBloc.state.entity.isGameOver) {
       // Logic for shooting can go here
       // e.g., player.shoot();

@@ -2,10 +2,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../domain/entities/game_state_entity.dart';
 
+import 'package:injectable/injectable.dart';
+
 part 'game_event.dart';
 part 'game_state.dart';
 part 'game_bloc.freezed.dart';
 
+@injectable
 class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc() : super(const GameState.initial(GameStateEntity())) {
     on<_ScoreIncreased>((event, emit) {

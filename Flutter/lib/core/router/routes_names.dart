@@ -3,6 +3,7 @@ abstract class RoutesNames {
   static const String login = '/login';
   static const String getStarted = '/get-started';
   static const String home = '/home';
+  static const String game = '/game';
   static const String wallet = '/wallet';
   static const String history = '/history';
   static const String profile = '/profile';
