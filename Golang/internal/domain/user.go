@@ -46,6 +46,7 @@ type AuthStrategy interface {
 
 type UserRepository interface {
 	Create(ctx context.Context, user *User) e.Result[*User, error]
+	FindByID(ctx context.Context, id string) e.Result[*User, error]
 	FindByUsername(ctx context.Context, username string) e.Result[*User, error]
 	Update(ctx context.Context, user *User) e.Result[*User, error]
 	Delete(ctx context.Context, id string) e.Result[bool, error]
@@ -53,6 +54,7 @@ type UserRepository interface {
 
 type UserUseCase interface {
 	FindByUsername(ctx context.Context, username string) e.Result[*User, error]
+	FindUserByID(ctx context.Context, id string) e.Result[*User, error]
 	CreateUser(ctx context.Context, user *User) e.Result[*User, error]
 	UpdateUser(ctx context.Context, user *User) e.Result[*User, error]
 	DeleteUser(ctx context.Context, id string) e.Result[bool, error]

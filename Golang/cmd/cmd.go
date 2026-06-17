@@ -27,7 +27,8 @@ func Execute() {
 	jwtSvc := jwt.NewJWTService(env.GetString("CHOCHO_JWT_SECRET", "defaultsecretkey"), "astrowars-backend")
 	userRepo := repository.New(db)
 	userUsecase := usecase.New(userRepo)
-	authHandler := handlers.New(userUsecase, jwtSvc)
+	authHandler := handlers.NewAuthHandler(userUsecase, jwtSvc)
+	profileHandler := handlers.NewProfileHandler(userUsecase, jwtSvc)
 
 	r := gin.Default()
 	gin.SetMode(gin.ReleaseMode)
@@ -35,6 +36,7 @@ func Execute() {
 	router.SetupHelthCheck(&r.RouterGroup)
 	router.SetupSwaggerDocs(&r.RouterGroup)
 	router.SetupAuthRoutes(&r.RouterGroup, authHandler, jwtSvc)
+	router.SetupProfile(&r.RouterGroup, profileHandler, jwtSvc)
 
 	log.Printf("🚀 Starting Astro Wars server on port %s", cfg.port)
 	if err := r.Run(cfg.port); err != nil {

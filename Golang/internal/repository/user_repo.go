@@ -38,6 +38,15 @@ func (u *userRepository) FindByUsername(ctx context.Context, username string) e.
 	})
 }
 
+// FindByID implements [domain.UserRepository].
+func (u *userRepository) FindByID(ctx context.Context, id string) e.Result[*domain.User, error] {
+	return QueryExecutor(func() (*domain.User, error) {
+		var user domain.User
+		err := u.db.WithContext(ctx).First(&user, "id = ?", id).Error
+		return &user, err
+	})
+}
+
 // Update implements [domain.UserRepository].
 func (u *userRepository) Update(ctx context.Context, user *domain.User) e.Result[*domain.User, error] {
 	return QueryExecutor(func() (*domain.User, error) {

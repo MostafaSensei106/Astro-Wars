@@ -30,6 +30,11 @@ func (u *userUseCase) FindByUsername(ctx context.Context, username string) error
 	return u.repo.FindByUsername(ctx, username)
 }
 
+// FindUserByID implements [domain.UserUseCase].
+func (u *userUseCase) FindUserByID(ctx context.Context, id string) errors.Result[*domain.User, error] {
+	return u.repo.FindByID(ctx, id)
+}
+
 // UpdateUser implements [domain.UserUseCase].
 func (u *userUseCase) UpdateUser(ctx context.Context, user *domain.User) errors.Result[*domain.User, error] {
 	return u.repo.Update(ctx, user)

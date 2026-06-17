@@ -14,8 +14,8 @@ import (
 )
 
 type AuthHandler struct {
-	usecase domain.UserUseCase
-	jwtSvc  *jwt.JWTService
+	us     domain.UserUseCase
+	jwtSvc *jwt.JWTService
 }
 
 // loginRequest represents the credentials required to authenticate a user.
@@ -46,10 +46,10 @@ type forgetPasswordRequest struct {
 	Email string `json:"email" binding:"required" example:"user@example.com"` // User's email address (Required)
 }
 
-func New(usecase domain.UserUseCase, jwtSvc *jwt.JWTService) *AuthHandler {
+func NewAuthHandler(usecase domain.UserUseCase, jwtSvc *jwt.JWTService) *AuthHandler {
 	return &AuthHandler{
-		usecase: usecase,
-		jwtSvc:  jwtSvc,
+		us:     usecase,
+		jwtSvc: jwtSvc,
 	}
 }
 
@@ -68,7 +68,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	result := h.usecase.Login(c.Request.Context(), req.Username, req.Password)
+	result := h.us.Login(c.Request.Context(), req.Username, req.Password)
 
 	result.OnSuccess(func(user *domain.User) {
 		token, _ := h.jwtSvc.GenerateToken(user.ID)
@@ -114,7 +114,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		},
 	}
 
-	result := h.usecase.Register(c.Request.Context(), user, req.Password)
+	result := h.us.Register(c.Request.Context(), user, req.Password)
 
 	result.OnSuccess(func(user *domain.User) {
 		token, _ := h.jwtSvc.GenerateToken(user.ID)
@@ -145,7 +145,7 @@ func (h *AuthHandler) GuestLogin(c *gin.Context) {
 		return
 	}
 
-	result := h.usecase.GuestLogin(c.Request.Context())
+	result := h.us.GuestLogin(c.Request.Context())
 
 	result.OnSuccess(func(user *domain.User) {
 		token, _ := h.jwtSvc.GenerateToken(user.ID)
@@ -195,7 +195,7 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 
 	// 2. Perform usecase logout (e.g. database session clearing)
 	userID := c.MustGet(constants.JwtField).(string)
-	result := h.usecase.Logout(c.Request.Context(), userID)
+	result := h.us.Logout(c.Request.Context(), userID)
 
 	result.OnSuccess(func(success bool) {
 		delivery.NewResponser(c).WithData(gin.H{"message": "Logged out successfully. Token is now expired."}).Send()
@@ -214,7 +214,7 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 func (h *AuthHandler) DeleteAccount(c *gin.Context) {
 	userID := c.MustGet(constants.JwtField).(string)
 
-	result := h.usecase.DeleteUser(c.Request.Context(), userID)
+	result := h.us.DeleteUser(c.Request.Context(), userID)
 
 	result.OnSuccess(func(success bool) {
 		delivery.NewResponser(c).WithData(gin.H{"message": "Account deleted successfully"}).Send()

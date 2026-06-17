@@ -9,21 +9,21 @@ import (
 )
 
 // SetupAuthRoutes configures the authentication routes with API versioning
-func SetupAuthRoutes(rg *gin.RouterGroup, authHandler *handlers.AuthHandler, jwtSvc *jwt.JWTService) {
+func SetupAuthRoutes(rg *gin.RouterGroup, h *handlers.AuthHandler, jwtSvc *jwt.JWTService) {
 	v1 := rg.Group("/api/v1")
 	{
 		authGroup := v1.Group("/auth")
 		{
-			authGroup.POST("/login", authHandler.Login)
-			authGroup.POST("/register", authHandler.Register)
-			authGroup.POST("/guest", authHandler.GuestLogin)
-			authGroup.POST("/forget-password", authHandler.ForgetPassword)
+			authGroup.POST("/login", h.Login)
+			authGroup.POST("/register", h.Register)
+			authGroup.POST("/guest", h.GuestLogin)
+			authGroup.POST("/forget-password", h.ForgetPassword)
 
 			// Protected routes
 			authGroup.Use(middleware.AuthMiddleware(jwtSvc))
 			{
-				authGroup.POST("/logout", authHandler.Logout)
-				authGroup.DELETE("/account", authHandler.DeleteAccount)
+				authGroup.POST("/logout", h.Logout)
+				authGroup.DELETE("/account", h.DeleteAccount)
 			}
 		}
 	}
