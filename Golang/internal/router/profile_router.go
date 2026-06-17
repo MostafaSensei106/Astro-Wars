@@ -10,9 +10,11 @@ import (
 func SetupProfile(rg *gin.RouterGroup, h *handlers.ProfileHandler, jwtSvc *jwt.JWTService) {
 	v1 := rg.Group("/api/v1")
 	{
-		profileAuthGroup := v1.Group("/profile").Use(middleware.AuthMiddleware(jwtSvc))
+		profileGroup := v1.Group("/profile").Use(middleware.AuthMiddleware(jwtSvc))
 		{
-			profileAuthGroup.GET("/", h.GetProfile)
+			profileGroup.GET("/", h.GetProfile)
+			profileGroup.PATCH("/", h.UpdateProfile)
+
 		}
 	}
 
