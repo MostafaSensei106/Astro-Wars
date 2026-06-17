@@ -16,6 +16,26 @@ type AuthHandler struct {
 	jwtSvc  *jwt.JWTService
 }
 
+type loginRequest struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+type authResponse struct {
+	Token string       `json:"token"`
+	User  *domain.User `json:"user"`
+}
+
+type registerRequest struct {
+	Fullname     string  `json:"fullname" binding:"required"`
+	Username     string  `json:"username" binding:"required"`
+	Password     string  `json:"password" binding:"required"`
+	College      string  `json:"college" binding:"required"`
+	Department   string  `json:"department" binding:"required"`
+	AcademicYear int     `json:"academic_year" binding:"required,min=1,max=5"`
+	GdgTrack     *string `json:"gdg_track" `
+}
+
 func NewAuthHandler(usecase domain.UserUseCase, jwtSvc *jwt.JWTService) *AuthHandler {
 	return &AuthHandler{
 		usecase: usecase,
@@ -24,12 +44,9 @@ func NewAuthHandler(usecase domain.UserUseCase, jwtSvc *jwt.JWTService) *AuthHan
 }
 
 func (h *AuthHandler) Login(c *gin.Context) {
-	var req struct {
-		Username string `json:"username" binding:"required"`
-		Password string `json:"password" binding:"required"`
-	}
+	var req loginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		delivery.NewResponser(c).Status(http.StatusBadRequest).WithError(http.StatusText(http.StatusBadRequest), err.Error())
+		delivery.NewResponser(c).Status(http.StatusBadRequest).WithError(http.StatusText(http.StatusBadRequest), err.Error()).Send()
 		return
 	}
 
@@ -37,8 +54,10 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	result.OnSuccess(func(user *domain.User) {
 		token, _ := h.jwtSvc.GenerateToken(user.ID)
-		delivery.NewResponser(c).WithData(gin.H{
-			"token": token,
+
+		delivery.NewResponser(c).WithData(authResponse{
+			Token: token,
+			User:  user,
 		}).Send()
 	}).OnFailure(func(err error) {
 		status := http.StatusInternalServerError
@@ -50,11 +69,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 }
 
 func (h *AuthHandler) Register(c *gin.Context) {
-	var req struct {
-		Fullname string `json:"fullname" binding:"required"`
-		Username string `json:"username" binding:"required"`
-		Password string `json:"password" binding:"required"`
-	}
+	var req registerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		delivery.NewResponser(c).Status(http.StatusBadRequest).WithError(http.StatusText(http.StatusBadRequest), err.Error()).Send()
 		return
@@ -63,14 +78,21 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	user := &domain.User{
 		Fullname: req.Fullname,
 		Username: req.Username,
+		GdgInfo: domain.GDGInfo{
+			College:      req.College,
+			Department:   req.Department,
+			AcademicYear: req.AcademicYear,
+			GdgTrack:     req.GdgTrack,
+		},
 	}
 
 	result := h.usecase.Register(c.Request.Context(), user, req.Password)
 
 	result.OnSuccess(func(user *domain.User) {
 		token, _ := h.jwtSvc.GenerateToken(user.ID)
-		delivery.NewResponser(c).Status(http.StatusCreated).WithData(gin.H{
-			"token": token,
+		delivery.NewResponser(c).Status(http.StatusCreated).WithData(authResponse{
+			Token: token,
+			User:  user,
 		}).Send()
 	}).OnFailure(func(err error) {
 		status := http.StatusInternalServerError
@@ -86,9 +108,9 @@ func (h *AuthHandler) GuestLogin(c *gin.Context) {
 
 	result.OnSuccess(func(user *domain.User) {
 		token, _ := h.jwtSvc.GenerateToken(user.ID)
-		delivery.NewResponser(c).WithData(gin.H{
-			"token": token,
-			"user":  user,
+		delivery.NewResponser(c).WithData(authResponse{
+			Token: token,
+			User:  user,
 		}).Send()
 	}).OnFailure(func(err error) {
 		delivery.NewResponser(c).Status(http.StatusInternalServerError).WithError(http.StatusText(http.StatusInternalServerError), err.Error()).Send()
@@ -97,14 +119,14 @@ func (h *AuthHandler) GuestLogin(c *gin.Context) {
 
 func (h *AuthHandler) ForgetPassword(c *gin.Context) {
 	var req struct {
-		Username string `json:"username" binding:"required"`
+		Email string `json:"emil" binding:"required"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		delivery.NewResponser(c).Status(http.StatusBadRequest).WithError(http.StatusText(http.StatusBadRequest), err.Error()).Send()
 		return
 	}
 
-	delivery.NewResponser(c).WithData(gin.H{"message": "If the account exists, instructions have been sent."}).Send()
+	delivery.NewResponser(c).WithData(gin.H{"message": "Contact Support for Now"}).Send()
 }
 
 func (h *AuthHandler) Logout(c *gin.Context) {
