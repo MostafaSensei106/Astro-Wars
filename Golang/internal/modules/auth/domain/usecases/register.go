@@ -1,9 +1,9 @@
-package usecase
+package usecases
 
 import (
 	"context"
 
-	"github.com/MostafaSensei106/Astro-Wars/Golang/internal/modules/auth/domain"
+	"github.com/MostafaSensei106/Astro-Wars/Golang/internal/modules/auth/domain/entities"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -13,7 +13,7 @@ func (uc *AuthUseCase) Register(ctx context.Context, name, email, password strin
 		return err
 	}
 
-	return uc.repo.Create(ctx, &domain.User{
+	return uc.repo.Create(ctx, &entities.User{
 		Name:         name,
 		Email:        email,
 		PasswordHash: string(hashedPassword),

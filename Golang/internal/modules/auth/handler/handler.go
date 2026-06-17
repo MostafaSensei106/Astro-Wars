@@ -4,13 +4,16 @@ import (
 	"net/http"
 
 	"github.com/MostafaSensei106/Astro-Wars/Golang/internal/core/delivery"
-	"github.com/MostafaSensei106/Astro-Wars/Golang/internal/modules/auth/usecase"
+	"github.com/MostafaSensei106/Astro-Wars/Golang/internal/modules/auth/domain/usecases"
 	"github.com/gin-gonic/gin"
 )
 
 type RegisterRequest struct {
-	Name     string `json:"name" binding:"required"`
-	Email    string `json:"email" binding:"required,email"`
+	Name  string `json:"name" binding:"required"`
+	Email string `json:"email" binding:"required,email"`
+	Track string `json:"track" binding:"required"`
+
+	Grade    int    `json:"grade" binding:"required,min=1,max=5"`
 	Password string `json:"password" binding:"required,min=8"`
 }
 
@@ -20,10 +23,10 @@ type LoginRequest struct {
 }
 
 type AuthHandler struct {
-	uc *usecase.AuthUseCase
+	uc *usecases.AuthUseCase
 }
 
-func New(uc *usecase.AuthUseCase) *AuthHandler {
+func New(uc *usecases.AuthUseCase) *AuthHandler {
 	return &AuthHandler{
 		uc: uc,
 	}
