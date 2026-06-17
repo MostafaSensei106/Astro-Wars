@@ -14,10 +14,7 @@ class LanguagePage extends StatelessWidget {
             trailing: const Icon(Icons.check, color: Colors.blue),
             onTap: () {},
           ),
-          ListTile(
-            title: const Text('العربية'),
-            onTap: () {},
-          ),
+          ListTile(title: const Text('العربية'), onTap: () {}),
         ],
       ),
     );

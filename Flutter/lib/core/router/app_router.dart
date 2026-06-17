@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'routes/auth_routes.dart';
 import 'routes/game_routes.dart';
+import 'routes/settings_routes.dart';
 
 import 'routes_names.dart';
 
@@ -16,6 +17,6 @@ final class AppRouter {
     navigatorKey: navigatorKey,
     initialLocation: RoutesNames.welcome,
     debugLogDiagnostics: true,
-    routes: [...authRoutes, ...gameRoutes],
+    routes: [...authRoutes, ...gameRoutes, ...settingsRoutes],
   );
 }

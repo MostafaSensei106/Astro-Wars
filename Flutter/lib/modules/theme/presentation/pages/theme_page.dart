@@ -14,14 +14,8 @@ class ThemePage extends StatelessWidget {
             trailing: const Icon(Icons.check, color: Colors.blue),
             onTap: () {},
           ),
-          ListTile(
-            title: const Text('Light Theme'),
-            onTap: () {},
-          ),
-          ListTile(
-            title: const Text('Dark Theme'),
-            onTap: () {},
-          ),
+          ListTile(title: const Text('Light Theme'), onTap: () {}),
+          ListTile(title: const Text('Dark Theme'), onTap: () {}),
         ],
       ),
     );

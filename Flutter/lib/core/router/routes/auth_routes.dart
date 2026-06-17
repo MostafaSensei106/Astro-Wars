@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../di/di.dart';
 import '../cupertion_route_data.dart';
 import '../routes_names.dart';
 
