@@ -1,0 +1,23 @@
+{
+	"nodes":[
+		{"id":"text1","x":-400,"y":0,"width":350,"height":150,"type":"text","text":"## 📐 نقطة البداية\nالمخطط العام يشرح ربط الموبايل بالسيرفر."},
+		{"id":"f1","x":0,"y":0,"width":300,"height":150,"type":"file","file":"08_System_Architecture/High_Level_Design.md"},
+		{"id":"text2","x":400,"y":-250,"width":350,"height":150,"type":"text","text":"واجهة المستخدم والمحرك (Flutter/Flame)."},
+		{"id":"text3","x":400,"y":250,"width":350,"height":150,"type":"text","text":"الخوادم وواجهات الـ API (Go lang)."},
+		{"id":"f2","x":800,"y":-250,"width":300,"height":150,"type":"file","file":"08_System_Architecture/Frontend_Architecture.md"},
+		{"id":"f3","x":800,"y":250,"width":300,"height":150,"type":"file","file":"08_System_Architecture/Backend_Architecture.md"},
+		{"id":"f4","x":1200,"y":250,"width":300,"height":150,"type":"file","file":"08_System_Architecture/Database_ERD.md"},
+		{"id":"text4","x":1200,"y":-450,"width":350,"height":150,"type":"text","text":"خطة أداء اللعبة والـ Object Pooling."},
+		{"id":"f5","x":1200,"y":-250,"width":300,"height":150,"type":"file","file":"08_System_Architecture/Performance_and_Profiling.md"}
+	],
+	"edges":[
+		{"id":"e1","fromNode":"text1","fromSide":"right","toNode":"f1","toSide":"left"},
+		{"id":"e2","fromNode":"f1","fromSide":"top","toNode":"text2","toSide":"left"},
+		{"id":"e3","fromNode":"text2","fromSide":"right","toNode":"f2","toSide":"left"},
+		{"id":"e4","fromNode":"f1","fromSide":"bottom","toNode":"text3","toSide":"left"},
+		{"id":"e5","fromNode":"text3","fromSide":"right","toNode":"f3","toSide":"left"},
+		{"id":"e6","fromNode":"f3","fromSide":"right","toNode":"f4","toSide":"left"},
+		{"id":"e7","fromNode":"text4","fromSide":"bottom","toNode":"f5","toSide":"top"},
+		{"id":"e8","fromNode":"f2","fromSide":"right","toNode":"f5","toSide":"left"}
+	]
+}

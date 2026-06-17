@@ -10,10 +10,9 @@ import (
 )
 
 type RegisterRequest struct {
-	Name  string `json:"name" binding:"required"`
-	Email string `json:"email" binding:"required,email"`
-	Track string `json:"track" binding:"required"`
-
+	Name     string `json:"name" binding:"required"`
+	Email    string `json:"email" binding:"required,email"`
+	Track    string `json:"track" binding:"required"`
 	Grade    int    `json:"grade" binding:"required,min=1,max=5"`
 	Password string `json:"password" binding:"required,min=8"`
 }

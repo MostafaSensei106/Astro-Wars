@@ -1,0 +1,19 @@
+{
+	"nodes":[
+		{"id":"text1","x":-400,"y":-200,"width":350,"height":150,"type":"text","text":"## 🚀 تبدأ اللعبة من هنا\nملف القصة وبناء العالم يحدد الأهداف."},
+		{"id":"f1","x":0,"y":-200,"width":300,"height":150,"type":"file","file":"01_Game_Design_Document/World_Building_and_Lore.md"},
+		{"id":"text2","x":400,"y":-200,"width":350,"height":150,"type":"text","text":"القصة تترجم إلى ميكانيكا لعب وشروط فوز/خسارة."},
+		{"id":"f2","x":800,"y":-200,"width":300,"height":150,"type":"file","file":"01_Game_Design_Document/Game_Core_Loop.md"},
+		{"id":"text3","x":800,"y":0,"width":350,"height":150,"type":"text","text":"لتطبيق الـ Core Loop، نحتاج لشخصيات اللاعب وأعدائه."},
+		{"id":"f3","x":400,"y":200,"width":300,"height":150,"type":"file","file":"01_Game_Design_Document/Characters_Roster.md"},
+		{"id":"f4","x":1200,"y":200,"width":300,"height":150,"type":"file","file":"01_Game_Design_Document/Bosses_and_Enemies.md"}
+	],
+	"edges":[
+		{"id":"e1","fromNode":"text1","fromSide":"right","toNode":"f1","toSide":"left"},
+		{"id":"e2","fromNode":"f1","fromSide":"right","toNode":"text2","toSide":"left"},
+		{"id":"e3","fromNode":"text2","fromSide":"right","toNode":"f2","toSide":"left"},
+		{"id":"e4","fromNode":"f2","fromSide":"bottom","toNode":"text3","toSide":"top"},
+		{"id":"e5","fromNode":"text3","fromSide":"left","toNode":"f3","toSide":"top"},
+		{"id":"e6","fromNode":"text3","fromSide":"right","toNode":"f4","toSide":"top"}
+	]
+}

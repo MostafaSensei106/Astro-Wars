@@ -1,0 +1,37 @@
+{
+	"nodes":[
+		{"id":"dash","type":"file","file":"00_Dashboard.md.md","x":0,"y":0,"width":450,"height":400},
+		{"id":"gdd1","type":"file","file":"01_Game_Design_Document/Game_Core_Loop.md","x":-1080,"y":-300,"width":400,"height":250},
+		{"id":"gdd2","type":"file","file":"01_Game_Design_Document/World_Building_and_Lore.md","x":-1080,"y":40,"width":400,"height":250},
+		{"id":"gdd3","type":"file","file":"01_Game_Design_Document/Characters_Roster.md","x":-1080,"y":375,"width":400,"height":250},
+		{"id":"gdd4","type":"file","file":"01_Game_Design_Document/Bosses_and_Enemies.md","x":-1080,"y":725,"width":400,"height":250},
+		{"id":"arch1","type":"file","file":"08_System_Architecture/High_Level_Design.md","x":1360,"y":-480,"width":400,"height":250},
+		{"id":"arch2","type":"file","file":"08_System_Architecture/Frontend_Architecture.md","x":1360,"y":-125,"width":400,"height":250},
+		{"id":"arch3","type":"file","file":"08_System_Architecture/Backend_Architecture.md","x":1360,"y":200,"width":400,"height":250},
+		{"id":"arch4","type":"file","file":"08_System_Architecture/Database_ERD.md","x":1360,"y":560,"width":400,"height":250},
+		{"id":"arch5","type":"file","file":"08_System_Architecture/Performance_and_Profiling.md","x":1320,"y":915,"width":400,"height":250},
+		{"id":"pm2","type":"file","file":"06_Project_Management/Bugs_and_Fixes.md","x":360,"y":915,"width":400,"height":250},
+		{"id":"pm1","type":"file","file":"06_Project_Management/Current_Sprint.md","x":-280,"y":915,"width":400,"height":250},
+		{"id":"com1","type":"file","file":"05_Community_Marketing/Leaderboard_System.md","x":720,"y":-775,"width":400,"height":250},
+		{"id":"art2","type":"file","file":"02_Art_and_Audio/VFX_and_Animations.md","x":225,"y":-775,"width":420,"height":250},
+		{"id":"art1","type":"file","file":"02_Art_and_Audio/Art_Direction.md","x":-280,"y":-775,"width":400,"height":250},
+		{"id":"com2","type":"file","file":"05_Community_Marketing/Easter_Eggs.md","x":-800,"y":-775,"width":400,"height":250}
+	],
+	"edges":[
+		{"id":"e_gdd1","fromNode":"dash","fromSide":"left","toNode":"gdd1","toSide":"right"},
+		{"id":"e_gdd2","fromNode":"dash","fromSide":"left","toNode":"gdd2","toSide":"right"},
+		{"id":"e_gdd3","fromNode":"dash","fromSide":"left","toNode":"gdd3","toSide":"right"},
+		{"id":"e_gdd4","fromNode":"dash","fromSide":"left","toNode":"gdd4","toSide":"right"},
+		{"id":"e_arch1","fromNode":"dash","fromSide":"right","toNode":"arch1","toSide":"left"},
+		{"id":"e_arch2","fromNode":"dash","fromSide":"right","toNode":"arch2","toSide":"left"},
+		{"id":"e_arch3","fromNode":"dash","fromSide":"right","toNode":"arch3","toSide":"left"},
+		{"id":"e_arch4","fromNode":"dash","fromSide":"right","toNode":"arch4","toSide":"left"},
+		{"id":"e_arch5","fromNode":"dash","fromSide":"right","toNode":"arch5","toSide":"left"},
+		{"id":"e_art1","fromNode":"dash","fromSide":"top","toNode":"art1","toSide":"bottom"},
+		{"id":"e_art2","fromNode":"dash","fromSide":"top","toNode":"art2","toSide":"bottom"},
+		{"id":"e_com1","fromNode":"dash","fromSide":"top","toNode":"com1","toSide":"bottom"},
+		{"id":"e_com2","fromNode":"dash","fromSide":"top","toNode":"com2","toSide":"bottom"},
+		{"id":"e_pm1","fromNode":"dash","fromSide":"bottom","toNode":"pm1","toSide":"top"},
+		{"id":"e_pm2","fromNode":"dash","fromSide":"bottom","toNode":"pm2","toSide":"top"}
+	]
+}

@@ -1,0 +1,13 @@
+{
+	"nodes":[
+		{"id":"text1","x":-400,"y":0,"width":300,"height":150,"type":"text","text":"## 🏃 إدارة المهام\nمهام السبرينت الحالي."},
+		{"id":"f1","x":0,"y":0,"width":300,"height":150,"type":"file","file":"06_Project_Management/Current_Sprint.md"},
+		{"id":"text2","x":400,"y":0,"width":300,"height":150,"type":"text","text":"الأخطاء المكتشفة يتم تحويلها لـ Bugs."},
+		{"id":"f2","x":800,"y":0,"width":300,"height":150,"type":"file","file":"06_Project_Management/Bugs_and_Fixes.md"}
+	],
+	"edges":[
+		{"id":"e1","fromNode":"text1","fromSide":"right","toNode":"f1","toSide":"left"},
+		{"id":"e2","fromNode":"f1","fromSide":"right","toNode":"text2","toSide":"left"},
+		{"id":"e3","fromNode":"text2","fromSide":"right","toNode":"f2","toSide":"left"}
+	]
+}
