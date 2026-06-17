@@ -1,0 +1,151 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
+
+// **************************************************************************
+// InjectableConfigGenerator
+// **************************************************************************
+
+// ignore_for_file: type=lint
+// coverage:ignore-file
+
+// ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:astro/core/networking/network_info/interface/base_network_info.dart'
+    as _i401;
+import 'package:astro/core/networking/network_info/network_info.dart' as _i1041;
+import 'package:astro/core/services/app_info/app_info_service.dart' as _i426;
+import 'package:astro/core/services/app_info/interface/base_app_info_service.dart'
+    as _i512;
+import 'package:astro/core/services/app_info/interface/base_package_info_adapter.dart'
+    as _i338;
+import 'package:astro/core/services/app_info/package_info_plus_adapter.dart'
+    as _i101;
+import 'package:astro/core/services/biometrics/biometrics_service.dart' as _i58;
+import 'package:astro/core/services/biometrics/fingerprint_service.dart'
+    as _i376;
+import 'package:astro/core/services/hash_service/base_hash_service.dart'
+    as _i398;
+import 'package:astro/core/services/hash_service/hash_service.dart' as _i917;
+import 'package:astro/core/services/l10n/l10n_service.dart' as _i181;
+import 'package:astro/core/services/shared_prefs/base_pref_storage_service.dart'
+    as _i955;
+import 'package:astro/core/services/shared_prefs/secure_storage_service.dart'
+    as _i71;
+import 'package:astro/core/services/shared_prefs/shared_prefs_service.dart'
+    as _i1025;
+import 'package:astro/core/services/shared_prefs/storage_facade.dart' as _i108;
+import 'package:astro/core/services/theme/theme_service.dart' as _i368;
+import 'package:astro/core/services/toast/base_toast_service.dart' as _i14;
+import 'package:astro/core/services/toast/toastification_service.dart' as _i187;
+import 'package:astro/core/utils/localization/data/base_localization_repository.dart'
+    as _i608;
+import 'package:astro/core/utils/localization/data/localization_repository.dart'
+    as _i784;
+import 'package:astro/core/utils/localization/logic/cubit/localization_cubit.dart'
+    as _i343;
+import 'package:astro/core/utils/network/logic/cubit/network_cubit.dart'
+    as _i464;
+import 'package:astro/core/utils/theme/data/base_theme_repository.dart'
+    as _i877;
+import 'package:astro/core/utils/theme/data/theme_repository.dart' as _i297;
+import 'package:astro/core/utils/theme/logic/cubit/theme_cubit.dart' as _i377;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
+import 'package:get_it/get_it.dart' as _i174;
+import 'package:injectable/injectable.dart' as _i526;
+import 'package:package_info_plus/package_info_plus.dart' as _i655;
+
+extension GetItInjectableX on _i174.GetIt {
+  // initializes the registration of main-scope dependencies inside of GetIt
+  _i174.GetIt init({
+    String? environment,
+    _i526.EnvironmentFilter? environmentFilter,
+  }) {
+    final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    gh.lazySingleton<_i181.L10nService>(() => _i181.L10nService());
+    gh.lazySingleton<_i368.ThemeService>(() => _i368.ThemeService());
+    gh.lazySingleton<_i377.ThemeCubit>(() => _i377.ThemeCubit());
+    gh.lazySingleton<_i1025.SharedPrefsService>(
+      () => _i1025.SharedPrefsService(gh<InvalidType>()),
+    );
+    gh.lazySingleton<_i338.BasePackageInfoAdapter>(
+      () => _i101.PackageInfoPlusAdapter(gh<_i655.PackageInfo>()),
+    );
+    gh.lazySingleton<_i398.BaseHashService>(() => _i917.HashService());
+    gh.lazySingleton<_i58.BiometricsService>(() => _i376.FingerprintService());
+    gh.lazySingleton<_i14.BaseToastService>(
+      () => _i187.ToastificationService(
+        gh<_i181.L10nService>(),
+        gh<_i368.ThemeService>(),
+      ),
+    );
+    gh.lazySingleton<_i71.SecureStorageService>(
+      () => _i71.SecureStorageService(gh<_i558.FlutterSecureStorage>()),
+    );
+    gh.lazySingleton<_i401.BaseNetworkInfo>(
+      () => _i1041.NetworkInfo(gh<InvalidType>()),
+    );
+    gh.lazySingleton<_i955.BasePrefStorageService>(
+      () => _i108.StorageFacade(
+        sharedPrefsService: gh<_i1025.SharedPrefsService>(),
+        secureStorageService: gh<_i71.SecureStorageService>(),
+      ),
+    );
+    gh.lazySingleton<_i343.LocalizationCubit>(
+      () => _i343.LocalizationCubit(l10nService: gh<_i181.L10nService>()),
+    );
+    gh.lazySingleton<_i512.BaseAppInfoService>(
+      () => _i426.AppInfoService(gh<_i338.BasePackageInfoAdapter>()),
+    );
+    gh.lazySingleton<_i877.BaseThemeRepository>(
+      () => _i297.ThemeRepository(gh<_i955.BasePrefStorageService>()),
+    );
+    gh.lazySingleton<_i608.BaseLocalizationRepository>(
+      () => _i784.LocalizationRepository(
+        storage: gh<_i955.BasePrefStorageService>(),
+        l10nService: gh<_i181.L10nService>(),
+      ),
+    );
+    gh.lazySingleton<_i464.NetworkCubit>(
+      () => _i464.NetworkCubit(gh<_i401.BaseNetworkInfo>()),
+    );
+    return this;
+  }
+
+  _i181.L10nService get l10nService => get<_i181.L10nService>();
+
+  _i368.ThemeService get themeService => get<_i368.ThemeService>();
+
+  _i377.ThemeCubit get themeCubit => get<_i377.ThemeCubit>();
+
+  _i1025.SharedPrefsService get sharedPrefsService =>
+      get<_i1025.SharedPrefsService>();
+
+  _i101.PackageInfoPlusAdapter get packageInfoPlusAdapter =>
+      get<_i101.PackageInfoPlusAdapter>();
+
+  _i917.HashService get hashService => get<_i917.HashService>();
+
+  _i376.FingerprintService get fingerprintService =>
+      get<_i376.FingerprintService>();
+
+  _i187.ToastificationService get toastificationService =>
+      get<_i187.ToastificationService>();
+
+  _i71.SecureStorageService get secureStorageService =>
+      get<_i71.SecureStorageService>();
+
+  _i1041.NetworkInfo get networkInfo => get<_i1041.NetworkInfo>();
+
+  _i108.StorageFacade get storageFacade => get<_i108.StorageFacade>();
+
+  _i343.LocalizationCubit get localizationCubit =>
+      get<_i343.LocalizationCubit>();
+
+  _i426.AppInfoService get appInfoService => get<_i426.AppInfoService>();
+
+  _i297.ThemeRepository get themeRepository => get<_i297.ThemeRepository>();
+
+  _i784.LocalizationRepository get localizationRepository =>
+      get<_i784.LocalizationRepository>();
+
+  _i464.NetworkCubit get networkCubit => get<_i464.NetworkCubit>();
+}
