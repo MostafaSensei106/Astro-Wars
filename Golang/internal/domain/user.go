@@ -56,6 +56,9 @@ type UserUseCase interface {
 	CreateUser(ctx context.Context, user *User) e.Result[*User, error]
 	UpdateUser(ctx context.Context, user *User) e.Result[*User, error]
 	DeleteUser(ctx context.Context, id string) e.Result[bool, error]
+	Login(ctx context.Context, username, password string) e.Result[*User, error]
+	Register(ctx context.Context, user *User, password string) e.Result[*User, error]
+	GuestLogin(ctx context.Context) e.Result[*User, error]
 }
 
 func (u *User) TrackActivity() {
@@ -123,4 +126,82 @@ func (u *User) AddCoins(coins int) {
 	if coins > 0 {
 		u.Stats.Coins += coins
 	}
+}
+
+// LoginStrategy implements AuthStrategy for normal login
+type LoginStrategy struct {
+	Username string
+	Password string
+	HashFunc func(password, hash string) bool
+}
+
+func (s *LoginStrategy) Execute(ctx context.Context, repo UserRepository) e.Result[*User, error] {
+	result := repo.FindByUsername(ctx, s.Username)
+	if result.IsFailure() {
+		return result
+	}
+	user := *result.DataOrNull()
+	if !s.HashFunc(s.Password, user.PasswordHash) {
+		return e.Failure[*User, error](ErrInvalidCredentials)
+	}
+	return e.Success[*User, error](user)
+}
+
+// RegisterStrategy implements AuthStrategy for user registration
+type RegisterStrategy struct {
+	User     *User
+	Password string
+	HashFunc func(password string) (string, error)
+}
+
+func (s *RegisterStrategy) Execute(ctx context.Context, repo UserRepository) e.Result[*User, error] {
+	hash, err := s.HashFunc(s.Password)
+	if err != nil {
+		return e.Failure[*User, error](err)
+	}
+	s.User.PasswordHash = hash
+	createResult := repo.Create(ctx, s.User)
+	if createResult.IsFailure() {
+		return createResult
+	}
+	return e.Success[*User, error](s.User)
+}
+
+// GuestLoginStrategy implements AuthStrategy for guest login
+type GuestLoginStrategy struct {
+	GenerateGuestID func() string
+}
+
+func (s *GuestLoginStrategy) Execute(ctx context.Context, repo UserRepository) e.Result[*User, error] {
+	guestUser := &User{
+		Username:     s.GenerateGuestID(),
+		Fullname:     "Guest",
+		PasswordHash: "", // Guests do not need a password
+		GdgInfo: GDGInfo{
+			SystemRole:    "guest",
+			CommunityRole: "none",
+		},
+	}
+	createResult := repo.Create(ctx, guestUser)
+	if createResult.IsFailure() {
+		return createResult
+	}
+	return e.Success[*User, error](guestUser)
+}
+
+// AuthContext acts as the Strategy Context
+type AuthContext struct {
+	strategy AuthStrategy
+}
+
+func NewAuthContext(strategy AuthStrategy) *AuthContext {
+	return &AuthContext{strategy: strategy}
+}
+
+func (ac *AuthContext) SetStrategy(strategy AuthStrategy) {
+	ac.strategy = strategy
+}
+
+func (ac *AuthContext) Authenticate(ctx context.Context, repo UserRepository) e.Result[*User, error] {
+	return ac.strategy.Execute(ctx, repo)
 }
