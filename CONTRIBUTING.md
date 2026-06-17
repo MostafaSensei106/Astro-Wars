@@ -1,8 +1,8 @@
-# Contributing to Astrow-Wars
+# Contributing to Astro-Wars
 
-Thank you for your interest in contributing to Astrow-Wars.
+Thank you for your interest in contributing to Astro-Wars.
 
-Astrow-Wars is an open-source project built for the community. This document
+Astro-Wars is an open-source project built for the community. This document
 explains how to contribute and clearly describes the licensing and ownership
 model so everyone understands how the project is used and sustained.
 
@@ -12,7 +12,7 @@ Please read this document carefully before contributing.
 
 ## Project Philosophy (Please Read First)
 
-Astrow-Wars is:
+Astro-Wars is:
 
 - Fully open-source
 - Free for individuals, researchers, students, and the community
@@ -26,7 +26,7 @@ its development through commercial licensing when needed.
 
 ## License Overview
 
-Astrow-Wars is released under the **GNU General Public License (GPL)**.
+Astro-Wars is released under the **GNU General Public License (GPL)**.
 
 This means:
 
@@ -42,8 +42,8 @@ The open-source version is the **complete project**, not a limited edition.
 
 Companies or enterprises may need a **commercial license** in cases such as:
 
-- Using Astrow-Wars inside proprietary or closed-source products
-- Using Astrow-Wars in paid SaaS platforms without GPL compliance
+- Using Astro-Wars inside proprietary or closed-source products
+- Using Astro-Wars in paid SaaS platforms without GPL compliance
 - Internal corporate usage where GPL obligations are legally incompatible
 
 In these cases:
@@ -82,7 +82,7 @@ for more information, see [Contributor License Agreement (CLA)](CLA.md).
 ### Reporting Bugs
 
 Before opening a new issue, please check existing issues:
-https://github.com/MostafaSensei106/Astrow-Wars/issues
+https://github.com/MostafaSensei106/Astro-Wars/issues
 
 When reporting a bug, include:
 

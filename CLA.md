@@ -1,9 +1,9 @@
 # Contributor License Agreement (CLA)
 
 This Contributor License Agreement ("Agreement") applies to all contributions
-submitted to the Astrow-Wars project.
+submitted to the Astro-Wars project.
 
-Astrow-Wars is an open-source project intended to remain free, public, and
+Astro-Wars is an open-source project intended to remain free, public, and
 accessible to the community.
 
 By submitting any contribution to this project, you agree to the terms below.
@@ -13,7 +13,7 @@ By submitting any contribution to this project, you agree to the terms below.
 ## 1. Definitions
 
 - "You" refers to the individual or legal entity submitting a Contribution.
-- "Project" refers to Astrow-Wars.
+- "Project" refers to Astro-Wars.
 - "Contribution" refers to any code, documentation, tests, examples, or other
   material submitted by You.
 - "Project Owner" refers to Mostafa Mahmoud [@MostafaSensei106](https://github.com/MostafaSensei106).
@@ -24,7 +24,7 @@ By submitting any contribution to this project, you agree to the terms below.
 
 The Project Owner commits that:
 
-- Astrow-Wars will remain an **open-source project**
+- Astro-Wars will remain an **open-source project**
 - The full source code will remain **publicly available**
 - Community members may freely use, study, modify, and share the project under
   the GNU General Public License (GPL)
@@ -47,7 +47,7 @@ You grant the Project Owner a **perpetual, worldwide, irrevocable, royalty-free
 license** to:
 
 - use, modify, and distribute your Contributions
-- include them as part of Astrow-Wars
+- include them as part of Astro-Wars
 - relicense the project, including your Contributions, when required for
   **commercial or enterprise use**
 
@@ -59,7 +59,7 @@ This right exists **only to allow commercial licensing for companies**, and
 ## 5. Public Licensing (GPL)
 
 - All Contributions will be made publicly available under the
-  **GNU General Public License (GPL)** as part of Astrow-Wars.
+  **GNU General Public License (GPL)** as part of Astro-Wars.
 - Anyone may use the project for free as long as they comply with the GPL.
 
 ---
@@ -85,5 +85,5 @@ You confirm that:
 
 ## 8. Acceptance
 
-Submitting a Contribution to Astrow-Wars means you accept this Agreement.
+Submitting a Contribution to Astro-Wars means you accept this Agreement.
 If you do not agree with these terms, please do not contribute.
