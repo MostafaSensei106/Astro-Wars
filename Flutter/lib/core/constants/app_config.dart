@@ -6,7 +6,7 @@ import 'dart:ui';
 /// used throughout the application to ensure consistency.
 final class AppConfig {
   /// The official name of the application.
-  static const String appName = 'PayOn';
+  static const String appName = 'Astro Wars';
 
   /// The current version of the application.
   static const String appVersion = '1.0.0';

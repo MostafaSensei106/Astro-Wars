@@ -19,12 +19,6 @@ import 'package:astro/core/services/app_info/interface/base_package_info_adapter
     as _i338;
 import 'package:astro/core/services/app_info/package_info_plus_adapter.dart'
     as _i101;
-import 'package:astro/core/services/biometrics/biometrics_service.dart' as _i58;
-import 'package:astro/core/services/biometrics/fingerprint_service.dart'
-    as _i376;
-import 'package:astro/core/services/hash_service/base_hash_service.dart'
-    as _i398;
-import 'package:astro/core/services/hash_service/hash_service.dart' as _i917;
 import 'package:astro/core/services/l10n/l10n_service.dart' as _i181;
 import 'package:astro/core/services/shared_prefs/base_pref_storage_service.dart'
     as _i955;
@@ -73,11 +67,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i401.BaseNetworkInfo>(
       () => _i1041.NetworkInfo(gh<_i895.Connectivity>()),
     );
-    gh.lazySingleton<_i398.BaseHashService>(() => _i917.HashService());
     gh.lazySingleton<_i464.NetworkCubit>(
       () => _i464.NetworkCubit(gh<_i401.BaseNetworkInfo>()),
     );
-    gh.lazySingleton<_i58.BiometricsService>(() => _i376.FingerprintService());
     gh.lazySingleton<_i14.BaseToastService>(
       () => _i187.ToastificationService(
         gh<_i181.L10nService>(),
@@ -125,12 +117,7 @@ extension GetItInjectableX on _i174.GetIt {
 
   _i1041.NetworkInfo get networkInfo => get<_i1041.NetworkInfo>();
 
-  _i917.HashService get hashService => get<_i917.HashService>();
-
   _i464.NetworkCubit get networkCubit => get<_i464.NetworkCubit>();
-
-  _i376.FingerprintService get fingerprintService =>
-      get<_i376.FingerprintService>();
 
   _i187.ToastificationService get toastificationService =>
       get<_i187.ToastificationService>();
