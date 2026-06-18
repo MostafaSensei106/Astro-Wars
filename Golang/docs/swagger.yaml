@@ -381,6 +381,7 @@ paths:
       summary: Get User Runs
       tags:
       - runs
+  /api/v1/runs/submit:
     post:
       consumes:
       - application/json
@@ -394,43 +395,7 @@ paths:
           $ref: '#/definitions/handlers.runRequest'
       produces:
       - application/json
-      responses:
-        "201":
-          description: Run saved successfully.
-          schema:
-            allOf:
-            - $ref: '#/definitions/delivery.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/handlers.runResponse'
-              type: object
-        "400":
-          description: Bad Request.
-          schema:
-            allOf:
-            - $ref: '#/definitions/delivery.Response'
-            - properties:
-                errors:
-                  $ref: '#/definitions/delivery.ErrorInfo'
-              type: object
-        "401":
-          description: Unauthorized.
-          schema:
-            allOf:
-            - $ref: '#/definitions/delivery.Response'
-            - properties:
-                errors:
-                  $ref: '#/definitions/delivery.ErrorInfo'
-              type: object
-        "500":
-          description: Internal Server Error.
-          schema:
-            allOf:
-            - $ref: '#/definitions/delivery.Response'
-            - properties:
-                errors:
-                  $ref: '#/definitions/delivery.ErrorInfo'
-              type: object
+      responses: {}
       security:
       - BearerAuth: []
       summary: Save Game Run

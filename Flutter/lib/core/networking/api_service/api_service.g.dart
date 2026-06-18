@@ -12,7 +12,7 @@ part of 'api_service.dart';
 
 class _ApiService implements ApiService {
   _ApiService(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??= 'https://mahmoudappis-001-site1.jtempurl.com/api/';
+    baseUrl ??= '192.168.1.12:8080/api/v1/';
   }
 
   final Dio _dio;
@@ -20,6 +20,25 @@ class _ApiService implements ApiService {
   String? baseUrl;
 
   final ParseErrorLogger? errorLogger;
+
+  @override
+  Future<void> submitRun(RunRequestBody body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = body;
+    final _options = _setStreamType<void>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'runs/submit',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    await _dio.fetch<void>(_options);
+  }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&

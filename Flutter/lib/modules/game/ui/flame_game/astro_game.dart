@@ -2,7 +2,7 @@ import 'package:flame/game.dart';
 import 'package:flame/events.dart';
 import 'package:flame/timer.dart';
 import 'package:flame_bloc/flame_bloc.dart';
-import '../bloc/game_bloc.dart';
+import '../../logic/bloc/game_bloc.dart';
 import 'components/entities/player_entity.dart';
 import 'components/entities/enemy_entity.dart';
 

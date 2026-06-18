@@ -25,8 +25,7 @@ class AstroWarsApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [Locale('en'), Locale('ar')],
-      theme: ThemeData(brightness: Brightness.dark, primarySwatch: Colors.blue),
+      supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 }

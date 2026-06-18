@@ -262,7 +262,9 @@
                         }
                     }
                 }
-            },
+            }
+        },
+        "/api/v1/runs/submit": {
             "post": {
                 "security": [
                     {
@@ -291,80 +293,7 @@
                         }
                     }
                 ],
-                "responses": {
-                    "201": {
-                        "description": "Run saved successfully.",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/delivery.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/handlers.runResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request.",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/delivery.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "errors": {
-                                            "$ref": "#/definitions/delivery.ErrorInfo"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized.",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/delivery.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "errors": {
-                                            "$ref": "#/definitions/delivery.ErrorInfo"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error.",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/delivery.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "errors": {
-                                            "$ref": "#/definitions/delivery.ErrorInfo"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
+                "responses": {}
             }
         },
         "/api/v1/spacecrafts/": {

@@ -68,11 +68,7 @@ func mapRunToResponse(r *domain.Runs) runResponse {
 // @Produce      json
 // @Param        request body runRequest true "Run Statistics"
 // @Security     BearerAuth
-// @Success      201 {object} delivery.Response{data=runResponse} "Run saved successfully."
-// @Failure      400 {object} delivery.Response{errors=delivery.ErrorInfo} "Bad Request."
-// @Failure      401 {object} delivery.Response{errors=delivery.ErrorInfo} "Unauthorized."
-// @Failure      500 {object} delivery.Response{errors=delivery.ErrorInfo} "Internal Server Error."
-// @Router       /api/v1/runs/ [post]
+// @Router       /api/v1/runs/submit [post]
 func (h *RunHandler) CreateRun(c *gin.Context) {
 	var req runRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

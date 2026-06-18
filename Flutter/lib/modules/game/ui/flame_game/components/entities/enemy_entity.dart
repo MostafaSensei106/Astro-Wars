@@ -6,7 +6,7 @@ import '../base/base_sprite_entity.dart';
 import '../base/behaviors.dart';
 import 'player_entity.dart';
 import '../projectiles/projectile.dart';
-import '../../../bloc/game_bloc.dart';
+import '../../../../logic/bloc/game_bloc.dart';
 
 class EnemyEntity extends BaseSpriteEntity
     with MovementBehavior, HealthBehavior {

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/di.dart';
 import '../../../../core/widgets/buttons/elevated_button/elevated_button_component.dart';
 import '../../../../core/widgets/display/card/card_component.dart';
-import '../bloc/game_bloc.dart';
+import '../../logic/bloc/game_bloc.dart';
 import '../flame_game/astro_game.dart';
 
 class GamePage extends StatelessWidget {

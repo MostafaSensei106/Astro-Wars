@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import '../base/base_sprite_entity.dart';
 import '../base/behaviors.dart';
 import '../projectiles/projectile.dart';
-import '../../../bloc/game_bloc.dart';
+import '../../../../logic/bloc/game_bloc.dart';
 
 class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
   late Timer shootTimer;

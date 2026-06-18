@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../domain/entities/game_state_entity.dart';
+import '../entities/game_state_entity.dart';
 
 import 'package:injectable/injectable.dart';
-import '../../data/models/run_request_model.dart';
-import '../../domain/usecases/submit_run_usecase.dart';
+import '../../data/models/run_request_body.dart';
+import '../usecases/submit_run_usecase.dart';
 
 part 'game_event.dart';
 part 'game_state.dart';
@@ -37,7 +37,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
         // Submit the result to backend
         await _submitRunUseCase(
-          RunRequestModel(
+          RunRequestBody(
             score: finalState.score,
             duration: 60, // Ideally track session time
             causeOfDeath: 'Bug Swarm',
