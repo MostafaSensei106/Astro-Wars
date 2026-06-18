@@ -230,6 +230,7 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
   @override
   void onDeath() {
     HapticFeedback.heavyImpact();
+    FlameAudio.bgm.stop();
     FlameAudio.play('gameover.wav', volume: 0.8);
 
     // Death Explosion

@@ -27,12 +27,7 @@ class BossEntity extends BaseSpriteEntity
   Future<void> onLoad() async {
     super.onLoad();
 
-    // Random boss sprite
-    final rand = Random().nextBool();
-    final spriteName = rand
-        ? 'hd_boss_car_1781686478720.png'
-        : 'hd_boss_professor_1781686774890.png';
-    await loadAsset(spriteName);
+    await loadAsset(game.currentConfig.bossSprite);
 
     position = Vector2(game.size.x / 2, 150);
     shootTimer = Timer(1.0, onTick: shoot, repeat: true);

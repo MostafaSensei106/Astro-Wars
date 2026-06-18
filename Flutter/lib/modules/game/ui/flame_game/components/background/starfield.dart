@@ -1,9 +1,10 @@
 import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
+import '../../astro_game.dart';
 
-class StarfieldComponent extends Component {
-  final int count = 150;
+class StarfieldComponent extends Component with HasGameReference<AstroGame> {
+  final int count = 80;
   final List<_Star> _stars = [];
   late Vector2 gameSize;
 
@@ -41,8 +42,8 @@ class StarfieldComponent extends Component {
     // Deep Space Gradient Background
     final Rect bgRect = Rect.fromLTWH(0, 0, gameSize.x, gameSize.y);
     final bgPaint = Paint()
-      ..shader = const LinearGradient(
-        colors: [Color(0xFF03011A), Color(0xFF0B0D17), Color(0xFF000000)],
+      ..shader = LinearGradient(
+        colors: game.currentConfig.bgGradient,
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ).createShader(bgRect);
@@ -51,9 +52,8 @@ class StarfieldComponent extends Component {
     // Render stars
     for (var star in _stars) {
       final paint = Paint()
-        ..color = Colors.white.withValues(alpha: star.alpha)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.5);
-      canvas.drawCircle(Offset(star.x, star.y), star.radius, paint);
+        ..color = Colors.white.withValues(alpha: star.alpha);
+      canvas.drawRect(Rect.fromLTWH(star.x, star.y, star.radius * 2, star.radius * 2), paint);
     }
   }
 }

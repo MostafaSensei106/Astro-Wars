@@ -3,6 +3,7 @@ import 'package:flame/game.dart';
 import 'package:flame/events.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
+import '../../logic/entities/level_config.dart';
 import 'components/background/starfield.dart';
 import 'components/entities/player_entity.dart';
 import 'components/entities/enemy_entity.dart';
@@ -40,8 +41,11 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     super.onLoad();
     await FlameAudio.audioCache.loadAll([
       'laser.wav', 'explosion.wav', 'laser_enemy.wav', 
-      'powerup.wav', 'hit.wav', 'gameover.wav', 'levelup.wav'
+      'powerup.wav', 'hit.wav', 'gameover.wav', 'levelup.wav', 'bgm.wav'
     ]);
+
+    FlameAudio.bgm.initialize();
+    FlameAudio.bgm.play('bgm.wav', volume: 0.3);
 
     // Background
     add(StarfieldComponent());
@@ -61,15 +65,15 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     );
   }
 
-
-
   int currentLevel = 1;
   int wavesCleared = 0;
   double _meteorTimer = 0;
 
+  LevelConfig get currentConfig => LevelConfig.getLevel(currentLevel);
+
   void spawnEnemyWave() {
-    int rows = min(4, 1 + (currentLevel ~/ 2)); // 1 to 4 rows
-    int cols = min(8, 4 + (currentLevel % 3));
+    int rows = currentConfig.rows;
+    int cols = currentConfig.cols;
     
     double paddingX = size.x / (cols + 1);
     double paddingY = 50.0;
@@ -78,8 +82,6 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
       for (int c = 0; c < cols; c++) {
         final formationPos = Vector2((c + 1) * paddingX, 60.0 + (r * paddingY));
         
-        // Spawn them in a chain from top left or top right
-        // The delay creates the "chain" effect visually as they follow the sine curve
         final startPos = Vector2(
           c % 2 == 0 ? -100 : size.x + 100, 
           -100 - (r * 150) - (c * 60)
@@ -88,11 +90,16 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
         final enemy = EnemyEntity(
           formationPosition: formationPos,
           startPosition: startPos,
-          assetName: currentLevel % 2 == 0 ? 'hd_enemy_spaghetti_1781686763386.png' : 'hd_enemy_bug_1781686468572.png'
+          assetName: currentConfig.enemySprite
         );
         add(enemy);
       }
     }
+  }
+
+  void spawnBoss() {
+    bossActive = true;
+    add(BossEntity());
   }
 
   @override
@@ -106,15 +113,24 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     if (_meteorTimer > 3.0) {
       _meteorTimer = 0;
       if (Random().nextDouble() < 0.6) {
-        add(
-          MeteorEntity()
-            ..position = Vector2(Random().nextDouble() * size.x, -50),
-        );
+        final meteor = MeteorEntity();
+        bool fromSide = Random().nextBool();
+        
+        if (fromSide) {
+          bool fromLeft = Random().nextBool();
+          meteor.position = Vector2(fromLeft ? -50 : size.x + 50, Random().nextDouble() * (size.y / 2));
+          meteor.velocity = Vector2((fromLeft ? 1 : -1) * meteor.speed, meteor.speed * 0.5); 
+        } else {
+          meteor.position = Vector2(Random().nextDouble() * size.x, -50);
+          meteor.velocity = Vector2((Random().nextDouble() - 0.5) * 50, meteor.speed);
+        }
+        
+        add(meteor);
       }
     }
 
-    final enemies = children.whereType<EnemyEntity>();
-    final bosses = children.whereType<BossEntity>();
+    final enemies = children.whereType<EnemyEntity>().toList();
+    final bosses = children.whereType<BossEntity>().toList();
 
     if (bossActive && bosses.isEmpty) {
       // Boss defeated! Level Up!
@@ -126,10 +142,9 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     }
 
     if (enemies.isEmpty && !bossActive) {
-      if (wavesCleared >= 3) {
-        // 3 waves per level
-        bossActive = true;
-        add(BossEntity());
+      if (wavesCleared >= currentConfig.wavesBeforeBoss) {
+        spawnBoss();
+        wavesCleared = 0;
       } else {
         spawnEnemyWave();
         wavesCleared++;

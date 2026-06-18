@@ -36,7 +36,10 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    await loadAsset(assetName);
+
+    await loadAsset(game.currentConfig.enemySprite);
+    speed *= game.currentConfig.enemySpeedMultiplier;
+
     final random = Random();
     shootTimer = Timer(3.0 + random.nextDouble() * 4, onTick: shoot, repeat: true);
   }

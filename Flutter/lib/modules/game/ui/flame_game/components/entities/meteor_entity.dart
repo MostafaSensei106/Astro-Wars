@@ -20,8 +20,8 @@ class MeteorEntity extends PositionComponent with MovementBehavior, HealthBehavi
     size = Vector2.all(30 + random.nextDouble() * 50); // Random size between 30 and 80
     health = (size.x).toInt(); // Health based on size
     
-    speed = 40.0 + random.nextDouble() * 80;
-    velocity = Vector2((random.nextDouble() - 0.5) * 50, speed);
+    speed = 20.0 + random.nextDouble() * 30; // Slower meteors
+    velocity = Vector2((random.nextDouble() - 0.5) * 30, speed);
     rotSpeed = (random.nextDouble() - 0.5) * 2;
     
     // Randomize color slightly
