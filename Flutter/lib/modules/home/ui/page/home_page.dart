@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/widgets/neu_widgets.dart';
 
 class HomePage extends StatelessWidget {
@@ -7,13 +8,13 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: NeuTheme.bgColor,
+      backgroundColor: NeuTheme.bgColor(context),
       body: SafeArea(
         child: Column(
           children: [
             _buildTopBar(context),
             const SizedBox(height: 20),
-            _buildTitle(),
+            _buildTitle(context),
             const SizedBox(height: 40),
             _buildStoryModeButton(context),
             const SizedBox(height: 40),
@@ -35,7 +36,7 @@ class HomePage extends StatelessWidget {
               NeuIconButton(
                 icon: Icons.person_rounded,
                 onPressed: () {
-                  // Navigate to profile
+                  context.push('/profile');
                 },
               ),
               const SizedBox(width: 16),
@@ -52,14 +53,14 @@ class HomePage extends StatelessWidget {
               NeuIconButton(
                 icon: Icons.palette_rounded,
                 onPressed: () {
-                  // Navigate to theme settings
+                  context.push('/theme');
                 },
               ),
               const SizedBox(width: 16),
               NeuIconButton(
                 icon: Icons.settings_rounded,
                 onPressed: () {
-                  // Navigate to settings
+                  context.push('/settings');
                 },
               ),
             ],
@@ -69,18 +70,18 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildTitle() {
+  Widget _buildTitle(BuildContext context) {
     return Column(
       children: [
         NeuContainer(
           padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
           borderRadius: 20.0,
-          child: const Text(
+          child: Text(
             'ASTRO WARS',
             style: TextStyle(
               fontSize: 36,
               fontWeight: FontWeight.bold,
-              color: NeuTheme.textColor,
+              color: NeuTheme.textColor(context),
               letterSpacing: 4,
             ),
           ),
@@ -91,7 +92,7 @@ class HomePage extends StatelessWidget {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w400,
-            color: NeuTheme.textColor.withValues(alpha: 0.7),
+            color: NeuTheme.textColor(context).withValues(alpha: 0.7),
             letterSpacing: 8,
           ),
         ),
@@ -104,23 +105,23 @@ class HomePage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: NeuButton(
         onPressed: () {
-          // Play cutscenes / Boss fight logic
+          context.push('/game');
         },
         padding: const EdgeInsets.symmetric(vertical: 20),
         borderRadius: 20.0,
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.play_circle_fill_rounded,
-              color: NeuTheme.accentColor,
+              color: NeuTheme.accentColor(context),
               size: 32,
             ),
             SizedBox(width: 12),
             Text(
               'STORY MODE & CUTSCENES',
               style: TextStyle(
-                color: NeuTheme.accentColor,
+                color: NeuTheme.accentColor(context),
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.5,
@@ -140,14 +141,18 @@ class HomePage extends StatelessWidget {
       isInner: true, // Recessed container for levels
       child: Column(
         children: [
-          const Text(
-            'SELECT LEVEL',
-            style: TextStyle(
-              color: NeuTheme.textColor,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 2,
-            ),
+          Builder(
+            builder: (context) {
+              return Text(
+                'SELECT LEVEL',
+                style: TextStyle(
+                  color: NeuTheme.textColor(context),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2,
+                ),
+              );
+            },
           ),
           const SizedBox(height: 24),
           Expanded(
@@ -167,7 +172,7 @@ class HomePage extends StatelessWidget {
                     final level = index + 1;
                     final isLocked = level > 3;
 
-                    return _buildLevelButton(level, isLocked);
+                    return _buildLevelButton(context, level, isLocked);
                   },
                 );
               },
@@ -178,21 +183,24 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildLevelButton(int level, bool isLocked) {
+  Widget _buildLevelButton(BuildContext context, int level, bool isLocked) {
     return NeuButton(
       onPressed: isLocked
           ? null
           : () {
-              // Navigate to level
+              context.push('/game');
             },
       borderRadius: 16.0,
       padding: EdgeInsets.zero,
       child: isLocked
-          ? Icon(Icons.lock_rounded, color: NeuTheme.textColor.withValues(alpha: 0.3))
+          ? Icon(
+              Icons.lock_rounded,
+              color: NeuTheme.textColor(context).withValues(alpha: 0.3),
+            )
           : Text(
               '$level',
-              style: const TextStyle(
-                color: NeuTheme.textColor,
+              style: TextStyle(
+                color: NeuTheme.textColor(context),
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),

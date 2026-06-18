@@ -1,71 +1,72 @@
 import 'package:flutter/material.dart';
-import '../../widgets/neu_widgets.dart';
 
 class AppTheme {
-  static ThemeData get darkNeumorphicTheme {
+  static ThemeData get lightNeumorphicTheme {
+    const Color lightBgColor = Color(0xFFE0E5EC);
+    const Color lightTextColor = Colors.black87;
+    const Color accentColor = Colors.purpleAccent;
+
     return ThemeData(
-      brightness: Brightness.dark,
-      scaffoldBackgroundColor: NeuTheme.bgColor,
-      primaryColor: NeuTheme.accentColor,
-      colorScheme: const ColorScheme.dark(
-        primary: NeuTheme.accentColor,
+      brightness: Brightness.light,
+      scaffoldBackgroundColor: lightBgColor,
+      primaryColor: accentColor,
+      colorScheme: const ColorScheme.light(
+        primary: accentColor,
         secondary: Colors.blueAccent,
-        surface: NeuTheme.bgColor,
-        background: NeuTheme.bgColor,
+        surface: lightBgColor,
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        iconTheme: IconThemeData(color: NeuTheme.textColor),
+        iconTheme: IconThemeData(color: lightTextColor),
         titleTextStyle: TextStyle(
-          color: NeuTheme.textColor,
+          color: lightTextColor,
           fontWeight: FontWeight.bold,
           fontSize: 20,
           letterSpacing: 2,
         ),
       ),
       textTheme: const TextTheme(
-        displayLarge: TextStyle(
-          color: NeuTheme.textColor,
-          fontWeight: FontWeight.bold,
-        ),
-        displayMedium: TextStyle(
-          color: NeuTheme.textColor,
-          fontWeight: FontWeight.bold,
-        ),
-        bodyLarge: TextStyle(color: NeuTheme.textColor),
-        bodyMedium: TextStyle(color: NeuTheme.textColor),
+        displayLarge: TextStyle(color: lightTextColor, fontWeight: FontWeight.bold),
+        displayMedium: TextStyle(color: lightTextColor, fontWeight: FontWeight.bold),
+        bodyLarge: TextStyle(color: lightTextColor),
+        bodyMedium: TextStyle(color: lightTextColor),
       ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: NeuTheme.bgColor,
-          foregroundColor: NeuTheme.textColor,
-          shadowColor:
-              Colors.transparent, // Disable default shadow for neumorphism
-          elevation: 0,
-        ),
+    );
+  }
+
+  static ThemeData get darkNeumorphicTheme {
+    const Color darkBgColor = Color(0xFF2A2D32);
+    const Color darkTextColor = Colors.white;
+    const Color accentColor = Colors.purpleAccent;
+
+    return ThemeData(
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: darkBgColor,
+      primaryColor: accentColor,
+      colorScheme: const ColorScheme.dark(
+        primary: accentColor,
+        secondary: Colors.blueAccent,
+        surface: darkBgColor,
       ),
-      cardTheme: const CardTheme(
-        color: NeuTheme.bgColor,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        margin: EdgeInsets.all(8),
+        centerTitle: true,
+        iconTheme: IconThemeData(color: darkTextColor),
+        titleTextStyle: TextStyle(
+          color: darkTextColor,
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+          letterSpacing: 2,
+        ),
       ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: NeuTheme.bgColor,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: NeuTheme.darkShadow, width: 2),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: NeuTheme.darkShadow, width: 2),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: NeuTheme.accentColor, width: 2),
-        ),
+      textTheme: const TextTheme(
+        displayLarge: TextStyle(color: darkTextColor, fontWeight: FontWeight.bold),
+        displayMedium: TextStyle(color: darkTextColor, fontWeight: FontWeight.bold),
+        bodyLarge: TextStyle(color: darkTextColor),
+        bodyMedium: TextStyle(color: darkTextColor),
       ),
     );
   }

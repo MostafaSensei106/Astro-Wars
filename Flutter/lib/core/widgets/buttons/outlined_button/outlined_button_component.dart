@@ -1,83 +1,22 @@
-import 'dart:async';
+import "package:flutter/material.dart";
+import "../../neu_widgets.dart";
+import "../../../constants/app_config.dart";
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import '../../../constants/app_config.dart';
-
-final class OutlinedButtonComponent extends StatelessWidget {
-  const OutlinedButtonComponent({
-    required this.label,
-    required this.onPressed,
-    super.key,
-    this.isEnabled = true,
-    this.useInBorderRadius = false,
-    this.width,
-    this.height,
-    this.backgroundColor,
-    this.foregroundColor,
-  }) : icon = null;
-
-  const OutlinedButtonComponent.icon({
-    required this.icon,
-    required this.label,
-    required this.onPressed,
-    super.key,
-    this.isEnabled = true,
-    this.useInBorderRadius = false,
-    this.width,
-    this.height,
-    this.backgroundColor,
-    this.foregroundColor,
-  });
+class OutlinedButtonComponent extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
-  final bool isEnabled;
   final bool useInBorderRadius;
-  final IconData? icon;
   final double? width;
   final double? height;
-  final Color? backgroundColor;
-  final Color? foregroundColor;
+
+  const OutlinedButtonComponent({required this.label, required this.onPressed, this.useInBorderRadius = false, this.width, this.height, super.key});
 
   @override
-  Widget build(final BuildContext context) => icon == null
-      ? OutlinedButton(
-          onPressed: isEnabled
-              ? () {
-                  unawaited(HapticFeedback.vibrate());
-                  onPressed();
-                }
-              : null,
-          style: _getButtonStyle(context),
-          child: Text(label),
-        )
-      : OutlinedButton.icon(
-          onPressed: isEnabled
-              ? () {
-                  unawaited(HapticFeedback.vibrate());
-                  onPressed();
-                }
-              : null,
-          style: _getButtonStyle(context),
-          icon: Icon(icon, size: AppConfig.iconSize),
-          label: Text(label),
-        );
-
-  ButtonStyle _getButtonStyle(
-    final BuildContext context,
-  ) => OutlinedButton.styleFrom(
-    side: BorderSide(
-      color: backgroundColor ?? Theme.of(context).colorScheme.outlineVariant,
-    ),
-    foregroundColor: foregroundColor ?? Theme.of(context).colorScheme.primary,
-    minimumSize: Size(
-      width ?? double.infinity,
-      height ?? AppConfig.buttonHeight,
-    ),
-    shape: RoundedRectangleBorder(
-      borderRadius: useInBorderRadius
-          ? BorderRadius.circular(AppConfig.inBorderRadius)
-          : BorderRadius.circular(AppConfig.outBorderRadius),
-    ),
+  Widget build(BuildContext context) => NeuButton(
+    onPressed: onPressed,
+    width: width,
+    height: height ?? AppConfig.buttonHeight,
+    borderRadius: useInBorderRadius ? AppConfig.inBorderRadius : AppConfig.outBorderRadius,
+    child: Text(label, style: TextStyle(color: NeuTheme.textColor(context))),
   );
 }

@@ -48,13 +48,13 @@ final class ElevatedButtonComponent extends StatelessWidget {
         height: height ?? AppConfig.buttonHeight,
         borderRadius: useInBorderRadius ? AppConfig.inBorderRadius : AppConfig.outBorderRadius,
         child: icon == null
-            ? Text(label, style: TextStyle(color: foregroundColor ?? NeuTheme.textColor))
+            ? Text(label, style: TextStyle(color: foregroundColor ?? NeuTheme.textColor(context)))
             : Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: AppConfig.iconSize, color: foregroundColor ?? NeuTheme.textColor),
+                  Icon(icon, size: AppConfig.iconSize, color: foregroundColor ?? NeuTheme.textColor(context)),
                   const SizedBox(width: 8),
-                  Text(label, style: TextStyle(color: foregroundColor ?? NeuTheme.textColor)),
+                  Text(label, style: TextStyle(color: foregroundColor ?? NeuTheme.textColor(context))),
                 ],
               ),
       );

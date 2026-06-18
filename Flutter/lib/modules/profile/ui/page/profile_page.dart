@@ -7,7 +7,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: NeuTheme.bgColor,
+      backgroundColor: NeuTheme.bgColor(context),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -20,10 +20,10 @@ class ProfilePage extends StatelessWidget {
             },
           ),
         ),
-        title: const Text(
+        title: Text(
           'PROFILE',
           style: TextStyle(
-            color: NeuTheme.textColor,
+            color: NeuTheme.textColor(context),
             fontWeight: FontWeight.bold,
             letterSpacing: 2,
           ),
@@ -46,18 +46,18 @@ class ProfilePage extends StatelessWidget {
                 child: NeuContainer(
                   borderRadius: 55,
                   isInner: true,
-                  child: const Icon(
+                  child: Icon(
                     Icons.person_rounded,
                     size: 60,
-                    color: NeuTheme.accentColor,
+                    color: NeuTheme.accentColor(context),
                   ),
                 ),
               ),
               const SizedBox(height: 24),
-              const Text(
+              Text(
                 'COMMANDER',
                 style: TextStyle(
-                  color: NeuTheme.textColor,
+                  color: NeuTheme.textColor(context),
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 2,
@@ -67,7 +67,7 @@ class ProfilePage extends StatelessWidget {
               Text(
                 'Space Fleet Admiral',
                 style: TextStyle(
-                  color: NeuTheme.textColor.withOpacity(0.5),
+                  color: NeuTheme.textColor(context).withValues(alpha: 0.5),
                   fontSize: 14,
                   letterSpacing: 1,
                 ),
@@ -76,17 +76,17 @@ class ProfilePage extends StatelessWidget {
               // Stats
               Row(
                 children: [
-                  Expanded(child: _buildStatCard('HIGH SCORE', '24,500')),
+                  Expanded(child: _buildStatCard(context, 'HIGH SCORE', '24,500')),
                   const SizedBox(width: 16),
-                  Expanded(child: _buildStatCard('LEVEL', '7')),
+                  Expanded(child: _buildStatCard(context, 'LEVEL', '7')),
                 ],
               ),
               const SizedBox(height: 16),
               Row(
                 children: [
-                  Expanded(child: _buildStatCard('BOSSES', '3')),
+                  Expanded(child: _buildStatCard(context, 'BOSSES', '3')),
                   const SizedBox(width: 16),
-                  Expanded(child: _buildStatCard('HOURS PLAYED', '12.5')),
+                  Expanded(child: _buildStatCard(context, 'HOURS PLAYED', '12.5')),
                 ],
               ),
               const SizedBox(height: 40),
@@ -95,10 +95,10 @@ class ProfilePage extends StatelessWidget {
                   // Edit profile
                 },
                 width: double.infinity,
-                child: const Text(
+                child: Text(
                   'EDIT PROFILE',
                   style: TextStyle(
-                    color: NeuTheme.textColor,
+                    color: NeuTheme.textColor(context),
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.5,
                   ),
@@ -111,7 +111,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildStatCard(String title, String value) {
+  Widget _buildStatCard(BuildContext context, String title, String value) {
     return NeuContainer(
       padding: const EdgeInsets.all(20.0),
       child: Column(
@@ -119,7 +119,7 @@ class ProfilePage extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              color: NeuTheme.textColor.withOpacity(0.6),
+              color: NeuTheme.textColor(context).withValues(alpha: 0.6),
               fontSize: 12,
               fontWeight: FontWeight.bold,
               letterSpacing: 1,
@@ -128,8 +128,8 @@ class ProfilePage extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             value,
-            style: const TextStyle(
-              color: NeuTheme.accentColor,
+            style: TextStyle(
+              color: NeuTheme.accentColor(context),
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),

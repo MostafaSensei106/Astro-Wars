@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'routes/auth_routes.dart';
 import 'routes/game_routes.dart';
+import 'routes/main_routes.dart';
 
 import 'routes_names.dart';
 
@@ -14,12 +15,12 @@ final class AppRouter {
 
   static final router = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: RoutesNames.welcome,
+    initialLocation: RoutesNames.home, // Changed to home by default for Astro Wars
     debugLogDiagnostics: true,
     routes: [
-      ...authRoutes, ...gameRoutes,
-
-      //...settingsRoutes
+      ...authRoutes,
+      ...gameRoutes,
+      ...mainRoutes,
     ],
   );
 }

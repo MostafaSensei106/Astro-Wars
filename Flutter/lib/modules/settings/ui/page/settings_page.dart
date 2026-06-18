@@ -16,7 +16,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: NeuTheme.bgColor,
+      backgroundColor: NeuTheme.bgColor(context),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -29,10 +29,10 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
         ),
-        title: const Text(
+        title: Text(
           'SETTINGS',
           style: TextStyle(
-            color: NeuTheme.textColor,
+            color: NeuTheme.textColor(context),
             fontWeight: FontWeight.bold,
             letterSpacing: 2,
           ),
@@ -68,7 +68,7 @@ class _SettingsPageState extends State<SettingsPage> {
               onPressed: () {
                 // Logout or reset progress
               },
-              child: const Text(
+              child: Text(
                 'RESET PROGRESS',
                 style: TextStyle(
                   color: Colors.redAccent,
@@ -93,13 +93,13 @@ class _SettingsPageState extends State<SettingsPage> {
       padding: const EdgeInsets.all(20.0),
       child: Row(
         children: [
-          Icon(icon, color: NeuTheme.accentColor, size: 28),
+          Icon(icon, color: NeuTheme.accentColor(context), size: 28),
           const SizedBox(width: 16),
           Expanded(
             child: Text(
               title,
-              style: const TextStyle(
-                color: NeuTheme.textColor,
+              style: TextStyle(
+                color: NeuTheme.textColor(context),
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 1,
@@ -112,7 +112,7 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Text(
               value ? 'ON' : 'OFF',
               style: TextStyle(
-                color: value ? NeuTheme.accentColor : NeuTheme.textColor.withOpacity(0.5),
+                color: value ? NeuTheme.accentColor(context) : NeuTheme.textColor(context).withOpacity(0.5),
                 fontWeight: FontWeight.bold,
               ),
             ),

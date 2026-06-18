@@ -1,85 +1,52 @@
-import 'dart:async';
+import "package:flutter/material.dart";
+import "../../neu_widgets.dart";
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import '../../../constants/app_config.dart';
-
-final class TextFormFieldComponent extends StatelessWidget {
-  const TextFormFieldComponent({
-    required this.label,
-    required this.prefixIcon,
-    required this.onChanged,
-    super.key,
-    this.suffixIcon,
-    this.suffix,
-    this.obscureText = false,
-    this.useInBorderRadius = false,
-    this.readOnly = false,
-    this.isEnable = true,
-    this.errorText,
-    this.onTap,
-    this.controller,
-    this.keyboardType,
-    this.initialValue,
-    this.hintText,
-    this.maxLength,
-  });
-  final String label;
-  final IconData prefixIcon;
-  final String? hintText;
-  final Widget? suffixIcon;
-  final Widget? suffix;
-  final bool obscureText;
+class TextFormFieldComponent extends StatelessWidget {
+  final String? label;
+  final String? hint;
   final TextEditingController? controller;
-  final TextInputType? keyboardType;
-  final bool useInBorderRadius;
-  final bool readOnly;
-  final void Function()? onTap;
-  final void Function(String) onChanged;
+  final IconData? prefixIcon;
+  final Widget? suffixIcon;
+  final bool obscureText;
   final bool isEnable;
   final String? errorText;
   final String? initialValue;
-  final int? maxLength;
+  final Function(String)? onChanged;
+
+  const TextFormFieldComponent({
+    this.label,
+    this.hint,
+    this.controller,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.obscureText = false,
+    this.isEnable = true,
+    this.errorText,
+    this.initialValue,
+    this.onChanged,
+    super.key
+  });
 
   @override
-  Widget build(final BuildContext context) => TextFormField(
-    controller: controller,
-    keyboardType: keyboardType,
-    obscureText: obscureText,
-    readOnly: readOnly,
-    onChanged: (val) => onChanged.call(val),
-    enabled: isEnable,
-    initialValue: initialValue,
-    maxLength: maxLength,
-
-    onTap: () {
-      unawaited(HapticFeedback.vibrate());
-      onTap?.call();
-    },
-    decoration: InputDecoration(
-      labelText: label,
-      errorText: errorText,
-      prefixIcon: Icon(
-        prefixIcon,
-        color: Theme.of(context).colorScheme.primary,
-      ),
-      suffixIcon: suffixIcon,
-      suffix: suffix,
-      hintText: hintText,
-      counterText: '',
-      border: OutlineInputBorder(
-        borderRadius: useInBorderRadius
-            ? BorderRadius.circular(AppConfig.inBorderRadius)
-            : BorderRadius.circular(AppConfig.outBorderRadius),
-        borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: useInBorderRadius
-            ? BorderRadius.circular(AppConfig.inBorderRadius)
-            : BorderRadius.circular(AppConfig.outBorderRadius),
-        borderSide: BorderSide(
-          color: Theme.of(context).colorScheme.outlineVariant,
-        ),
+  Widget build(BuildContext context) => NeuContainer(
+    isInner: true,
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    child: TextFormField(
+      controller: controller,
+      initialValue: initialValue,
+      obscureText: obscureText,
+      enabled: isEnable,
+      onChanged: onChanged,
+      style: TextStyle(color: NeuTheme.textColor(context)),
+      decoration: InputDecoration(
+        hintText: hint ?? label,
+        hintStyle: TextStyle(color: NeuTheme.textColor(context).withValues(alpha: 0.5)),
+        prefixIcon: prefixIcon != null ? Icon(prefixIcon, color: NeuTheme.textColor(context)) : null,
+        suffixIcon: suffixIcon,
+        errorText: errorText,
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
       ),
     ),
   );

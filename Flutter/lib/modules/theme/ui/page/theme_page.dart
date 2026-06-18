@@ -33,7 +33,7 @@ class _ThemePageState extends State<ThemePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: NeuTheme.bgColor,
+      backgroundColor: NeuTheme.bgColor(context),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -46,10 +46,10 @@ class _ThemePageState extends State<ThemePage> {
             },
           ),
         ),
-        title: const Text(
+        title: Text(
           'THEME',
           style: TextStyle(
-            color: NeuTheme.textColor,
+            color: NeuTheme.textColor(context),
             fontWeight: FontWeight.bold,
             letterSpacing: 2,
           ),
@@ -62,10 +62,10 @@ class _ThemePageState extends State<ThemePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'SELECT ACCENT COLOR',
                 style: TextStyle(
-                  color: NeuTheme.textColor,
+                  color: NeuTheme.textColor(context),
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 2,
@@ -116,7 +116,7 @@ class _ThemePageState extends State<ThemePage> {
                               theme['name'],
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: isSelected ? theme['color'] : NeuTheme.textColor,
+                                color: isSelected ? theme['color'] : NeuTheme.textColor(context),
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 1,
                               ),
@@ -135,10 +135,10 @@ class _ThemePageState extends State<ThemePage> {
                   Navigator.of(context).pop();
                 },
                 width: double.infinity,
-                child: const Text(
+                child: Text(
                   'APPLY THEME',
                   style: TextStyle(
-                    color: NeuTheme.accentColor,
+                    color: NeuTheme.accentColor(context),
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.5,
                   ),

@@ -19,7 +19,9 @@ class AstroWarsApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Astro Wars',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkNeumorphicTheme,
+      theme: AppTheme.lightNeumorphicTheme,
+      darkTheme: AppTheme.darkNeumorphicTheme,
+      themeMode: ThemeMode.system, // Supports both light and dark modes based on system
       routerConfig: AppRouter.router,
       localizationsDelegates: const [
         AppLocalizations.delegate,

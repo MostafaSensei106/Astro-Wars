@@ -1,12 +1,28 @@
 import 'package:flutter/material.dart';
 
 class NeuTheme {
-  // Dark neumorphism colors suitable for Astro Wars
-  static const Color bgColor = Color(0xFF2A2D32);
-  static const Color darkShadow = Color(0xFF1A1C1F);
-  static const Color lightShadow = Color(0xFF3A3E45);
-  static const Color accentColor = Colors.purpleAccent;
-  static const Color textColor = Colors.white;
+  static Color bgColor(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFF2A2D32)
+          : const Color(0xFFE0E5EC);
+
+  static Color darkShadow(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFF1A1C1F)
+          : const Color(0xFFA3B1C6);
+
+  static Color lightShadow(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFF3A3E45)
+          : const Color(0xFFFFFFFF);
+
+  static Color accentColor(BuildContext context) =>
+      Theme.of(context).primaryColor;
+
+  static Color textColor(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+          ? Colors.white
+          : Colors.black87;
 }
 
 class NeuContainer extends StatelessWidget {
@@ -37,24 +53,24 @@ class NeuContainer extends StatelessWidget {
       padding: padding,
       margin: margin,
       decoration: BoxDecoration(
-        color: NeuTheme.bgColor,
+        color: NeuTheme.bgColor(context),
         borderRadius: BorderRadius.circular(borderRadius),
         boxShadow: isInner
             ? null // Inner shadow in Flutter requires special painting or inner_shadow packages, we'll keep it flat/recessed for inner
             : [
                 BoxShadow(
-                  color: NeuTheme.darkShadow,
+                  color: NeuTheme.darkShadow(context),
                   offset: const Offset(5, 5),
                   blurRadius: 10,
                 ),
                 BoxShadow(
-                  color: NeuTheme.lightShadow,
+                  color: NeuTheme.lightShadow(context),
                   offset: const Offset(-5, -5),
                   blurRadius: 10,
                 ),
               ],
         border: isInner
-            ? Border.all(color: NeuTheme.darkShadow, width: 2)
+            ? Border.all(color: NeuTheme.darkShadow(context), width: 2)
             : null,
       ),
       child: child,
@@ -108,25 +124,25 @@ class _NeuButtonState extends State<NeuButton> {
         height: widget.height,
         padding: widget.padding,
         decoration: BoxDecoration(
-          color: NeuTheme.bgColor,
+          color: NeuTheme.bgColor(context),
           borderRadius: BorderRadius.circular(widget.borderRadius),
           boxShadow: _isPressed || widget.onPressed == null
               ? [] // Flat when pressed or disabled
               : [
                   BoxShadow(
-                    color: NeuTheme.darkShadow,
+                    color: NeuTheme.darkShadow(context),
                     offset: const Offset(5, 5),
                     blurRadius: 10,
                   ),
                   BoxShadow(
-                    color: NeuTheme.lightShadow,
+                    color: NeuTheme.lightShadow(context),
                     offset: const Offset(-5, -5),
                     blurRadius: 10,
                   ),
                 ],
           border: _isPressed
               ? Border.all(
-                  color: NeuTheme.darkShadow,
+                  color: NeuTheme.darkShadow(context),
                   width: 2,
                 ) // Simulating inner depth
               : null,
@@ -155,7 +171,7 @@ class NeuIconButton extends StatelessWidget {
       onPressed: onPressed,
       padding: const EdgeInsets.all(12.0),
       borderRadius: 50.0, // Circular
-      child: Icon(icon, color: NeuTheme.textColor, size: size),
+      child: Icon(icon, color: NeuTheme.textColor(context), size: size),
     );
   }
 }
