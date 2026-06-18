@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupProfile(rg *gin.RouterGroup, h *handlers.ProfileHandler, jwtSvc *jwt.JWTService) {
+func SetupProfileRoutes(rg *gin.RouterGroup, h *handlers.ProfileHandler, jwtSvc *jwt.JWTService) {
 	v1 := rg.Group("/api/v1")
 	{
 		profileGroup := v1.Group("/profile").Use(middleware.AuthMiddleware(jwtSvc))

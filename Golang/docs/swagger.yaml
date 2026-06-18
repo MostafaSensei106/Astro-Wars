@@ -31,6 +31,18 @@ definitions:
       success:
         type: boolean
     type: object
+  handlers.CheckAppVersionRequest:
+    properties:
+      platform:
+        example: android
+        type: string
+      version_code:
+        example: 105
+        type: integer
+    required:
+    - platform
+    - version_code
+    type: object
   handlers.UserProfileRequest:
     properties:
       academic_year:
@@ -217,6 +229,25 @@ info:
   title: Astro Wars API
   version: "1.0"
 paths:
+  /api/v1/app/version/check:
+    post:
+      consumes:
+      - application/json
+      description: Checks if the current app version needs an update or a forced update
+        based on the platform.
+      parameters:
+      - description: App Version Info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CheckAppVersionRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: Check App Version
+      tags:
+      - app-version
   /api/v1/auth/account/:
     delete:
       description: Removes a user account by their ID.

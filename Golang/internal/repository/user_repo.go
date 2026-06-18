@@ -55,6 +55,6 @@ func (u *userRepository) Update(ctx context.Context, user *domain.User) e.Result
 	})
 }
 
-func New(db *gorm.DB) domain.UserRepository {
+func NewUserRepository(db *gorm.DB) domain.UserRepository {
 	return &userRepository{db}
 }

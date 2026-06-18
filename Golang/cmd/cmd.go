@@ -25,18 +25,27 @@ func Execute() {
 	db := db.ConnectPostgres(cfg.db.dns)
 
 	jwtSvc := jwt.NewJWTService(env.GetString("CHOCHO_JWT_SECRET", "defaultsecretkey"), "astrowars-backend")
-	userRepo := repository.New(db)
-	userUsecase := usecase.New(userRepo)
+
+	userRepo := repository.NewUserRepository(db)
+	runRepo := repository.NewRunRepository(db)
+	userUsecase := usecase.NewUserRepository(userRepo)
+	appVersionRepo := repository.NewAppVersionRepository(db)
+	appVersionUsecase := usecase.NewAppVersionUseCase(appVersionRepo)
+	runUsecase := usecase.NewRunUseCase(runRepo)
 	authHandler := handlers.NewAuthHandler(userUsecase, jwtSvc)
 	profileHandler := handlers.NewProfileHandler(userUsecase, jwtSvc)
+	runHandler := handlers.NewRunHandler(runUsecase)
+	appVersionHandler := handlers.NewAppVersionHandler(appVersionUsecase)
 
 	r := gin.Default()
 	gin.SetMode(gin.ReleaseMode)
 
-	router.SetupHelthCheck(&r.RouterGroup)
-	router.SetupSwaggerDocs(&r.RouterGroup)
+	router.SetupHelthCheckRoutes(&r.RouterGroup)
+	router.SetupSwaggerDocsRoutes(&r.RouterGroup)
 	router.SetupAuthRoutes(&r.RouterGroup, authHandler, jwtSvc)
-	router.SetupProfile(&r.RouterGroup, profileHandler, jwtSvc)
+	router.SetupProfileRoutes(&r.RouterGroup, profileHandler, jwtSvc)
+	router.SetupRunRoutes(&r.RouterGroup, runHandler, jwtSvc)
+	router.SetupAppVersionRoutes(&r.RouterGroup, appVersionHandler, jwtSvc)
 
 	log.Printf("🚀 Starting Astro Wars server on port %s", cfg.port)
 	if err := r.Run(cfg.port); err != nil {

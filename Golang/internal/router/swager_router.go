@@ -7,7 +7,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func SetupSwaggerDocs(rg *gin.RouterGroup) {
+func SetupSwaggerDocsRoutes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/api/v1")
 	{
 		v1.GET(

@@ -15,6 +15,33 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/app/version/check": {
+            "post": {
+                "description": "Checks if the current app version needs an update or a forced update based on the platform.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "app-version"
+                ],
+                "summary": "Check App Version",
+                "parameters": [
+                    {
+                        "description": "App Version Info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.CheckAppVersionRequest"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/api/v1/auth/account/": {
             "delete": {
                 "security": [
@@ -803,6 +830,23 @@ const docTemplate = `{
                 },
                 "success": {
                     "type": "boolean"
+                }
+            }
+        },
+        "handlers.CheckAppVersionRequest": {
+            "type": "object",
+            "required": [
+                "platform",
+                "version_code"
+            ],
+            "properties": {
+                "platform": {
+                    "type": "string",
+                    "example": "android"
+                },
+                "version_code": {
+                    "type": "integer",
+                    "example": 105
                 }
             }
         },

@@ -80,6 +80,6 @@ func (u *userUseCase) Logout(ctx context.Context, id string) errors.Result[bool,
 	return errors.Success[bool, error](true)
 }
 
-func New(repo domain.UserRepository) domain.UserUseCase {
+func NewUserRepository(repo domain.UserRepository) domain.UserUseCase {
 	return &userUseCase{repo: repo}
 }

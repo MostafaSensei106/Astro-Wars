@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupHelthCheck(rg *gin.RouterGroup) {
+func SetupHelthCheckRoutes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/api/v1")
 	{
 		v1.GET("/health", func(c *gin.Context) {
