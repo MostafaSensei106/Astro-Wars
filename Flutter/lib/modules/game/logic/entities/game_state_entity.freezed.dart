@@ -208,7 +208,7 @@ return $default(_that.score,_that.health,_that.isGameOver);case _:
 
 
 class _GameStateEntity implements GameStateEntity {
-  const _GameStateEntity({this.score = 0, this.health = 100, this.isGameOver = false});
+  const _GameStateEntity({this.score = 0, this.health = 3, this.isGameOver = false});
   
 
 @override@JsonKey() final  int score;

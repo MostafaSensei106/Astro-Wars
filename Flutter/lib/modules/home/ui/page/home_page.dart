@@ -9,7 +9,7 @@ class HomePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedShip = useState('hd_ship_sleek_1781686447510.jpg');
+    final selectedShip = useState('hd_ship_sleek_1781686447510.png');
 
     useEffect(() {
       SharedPreferences.getInstance().then((prefs) {
@@ -46,10 +46,10 @@ class HomePage extends HookWidget {
     ValueNotifier<String> selectedShip,
   ) {
     final ships = [
-      {"asset": "hd_ship_sleek_1781686447510.jpg", "name": "SLEEK FIGHTER"},
-      {"asset": "hd_ship_heavy_1781686457671.jpg", "name": "HEAVY CRUISER"},
-      {"asset": "hd_ship_pixel_1781686721018.jpg", "name": "PIXEL GLIDER"},
-      {"asset": "hd_ship_cipher_1781686731026.jpg", "name": "CIPHER STEALTH"},
+      {"asset": "hd_ship_sleek_1781686447510.png", "name": "SLEEK FIGHTER"},
+      {"asset": "hd_ship_heavy_1781686457671.png", "name": "HEAVY CRUISER"},
+      {"asset": "hd_ship_pixel_1781686721018.png", "name": "PIXEL GLIDER"},
+      {"asset": "hd_ship_cipher_1781686731026.png", "name": "CIPHER STEALTH"},
     ];
 
     return Column(

@@ -55,13 +55,16 @@ class GameView extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(
-                          'Health: ${state.entity.health}%',
-                          style: const TextStyle(
-                            color: Colors.redAccent,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Row(
+                          children: List.generate(3, (index) {
+                            return Icon(
+                              index < state.entity.health
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: Colors.redAccent,
+                              size: 24,
+                            );
+                          }),
                         ),
                       ],
                     ),

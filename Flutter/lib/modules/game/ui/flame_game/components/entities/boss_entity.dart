@@ -27,8 +27,8 @@ class BossEntity extends BaseSpriteEntity
     // Random boss sprite
     final rand = Random().nextBool();
     final spriteName = rand
-        ? 'hd_boss_car_1781686478720.jpg'
-        : 'hd_boss_professor_1781686774890.jpg';
+        ? 'hd_boss_car_1781686478720.png'
+        : 'hd_boss_professor_1781686774890.png';
     await loadAsset(spriteName);
 
     position = Vector2(game.size.x / 2, 150);

@@ -1,8 +1,10 @@
 import 'dart:math';
+import 'package:flame/collisions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flame/components.dart';
+import 'package:flame/particles.dart';
 import '../base/base_sprite_entity.dart';
 import '../base/behaviors.dart';
 import '../projectiles/projectile.dart';
@@ -10,26 +12,145 @@ import 'powerup_entity.dart';
 import 'enemy_entity.dart';
 import '../../../../logic/bloc/game_bloc.dart';
 
+class ShieldForcefield extends PositionComponent {
+  double _time = 0;
+
+  ShieldForcefield({required double radius})
+    : super(size: Vector2.all(radius * 2), anchor: Anchor.center);
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    _time += dt;
+  }
+
+  @override
+  void render(Canvas canvas) {
+    final center = Offset(size.x / 2, size.y / 2);
+    final radius = size.x / 2;
+
+    // Pulsating radius
+    final pulse = sin(_time * 5) * 5;
+
+    final paint1 = Paint()
+      ..color = Colors.cyanAccent.withValues(alpha: 0.2)
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(center, radius + pulse, paint1);
+
+    final paint2 = Paint()
+      ..color = Colors.cyan.withValues(alpha: 0.8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
+    canvas.drawCircle(center, radius + pulse + 2, paint2);
+
+    final paint3 = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    canvas.drawCircle(center, radius + pulse + 2, paint3);
+  }
+}
+
 class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
   PowerUpType? activeWeapon;
   int weaponLevel = 1;
   bool hasShield = false;
-  CircleComponent? shieldComponent;
+  ShieldForcefield? shieldComponent;
   bool _canShoot = true;
   int _fireRateMs = 250;
 
+  double _particleTimer = 0;
+
   PlayerEntity() : super(size: Vector2(64, 64), anchor: Anchor.center) {
-    health = 100;
+    health = 3;
   }
+
+  bool isInvincible = false;
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
     final prefs = await SharedPreferences.getInstance();
     final shipAsset =
-        prefs.getString('selected_ship') ?? 'hd_ship_sleek_1781686447510.jpg';
+        prefs.getString('selected_ship') ?? 'hd_ship_sleek_1781686447510.png';
     await loadAsset(shipAsset);
     position = Vector2(game.size.x / 2, game.size.y - 100);
+    add(RectangleHitbox());
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    if (game.gameBloc.state.entity.isGameOver) return;
+
+    // Engine exhaust particles
+    _particleTimer += dt;
+    if (_particleTimer > 0.05) {
+      _particleTimer = 0;
+      _spawnEngineParticles();
+    }
+
+    // Damage Smoke if health is low
+    if (health <= 1 && Random().nextDouble() < 0.1) {
+      _spawnSmokeParticles();
+    }
+  }
+
+  void _spawnEngineParticles() {
+    final random = Random();
+    game.add(
+      ParticleSystemComponent(
+        particle: Particle.generate(
+          count: 3,
+          lifespan: 0.2,
+          generator: (i) {
+            return AcceleratedParticle(
+              acceleration: Vector2(0, 300),
+              speed: Vector2(
+                (random.nextDouble() - 0.5) * 40,
+                50 + random.nextDouble() * 50,
+              ),
+              position: position.clone()
+                ..translate((random.nextDouble() - 0.5) * 20, size.y / 2 - 5),
+              child: CircleParticle(
+                radius: 1.5 + random.nextDouble() * 2.0,
+                paint: Paint()
+                  ..color = Colors.cyanAccent.withValues(alpha: 0.8),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  void _spawnSmokeParticles() {
+    final random = Random();
+    game.add(
+      ParticleSystemComponent(
+        particle: Particle.generate(
+          count: 2,
+          lifespan: 0.5,
+          generator: (i) {
+            return AcceleratedParticle(
+              acceleration: Vector2((random.nextDouble() - 0.5) * 100, -100),
+              speed: Vector2((random.nextDouble() - 0.5) * 20, -50),
+              position: position.clone()
+                ..translate(
+                  (random.nextDouble() - 0.5) * 30,
+                  (random.nextDouble() - 0.5) * 30,
+                ),
+              child: CircleParticle(
+                radius: 2.0 + random.nextDouble() * 3.0,
+                paint: Paint()..color = Colors.black54,
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   void activateWeapon(PowerUpType type, {required double fireRate}) {
@@ -50,14 +171,7 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
   void activateShield() {
     if (!hasShield) {
       hasShield = true;
-      shieldComponent = CircleComponent(
-        radius: 40,
-        paint: Paint()
-          ..color = Colors.cyanAccent.withValues(alpha: 0.3)
-          ..style = PaintingStyle.fill,
-        anchor: Anchor.center,
-        position: size / 2,
-      );
+      shieldComponent = ShieldForcefield(radius: 45)..position = size / 2;
       add(shieldComponent!);
 
       Future.delayed(const Duration(seconds: 15), () {
@@ -75,7 +189,8 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
 
   @override
   void takeDamage(int amount) {
-    if (hasShield) return; // Immune!
+    if (hasShield || isInvincible || game.gameBloc.state.entity.isGameOver)
+      return;
 
     // Lose a weapon level on hit
     if (weaponLevel > 1) {
@@ -84,8 +199,62 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
       activeWeapon = null; // lose weapon entirely
     }
 
-    super.takeDamage(amount);
+    // Knockback
+    position.add(Vector2((Random().nextDouble() - 0.5) * 40, 30));
+
+    health -= 1; // 1 Heart
+    game.gameBloc.add(const GameEvent.playerDamaged(1));
     HapticFeedback.vibrate();
+
+    if (health <= 0) {
+      onDeath();
+    } else {
+      // Invincibility Frames
+      isInvincible = true;
+      paint.colorFilter = const ColorFilter.mode(
+        Colors.redAccent,
+        BlendMode.modulate,
+      );
+      Future.delayed(const Duration(seconds: 1), () {
+        isInvincible = false;
+        paint.colorFilter = null;
+      });
+    }
+  }
+
+  @override
+  void onDeath() {
+    HapticFeedback.heavyImpact();
+
+    // Death Explosion
+    final random = Random();
+    game.add(
+      ParticleSystemComponent(
+        particle: Particle.generate(
+          count: 40,
+          lifespan: 1.0,
+          generator: (i) {
+            return AcceleratedParticle(
+              acceleration: Vector2(
+                (random.nextDouble() - 0.5) * 200,
+                (random.nextDouble() - 0.5) * 200,
+              ),
+              speed: Vector2(
+                (random.nextDouble() - 0.5) * 400,
+                (random.nextDouble() - 0.5) * 400,
+              ),
+              position: position.clone(),
+              child: CircleParticle(
+                radius: 2.0 + random.nextDouble() * 5.0,
+                paint: Paint()..color = Colors.orangeAccent,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+
+    removeFromParent();
   }
 
   void shoot() {
@@ -96,6 +265,9 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
     });
 
     HapticFeedback.lightImpact();
+
+    // Shoot recoil (knockback)
+    position.y = (position.y + 2).clamp(size.y / 2, game.size.y - size.y / 2);
 
     if (activeWeapon == PowerUpType.flutter) {
       // Dual lasers with spread based on level
@@ -143,12 +315,5 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
       );
       game.add(bullet);
     }
-  }
-
-  @override
-  void onDeath() {
-    super.onDeath();
-    HapticFeedback.heavyImpact();
-    game.gameBloc.add(const GameEvent.playerDamaged(100)); // Triggers game over
   }
 }

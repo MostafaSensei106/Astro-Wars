@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
+import 'package:flame/timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
@@ -9,63 +10,133 @@ import 'player_entity.dart';
 import '../projectiles/projectile.dart';
 import '../../../../logic/bloc/game_bloc.dart';
 
-class EnemyEntity extends BaseSpriteEntity
-    with MovementBehavior, HealthBehavior {
-  late Timer shootTimer;
-  int direction = 1;
-  double? targetHoverY;
+enum EnemyState { flyingIn, formation, swooping, returning }
 
-  EnemyEntity() : super(size: Vector2(48, 48), anchor: Anchor.center) {
-    health = 25; // 1 shot to kill
-    speed = 50.0;
-    velocity = Vector2(0, 0);
+class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
+  late Timer shootTimer;
+  
+  Vector2 formationPosition;
+  EnemyState state = EnemyState.flyingIn;
+  double _time = 0;
+  Vector2 _velocity = Vector2.zero();
+  double speed = 60.0;
+  
+  String assetName;
+
+  EnemyEntity({
+    required this.formationPosition,
+    required Vector2 startPosition,
+    this.assetName = 'hd_enemy_bug_1781686468572.png',
+  }) : super(size: Vector2(48, 48), anchor: Anchor.center) {
+    position = startPosition;
+    health = 25;
   }
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    await loadAsset('hd_enemy_bug_1781686468572.jpg');
+    await loadAsset(assetName);
     final random = Random();
-    shootTimer = Timer(
-      2.5 + random.nextDouble() * 3,
-      onTick: shoot,
-      repeat: true,
-    );
+    shootTimer = Timer(3.0 + random.nextDouble() * 4, onTick: shoot, repeat: true);
+  }
+
+  @override
+  void takeDamage(int amount) {
+    super.takeDamage(amount);
+    // Knockback on hit
+    position.y -= 15;
+    position.x += (Random().nextDouble() - 0.5) * 10;
   }
 
   @override
   void update(double dt) {
     super.update(dt);
+    _time += dt;
+
     if (!game.gameBloc.state.entity.isGameOver) {
       shootTimer.update(dt);
     }
 
-    if (targetHoverY != null && position.y < targetHoverY!) {
-      position.y += 150 * dt; // Descend to formation
-    } else {
-      position.x += speed * direction * dt;
+    switch (state) {
+      case EnemyState.flyingIn:
+        Vector2 dir = formationPosition - position;
+        if (dir.length < 5.0) {
+          position = formationPosition.clone();
+          state = EnemyState.formation;
+        } else {
+           dir.normalize();
+           _velocity = dir * 250.0;
+           // Add dramatic swooping loop effect during spawn
+           _velocity.x += sin(_time * 6) * 200;
+           position.add(_velocity * dt);
+           _updateRotation();
+        }
+        break;
 
-      // Screen wrap horizontally and drop slightly
-      if (position.x > game.size.x + size.x / 2) {
-        position.x = -size.x / 2;
-        position.y += 30; // drop down
-      } else if (position.x < -size.x / 2) {
-        position.x = game.size.x + size.x / 2;
-        position.y += 30; // drop down
-      }
+      case EnemyState.formation:
+        // Bobbing in place
+        position.x = formationPosition.x + sin(_time * 2) * 20;
+        position.y = formationPosition.y + cos(_time * 3) * 10;
+        angle = pi; // Point straight down when in formation
+        
+        // Randomly break formation and swoop!
+        if (Random().nextDouble() < 0.002) { 
+           state = EnemyState.swooping;
+           _velocity = Vector2(0, -150); // slight jump back before diving
+        }
+        break;
+
+      case EnemyState.swooping:
+        _velocity.y += 350 * dt; // gravity/acceleration
+        final player = game.children.whereType<PlayerEntity>().firstOrNull;
+        if (player != null) {
+          if (player.position.x > position.x) {
+            _velocity.x += 150 * dt;
+          } else {
+            _velocity.x -= 150 * dt;
+          }
+        }
+        position.add(_velocity * dt);
+        _updateRotation();
+
+        // If off screen bottom, wrap to top and return
+        if (position.y > game.size.y + 50) {
+           position.y = -50;
+           state = EnemyState.returning;
+        }
+        break;
+
+      case EnemyState.returning:
+        Vector2 dir = formationPosition - position;
+        if (dir.length < 10.0) {
+          position = formationPosition.clone();
+          state = EnemyState.formation;
+        } else {
+           dir.normalize();
+           _velocity = dir * 300.0;
+           position.add(_velocity * dt);
+           _updateRotation();
+        }
+        break;
     }
 
-    if (position.y > game.size.y + 50) {
+    if (position.y > game.size.y + 50 && state != EnemyState.swooping) {
       removeFromParent();
     }
   }
 
+  void _updateRotation() {
+    angle = atan2(_velocity.y, _velocity.x) + pi/2;
+  }
+
   void shoot() {
+    if (state == EnemyState.flyingIn) return; // Don't shoot while spawning
+    
     final bullet = Projectile(
       startPosition: position.clone()..y += size.y / 2,
       direction: Vector2(0, 1),
-      damage: 10,
       isEnemyProjectile: true,
+      damage: 20.0,
     );
     game.add(bullet);
   }

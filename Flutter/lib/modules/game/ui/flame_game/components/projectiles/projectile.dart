@@ -34,35 +34,52 @@ class Projectile extends PositionComponent
 
   @override
   void render(Canvas canvas) {
-    // Draw glowing neon effect
-    final rect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(0, 0, size.x, size.y),
-      Radius.circular(size.x / 2), // Fully rounded ends
-    );
+    if (isEnemyProjectile) {
+      // Scary glowing red orbs for enemies
+      final center = Offset(size.x / 2, size.y / 2);
+      final radius = size.x / 1.5;
+      
+      final outerGlow = Paint()
+        ..color = Colors.redAccent.withValues(alpha: 0.5)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12);
+      canvas.drawCircle(center, radius + 4, outerGlow);
 
-    final baseColor = _basePaint.color;
+      final innerGlow = Paint()
+        ..color = Colors.red.withValues(alpha: 0.9)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+      canvas.drawCircle(center, radius, innerGlow);
 
-    // Outer Glow
-    final outerGlow = Paint()
-      ..color = baseColor.withValues(alpha: 0.4)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
-    canvas.drawRRect(rect, outerGlow);
+      final core = Paint()..color = Colors.yellowAccent;
+      canvas.drawCircle(center, radius / 2, core);
+      
+    } else {
+      // Draw glowing neon effect for player capsules
+      final rect = RRect.fromRectAndRadius(
+        Rect.fromLTWH(0, 0, size.x, size.y),
+        Radius.circular(size.x / 2),
+      );
 
-    // Inner Glow
-    final innerGlow = Paint()
-      ..color = baseColor.withValues(alpha: 0.8)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
-    canvas.drawRRect(rect, innerGlow);
+      final baseColor = _basePaint.color;
 
-    // Bright Core
-    final coreRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(size.x * 0.25, size.y * 0.1, size.x * 0.5, size.y * 0.8),
-      Radius.circular(size.x / 4),
-    );
-    final corePaint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
-    canvas.drawRRect(coreRect, corePaint);
+      final outerGlow = Paint()
+        ..color = baseColor.withValues(alpha: 0.4)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+      canvas.drawRRect(rect, outerGlow);
+
+      final innerGlow = Paint()
+        ..color = baseColor.withValues(alpha: 0.8)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+      canvas.drawRRect(rect, innerGlow);
+
+      final coreRect = RRect.fromRectAndRadius(
+        Rect.fromLTWH(size.x * 0.25, size.y * 0.1, size.x * 0.5, size.y * 0.8),
+        Radius.circular(size.x / 4),
+      );
+      final corePaint = Paint()
+        ..color = Colors.white
+        ..style = PaintingStyle.fill;
+      canvas.drawRRect(coreRect, corePaint);
+    }
   }
 
   @override
