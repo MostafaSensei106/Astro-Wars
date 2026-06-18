@@ -44,8 +44,7 @@ import 'package:astro/core/utils/theme/data/base_theme_repository.dart'
     as _i877;
 import 'package:astro/core/utils/theme/data/theme_repository.dart' as _i297;
 import 'package:astro/core/utils/theme/logic/cubit/theme_cubit.dart' as _i377;
-import 'package:astro/modules/game/data/repositories/game_repository_impl.dart'
-    as _i259;
+import 'package:astro/modules/game/logic/game_repository_impl.dart' as _i259;
 import 'package:astro/modules/game/logic/repositories/game_repository.dart'
     as _i311;
 import 'package:astro/modules/game/logic/usecases/submit_run_usecase.dart'
