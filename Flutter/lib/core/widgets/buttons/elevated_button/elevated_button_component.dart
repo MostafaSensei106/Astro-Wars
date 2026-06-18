@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../constants/app_config.dart';
+import '../../neu_widgets.dart';
 
 final class ElevatedButtonComponent extends StatelessWidget {
   const ElevatedButtonComponent({
@@ -38,35 +39,23 @@ final class ElevatedButtonComponent extends StatelessWidget {
   final Color? foregroundColor;
 
   @override
-  Widget build(final BuildContext context) => icon == null
-      ? ElevatedButton(
-          onPressed: () {
-            unawaited(HapticFeedback.vibrate());
-            onPressed();
-          },
-          style: _getButtonStyle(context),
-          child: Text(label),
-        )
-      : ElevatedButton.icon(
-          onPressed: () {
-            unawaited(HapticFeedback.vibrate());
-            onPressed();
-          },
-          style: _getButtonStyle(context),
-          icon: Icon(icon, size: AppConfig.iconSize),
-          label: Text(label),
-        );
-
-  ButtonStyle _getButtonStyle(final BuildContext context) =>
-      ElevatedButton.styleFrom(
-        minimumSize: Size(
-          width ?? double.infinity,
-          height ?? AppConfig.buttonHeight,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: useInBorderRadius
-              ? BorderRadius.circular(AppConfig.inBorderRadius)
-              : BorderRadius.circular(AppConfig.outBorderRadius),
-        ),
+  Widget build(final BuildContext context) => NeuButton(
+        onPressed: () {
+          unawaited(HapticFeedback.vibrate());
+          onPressed();
+        },
+        width: width,
+        height: height ?? AppConfig.buttonHeight,
+        borderRadius: useInBorderRadius ? AppConfig.inBorderRadius : AppConfig.outBorderRadius,
+        child: icon == null
+            ? Text(label, style: TextStyle(color: foregroundColor ?? NeuTheme.textColor))
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, size: AppConfig.iconSize, color: foregroundColor ?? NeuTheme.textColor),
+                  const SizedBox(width: 8),
+                  Text(label, style: TextStyle(color: foregroundColor ?? NeuTheme.textColor)),
+                ],
+              ),
       );
 }

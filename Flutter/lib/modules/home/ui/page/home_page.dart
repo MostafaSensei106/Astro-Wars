@@ -17,9 +17,7 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 40),
             _buildStoryModeButton(context),
             const SizedBox(height: 40),
-            Expanded(
-              child: _buildLevelsGrid(),
-            ),
+            Expanded(child: _buildLevelsGrid()),
           ],
         ),
       ),
@@ -65,7 +63,7 @@ class HomePage extends StatelessWidget {
                 },
               ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -93,7 +91,7 @@ class HomePage extends StatelessWidget {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w400,
-            color: NeuTheme.textColor.withOpacity(0.7),
+            color: NeuTheme.textColor.withValues(alpha: 0.7),
             letterSpacing: 8,
           ),
         ),
@@ -113,7 +111,11 @@ class HomePage extends StatelessWidget {
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.play_circle_fill_rounded, color: NeuTheme.accentColor, size: 32),
+            Icon(
+              Icons.play_circle_fill_rounded,
+              color: NeuTheme.accentColor,
+              size: 32,
+            ),
             SizedBox(width: 12),
             Text(
               'STORY MODE & CUTSCENES',
@@ -178,13 +180,15 @@ class HomePage extends StatelessWidget {
 
   Widget _buildLevelButton(int level, bool isLocked) {
     return NeuButton(
-      onPressed: isLocked ? null : () {
-        // Navigate to level
-      },
+      onPressed: isLocked
+          ? null
+          : () {
+              // Navigate to level
+            },
       borderRadius: 16.0,
       padding: EdgeInsets.zero,
       child: isLocked
-          ? Icon(Icons.lock_rounded, color: NeuTheme.textColor.withOpacity(0.3))
+          ? Icon(Icons.lock_rounded, color: NeuTheme.textColor.withValues(alpha: 0.3))
           : Text(
               '$level',
               style: const TextStyle(

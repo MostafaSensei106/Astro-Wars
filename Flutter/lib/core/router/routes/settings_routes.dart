@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-import '../cupertion_route_data.dart';
-import '../routes_names.dart';
 
 // part 'settings_routes.g.dart';
 

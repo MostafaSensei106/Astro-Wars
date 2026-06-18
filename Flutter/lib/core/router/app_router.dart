@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 
 import 'routes/auth_routes.dart';
 import 'routes/game_routes.dart';
-import 'routes/settings_routes.dart';
 
 import 'routes_names.dart';
 

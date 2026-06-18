@@ -53,7 +53,9 @@ class NeuContainer extends StatelessWidget {
                   blurRadius: 10,
                 ),
               ],
-        border: isInner ? Border.all(color: NeuTheme.darkShadow, width: 2) : null,
+        border: isInner
+            ? Border.all(color: NeuTheme.darkShadow, width: 2)
+            : null,
       ),
       child: child,
     );
@@ -88,14 +90,18 @@ class _NeuButtonState extends State<NeuButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: widget.onPressed != null ? (_) => setState(() => _isPressed = true) : null,
+      onTapDown: widget.onPressed != null
+          ? (_) => setState(() => _isPressed = true)
+          : null,
       onTapUp: widget.onPressed != null
           ? (_) {
               setState(() => _isPressed = false);
               widget.onPressed!();
             }
           : null,
-      onTapCancel: widget.onPressed != null ? () => setState(() => _isPressed = false) : null,
+      onTapCancel: widget.onPressed != null
+          ? () => setState(() => _isPressed = false)
+          : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 100),
         width: widget.width,
@@ -119,7 +125,10 @@ class _NeuButtonState extends State<NeuButton> {
                   ),
                 ],
           border: _isPressed
-              ? Border.all(color: NeuTheme.darkShadow, width: 2) // Simulating inner depth
+              ? Border.all(
+                  color: NeuTheme.darkShadow,
+                  width: 2,
+                ) // Simulating inner depth
               : null,
         ),
         child: Center(child: widget.child),
@@ -146,11 +155,7 @@ class NeuIconButton extends StatelessWidget {
       onPressed: onPressed,
       padding: const EdgeInsets.all(12.0),
       borderRadius: 50.0, // Circular
-      child: Icon(
-        icon,
-        color: NeuTheme.textColor,
-        size: size,
-      ),
+      child: Icon(icon, color: NeuTheme.textColor, size: size),
     );
   }
 }

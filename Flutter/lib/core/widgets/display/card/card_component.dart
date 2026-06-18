@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../constants/app_config.dart';
+import '../../neu_widgets.dart';
 
 final class CardComponent extends StatelessWidget {
   const CardComponent({
@@ -13,12 +14,9 @@ final class CardComponent extends StatelessWidget {
   final Color? color;
 
   @override
-  Widget build(final BuildContext context) => Container(
+  Widget build(final BuildContext context) => NeuContainer(
     padding: padding ?? const EdgeInsets.all(AppConfig.padding),
-    decoration: BoxDecoration(
-      color: color ?? Theme.of(context).colorScheme.surfaceContainer,
-      borderRadius: BorderRadius.circular(AppConfig.outBorderRadius),
-    ),
+    borderRadius: AppConfig.outBorderRadius,
     child: child,
   );
 }

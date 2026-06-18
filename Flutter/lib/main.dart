@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/router/app_router.dart';
 import 'core/utils/sys_init/sys_init.dart';
+import 'core/utils/theme/app_theme.dart';
 
 void main() async {
   await SysInit.startDaemons();
@@ -18,6 +19,7 @@ class AstroWarsApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Astro Wars',
       debugShowCheckedModeBanner: false,
+      theme: AppTheme.darkNeumorphicTheme,
       routerConfig: AppRouter.router,
       localizationsDelegates: const [
         AppLocalizations.delegate,

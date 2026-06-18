@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../constants/app_config.dart';
+import '../../neu_widgets.dart';
 
 enum IconButtonVariant { standard, filled, tonal, outlined }
 
@@ -67,79 +68,13 @@ final class IconButtonComponent extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    switch (variant) {
-      case IconButtonVariant.standard:
-        return IconButton(
-          icon: Icon(icon, size: iconSize ?? AppConfig.iconSize),
-          onPressed: () {
-            unawaited(HapticFeedback.vibrate());
-            onPressed();
-          },
-          color: foregroundColor ?? Theme.of(context).colorScheme.primary,
-        );
-      case IconButtonVariant.filled:
-        return IconButton.filled(
-          icon: Icon(icon, size: iconSize ?? AppConfig.iconSize),
-          onPressed: () {
-            unawaited(HapticFeedback.vibrate());
-            onPressed();
-          },
-          style: IconButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: useInBorderRadius
-                  ? BorderRadius.circular(AppConfig.inBorderRadius)
-                  : BorderRadius.circular(AppConfig.outBorderRadius),
-            ),
-            backgroundColor:
-                backgroundColor ??
-                Theme.of(context).colorScheme.primaryContainer,
-            foregroundColor:
-                foregroundColor ??
-                Theme.of(context).colorScheme.onPrimaryContainer,
-          ),
-          padding: EdgeInsets.all(padding ?? AppConfig.paddingHalf),
-        );
-      case IconButtonVariant.tonal:
-        return IconButton.filledTonal(
-          icon: Icon(icon, size: iconSize ?? AppConfig.iconSize),
-          onPressed: () {
-            unawaited(HapticFeedback.vibrate());
-            onPressed();
-          },
-          style: IconButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: useInBorderRadius
-                  ? BorderRadius.circular(AppConfig.inBorderRadius)
-                  : BorderRadius.circular(AppConfig.outBorderRadius),
-            ),
-            backgroundColor:
-                backgroundColor ??
-                Theme.of(context).colorScheme.secondaryContainer,
-            foregroundColor:
-                foregroundColor ??
-                Theme.of(context).colorScheme.onSecondaryContainer,
-          ),
-        );
-      case IconButtonVariant.outlined:
-        return IconButton.outlined(
-          icon: Icon(icon, size: iconSize ?? AppConfig.iconSize),
-          onPressed: () {
-            unawaited(HapticFeedback.vibrate());
-            onPressed();
-          },
-          style: IconButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: useInBorderRadius
-                  ? BorderRadius.circular(AppConfig.inBorderRadius)
-                  : BorderRadius.circular(AppConfig.outBorderRadius),
-            ),
-            side: BorderSide(
-              color: backgroundColor ?? Theme.of(context).colorScheme.outline,
-            ),
-            foregroundColor:
-                foregroundColor ?? Theme.of(context).colorScheme.primary,
-          ),
-        );
-    }
+    return NeuIconButton(
+      icon: icon,
+      size: iconSize ?? AppConfig.iconSize,
+      onPressed: () {
+        unawaited(HapticFeedback.vibrate());
+        onPressed();
+      },
+    );
   }
 }
