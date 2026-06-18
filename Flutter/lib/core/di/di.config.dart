@@ -46,11 +46,11 @@ import 'package:astro/core/utils/theme/data/theme_repository.dart' as _i297;
 import 'package:astro/core/utils/theme/logic/cubit/theme_cubit.dart' as _i377;
 import 'package:astro/modules/game/data/repositories/game_repository_impl.dart'
     as _i259;
-import 'package:astro/modules/game/logic/bloc/game_bloc.dart' as _i198;
 import 'package:astro/modules/game/logic/repositories/game_repository.dart'
-    as _i199;
+    as _i311;
 import 'package:astro/modules/game/logic/usecases/submit_run_usecase.dart'
-    as _i808;
+    as _i494;
+import 'package:astro/modules/game/logic/bloc/game_bloc.dart' as _i394;
 import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
 import 'package:dio/dio.dart' as _i361;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
@@ -136,14 +136,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i814.ApiService>(
       () => injectionModule.apiService(gh<_i361.Dio>()),
     );
-    gh.factory<_i199.GameRepository>(
+    gh.factory<_i311.GameRepository>(
       () => _i259.GameRepositoryImpl(gh<_i814.ApiService>()),
     );
-    gh.factory<_i808.SubmitRunUseCase>(
-      () => _i808.SubmitRunUseCase(gh<_i199.GameRepository>()),
+    gh.factory<_i494.SubmitRunUseCase>(
+      () => _i494.SubmitRunUseCase(gh<_i311.GameRepository>()),
     );
-    gh.factory<_i198.GameBloc>(
-      () => _i198.GameBloc(gh<_i808.SubmitRunUseCase>()),
+    gh.factory<_i394.GameBloc>(
+      () => _i394.GameBloc(gh<_i494.SubmitRunUseCase>()),
     );
     return this;
   }
@@ -185,9 +185,9 @@ extension GetItInjectableX on _i174.GetIt {
   _i259.GameRepositoryImpl get gameRepositoryImpl =>
       get<_i259.GameRepositoryImpl>();
 
-  _i808.SubmitRunUseCase get submitRunUseCase => get<_i808.SubmitRunUseCase>();
+  _i494.SubmitRunUseCase get submitRunUseCase => get<_i494.SubmitRunUseCase>();
 
-  _i198.GameBloc get gameBloc => get<_i198.GameBloc>();
+  _i394.GameBloc get gameBloc => get<_i394.GameBloc>();
 }
 
 class _$InjectionModule extends _i840.InjectionModule {}
