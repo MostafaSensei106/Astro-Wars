@@ -1,3 +1,4 @@
+import 'package:astro/modules/home/ui/page/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,8 +20,7 @@ final class WelcomeRoute extends CupertinoRouteData with $WelcomeRoute {
   const WelcomeRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const Scaffold(body: Center(child: Text('Welcome')));
+  Widget build(BuildContext context, GoRouterState state) => HomePage();
 }
 
 @TypedGoRoute<LoginRoute>(path: RoutesNames.login)

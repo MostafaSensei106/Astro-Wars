@@ -15,7 +15,7 @@ final class AppRouter {
 
   static final router = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: RoutesNames.game,
+    initialLocation: RoutesNames.welcome,
     debugLogDiagnostics: true,
     routes: [
       ...authRoutes, ...gameRoutes,
