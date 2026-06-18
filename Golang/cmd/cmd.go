@@ -28,9 +28,9 @@ func Execute() {
 
 	userRepo := repository.NewUserRepository(db)
 	runRepo := repository.NewRunRepository(db)
-	userUsecase := usecase.NewUserRepository(userRepo)
 	appVersionRepo := repository.NewAppVersionRepository(db)
 	appVersionUsecase := usecase.NewAppVersionUseCase(appVersionRepo)
+	userUsecase := usecase.NewUserRepository(userRepo)
 	runUsecase := usecase.NewRunUseCase(runRepo)
 	authHandler := handlers.NewAuthHandler(userUsecase, jwtSvc)
 	profileHandler := handlers.NewProfileHandler(userUsecase, jwtSvc)
