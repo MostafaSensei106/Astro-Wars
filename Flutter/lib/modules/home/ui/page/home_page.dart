@@ -41,12 +41,15 @@ class HomePage extends HookWidget {
     );
   }
 
-  Widget _buildShipSelection(BuildContext context, ValueNotifier<String> selectedShip) {
+  Widget _buildShipSelection(
+    BuildContext context,
+    ValueNotifier<String> selectedShip,
+  ) {
     final ships = [
       {"asset": "hd_ship_sleek_1781686447510.jpg", "name": "SLEEK FIGHTER"},
       {"asset": "hd_ship_heavy_1781686457671.jpg", "name": "HEAVY CRUISER"},
       {"asset": "hd_ship_pixel_1781686721018.jpg", "name": "PIXEL GLIDER"},
-      {"asset": "hd_ship_cipher_1781686731026.jpg", "name": "CIPHER STEALTH"}
+      {"asset": "hd_ship_cipher_1781686731026.jpg", "name": "CIPHER STEALTH"},
     ];
 
     return Column(
@@ -87,7 +90,8 @@ class HomePage extends HookWidget {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeOutCubic,
-                    transform: Matrix4.identity()..scale(isSelected ? 1.1 : 1.0),
+                    transform: Matrix4.identity()
+                      ..scale(isSelected ? 1.1 : 1.0),
                     child: Column(
                       children: [
                         NeuContainer(
@@ -97,17 +101,24 @@ class HomePage extends HookWidget {
                           padding: const EdgeInsets.all(12),
                           borderRadius: 24,
                           child: Container(
-                            decoration: isSelected ? BoxDecoration(
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: NeuTheme.accentColor(context).withValues(alpha: 0.5),
-                                  blurRadius: 20,
-                                  spreadRadius: 2,
-                                )
-                              ]
-                            ) : null,
-                            child: Image.asset("assets/images/$ship", fit: BoxFit.contain),
+                            decoration: isSelected
+                                ? BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: NeuTheme.accentColor(
+                                          context,
+                                        ).withValues(alpha: 0.5),
+                                        blurRadius: 20,
+                                        spreadRadius: 2,
+                                      ),
+                                    ],
+                                  )
+                                : null,
+                            child: Image.asset(
+                              "assets/images/$ship",
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -117,9 +128,13 @@ class HomePage extends HookWidget {
                           child: Text(
                             name,
                             style: TextStyle(
-                              color: isSelected ? NeuTheme.accentColor(context) : NeuTheme.textColor(context),
+                              color: isSelected
+                                  ? NeuTheme.accentColor(context)
+                                  : NeuTheme.textColor(context),
                               fontSize: isSelected ? 14 : 12,
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.w500,
                               letterSpacing: 1.5,
                             ),
                           ),

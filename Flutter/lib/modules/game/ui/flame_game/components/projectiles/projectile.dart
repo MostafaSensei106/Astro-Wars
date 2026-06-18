@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import '../base/behaviors.dart';
 import '../../astro_game.dart';
 
-class Projectile extends RectangleComponent with MovementBehavior, CollisionCallbacks, HasGameReference<AstroGame> {
+class Projectile extends PositionComponent
+    with MovementBehavior, CollisionCallbacks, HasGameReference<AstroGame> {
   final double damage;
   final bool isEnemyProjectile;
   final bool isAoE;
+  late Paint _basePaint;
 
   Projectile({
     required Vector2 startPosition,
@@ -15,17 +17,52 @@ class Projectile extends RectangleComponent with MovementBehavior, CollisionCall
     this.damage = 25.0,
     this.isEnemyProjectile = false,
     this.isAoE = false,
-  }) : super(size: Vector2(10, 30), anchor: Anchor.center) {
+  }) : super(size: Vector2(8, 30), anchor: Anchor.center) {
     position = startPosition;
     velocity = direction;
-    speed = 400.0; // Fast bullet
-    paint = Paint()..color = isEnemyProjectile ? Colors.redAccent : Colors.cyanAccent;
+    speed = 400.0;
+    _basePaint = Paint()
+      ..color = isEnemyProjectile ? Colors.redAccent : Colors.cyanAccent;
+    add(RectangleHitbox());
   }
 
+  set paint(Paint p) {
+    _basePaint = p;
+  }
+
+  Paint get paint => _basePaint;
+
   @override
-  Future<void> onLoad() async {
-    super.onLoad();
-    add(RectangleHitbox());
+  void render(Canvas canvas) {
+    // Draw glowing neon effect
+    final rect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(0, 0, size.x, size.y),
+      Radius.circular(size.x / 2), // Fully rounded ends
+    );
+
+    final baseColor = _basePaint.color;
+
+    // Outer Glow
+    final outerGlow = Paint()
+      ..color = baseColor.withValues(alpha: 0.4)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+    canvas.drawRRect(rect, outerGlow);
+
+    // Inner Glow
+    final innerGlow = Paint()
+      ..color = baseColor.withValues(alpha: 0.8)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+    canvas.drawRRect(rect, innerGlow);
+
+    // Bright Core
+    final coreRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(size.x * 0.25, size.y * 0.1, size.x * 0.5, size.y * 0.8),
+      Radius.circular(size.x / 4),
+    );
+    final corePaint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
+    canvas.drawRRect(coreRect, corePaint);
   }
 
   @override
@@ -38,10 +75,13 @@ class Projectile extends RectangleComponent with MovementBehavior, CollisionCall
   }
 
   @override
-  void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) {
+  void onCollisionStart(
+    Set<Vector2> intersectionPoints,
+    PositionComponent other,
+  ) {
     super.onCollisionStart(intersectionPoints, other);
 
-    if (other is IDamageable && other is! Projectile) {
+    if (other is IDamageable) {
       if (isEnemyProjectile) {
         // Enemy bullets only hit the Player
         if (other.runtimeType.toString() == 'PlayerEntity') {
@@ -50,20 +90,23 @@ class Projectile extends RectangleComponent with MovementBehavior, CollisionCall
         }
       } else {
         // Player bullets hit enemies
-        if (other.runtimeType.toString() == 'EnemyEntity' || other.runtimeType.toString() == 'BossEntity') {
+        if (other.runtimeType.toString() == 'EnemyEntity' ||
+            other.runtimeType.toString() == 'BossEntity') {
           (other as IDamageable).takeDamage(damage.toInt());
-          
+
           if (isAoE) {
             // Apply damage to all nearby enemies (radius 150)
             for (final enemy in game.children.whereType<PositionComponent>()) {
-              if (enemy is IDamageable && enemy != other && enemy.runtimeType.toString() != 'PlayerEntity') {
+              if (enemy is IDamageable &&
+                  enemy != other &&
+                  enemy.runtimeType.toString() != 'PlayerEntity') {
                 if (enemy.position.distanceTo(position) < 150) {
                   (enemy as IDamageable).takeDamage(damage.toInt());
                 }
               }
             }
           }
-          
+
           removeFromParent();
         }
       }

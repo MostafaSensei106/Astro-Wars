@@ -9,14 +9,23 @@ class FilledButtonComponent extends StatelessWidget {
   final double? width;
   final double? height;
 
-  const FilledButtonComponent({required this.label, required this.onPressed, this.useInBorderRadius = false, this.width, this.height, super.key});
+  const FilledButtonComponent({
+    required this.label,
+    required this.onPressed,
+    this.useInBorderRadius = false,
+    this.width,
+    this.height,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) => NeuButton(
     onPressed: onPressed,
     width: width,
     height: height ?? AppConfig.buttonHeight,
-    borderRadius: useInBorderRadius ? AppConfig.inBorderRadius : AppConfig.outBorderRadius,
+    borderRadius: useInBorderRadius
+        ? AppConfig.inBorderRadius
+        : AppConfig.outBorderRadius,
     child: Text(label, style: TextStyle(color: NeuTheme.textColor(context))),
   );
 }

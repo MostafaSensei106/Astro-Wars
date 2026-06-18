@@ -1,5 +1,3 @@
-
-
 // part 'settings_routes.g.dart';
 
 // List<RouteBase> get settingsRoutes => [

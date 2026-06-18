@@ -12,11 +12,13 @@ import '../../../../logic/bloc/game_bloc.dart';
 class EnemyEntity extends BaseSpriteEntity
     with MovementBehavior, HealthBehavior {
   late Timer shootTimer;
+  int direction = 1;
+  double? targetHoverY;
 
   EnemyEntity() : super(size: Vector2(48, 48), anchor: Anchor.center) {
     health = 25; // 1 shot to kill
-    speed = 150.0;
-    velocity = Vector2(0, 1); // Move downwards
+    speed = 50.0;
+    velocity = Vector2(0, 0);
   }
 
   @override
@@ -24,8 +26,11 @@ class EnemyEntity extends BaseSpriteEntity
     super.onLoad();
     await loadAsset('hd_enemy_bug_1781686468572.jpg');
     final random = Random();
-    position = Vector2(random.nextDouble() * game.size.x, -50);
-    shootTimer = Timer(1.5 + random.nextDouble(), onTick: shoot, repeat: true);
+    shootTimer = Timer(
+      2.5 + random.nextDouble() * 3,
+      onTick: shoot,
+      repeat: true,
+    );
   }
 
   @override
@@ -34,6 +39,22 @@ class EnemyEntity extends BaseSpriteEntity
     if (!game.gameBloc.state.entity.isGameOver) {
       shootTimer.update(dt);
     }
+
+    if (targetHoverY != null && position.y < targetHoverY!) {
+      position.y += 150 * dt; // Descend to formation
+    } else {
+      position.x += speed * direction * dt;
+
+      // Screen wrap horizontally and drop slightly
+      if (position.x > game.size.x + size.x / 2) {
+        position.x = -size.x / 2;
+        position.y += 30; // drop down
+      } else if (position.x < -size.x / 2) {
+        position.x = game.size.x + size.x / 2;
+        position.y += 30; // drop down
+      }
+    }
+
     if (position.y > game.size.y + 50) {
       removeFromParent();
     }

@@ -21,7 +21,8 @@ class AstroWarsApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightNeumorphicTheme,
       darkTheme: AppTheme.darkNeumorphicTheme,
-      themeMode: ThemeMode.system, // Supports both light and dark modes based on system
+      themeMode: ThemeMode
+          .system, // Supports both light and dark modes based on system
       routerConfig: AppRouter.router,
       localizationsDelegates: const [
         AppLocalizations.delegate,

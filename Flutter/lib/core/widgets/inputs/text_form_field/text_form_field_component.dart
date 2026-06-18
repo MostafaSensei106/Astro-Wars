@@ -24,7 +24,7 @@ class TextFormFieldComponent extends StatelessWidget {
     this.errorText,
     this.initialValue,
     this.onChanged,
-    super.key
+    super.key,
   });
 
   @override
@@ -40,8 +40,12 @@ class TextFormFieldComponent extends StatelessWidget {
       style: TextStyle(color: NeuTheme.textColor(context)),
       decoration: InputDecoration(
         hintText: hint ?? label,
-        hintStyle: TextStyle(color: NeuTheme.textColor(context).withValues(alpha: 0.5)),
-        prefixIcon: prefixIcon != null ? Icon(prefixIcon, color: NeuTheme.textColor(context)) : null,
+        hintStyle: TextStyle(
+          color: NeuTheme.textColor(context).withValues(alpha: 0.5),
+        ),
+        prefixIcon: prefixIcon != null
+            ? Icon(prefixIcon, color: NeuTheme.textColor(context))
+            : null,
         suffixIcon: suffixIcon,
         errorText: errorText,
         border: InputBorder.none,

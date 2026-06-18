@@ -15,12 +15,9 @@ final class AppRouter {
 
   static final router = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: RoutesNames.home, // Changed to home by default for Astro Wars
+    initialLocation:
+        RoutesNames.home, // Changed to home by default for Astro Wars
     debugLogDiagnostics: true,
-    routes: [
-      ...authRoutes,
-      ...gameRoutes,
-      ...mainRoutes,
-    ],
+    routes: [...authRoutes, ...gameRoutes, ...mainRoutes],
   );
 }

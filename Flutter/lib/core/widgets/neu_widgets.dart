@@ -3,26 +3,26 @@ import 'package:flutter/material.dart';
 class NeuTheme {
   static Color bgColor(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark
-          ? const Color(0xFF2A2D32)
-          : const Color(0xFFE0E5EC);
+      ? const Color(0xFF2A2D32)
+      : const Color(0xFFE0E5EC);
 
   static Color darkShadow(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark
-          ? const Color(0xFF1A1C1F)
-          : const Color(0xFFA3B1C6);
+      ? const Color(0xFF1A1C1F)
+      : const Color(0xFFA3B1C6);
 
   static Color lightShadow(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark
-          ? const Color(0xFF3A3E45)
-          : const Color(0xFFFFFFFF);
+      ? const Color(0xFF3A3E45)
+      : const Color(0xFFFFFFFF);
 
   static Color accentColor(BuildContext context) =>
       Theme.of(context).primaryColor;
 
   static Color textColor(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark
-          ? Colors.white
-          : Colors.black87;
+      ? Colors.white
+      : Colors.black87;
 }
 
 class NeuContainer extends StatelessWidget {

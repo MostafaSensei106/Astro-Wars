@@ -28,8 +28,14 @@ class AppTheme {
         ),
       ),
       textTheme: const TextTheme(
-        displayLarge: TextStyle(color: lightTextColor, fontWeight: FontWeight.bold),
-        displayMedium: TextStyle(color: lightTextColor, fontWeight: FontWeight.bold),
+        displayLarge: TextStyle(
+          color: lightTextColor,
+          fontWeight: FontWeight.bold,
+        ),
+        displayMedium: TextStyle(
+          color: lightTextColor,
+          fontWeight: FontWeight.bold,
+        ),
         bodyLarge: TextStyle(color: lightTextColor),
         bodyMedium: TextStyle(color: lightTextColor),
       ),
@@ -63,8 +69,14 @@ class AppTheme {
         ),
       ),
       textTheme: const TextTheme(
-        displayLarge: TextStyle(color: darkTextColor, fontWeight: FontWeight.bold),
-        displayMedium: TextStyle(color: darkTextColor, fontWeight: FontWeight.bold),
+        displayLarge: TextStyle(
+          color: darkTextColor,
+          fontWeight: FontWeight.bold,
+        ),
+        displayMedium: TextStyle(
+          color: darkTextColor,
+          fontWeight: FontWeight.bold,
+        ),
         bodyLarge: TextStyle(color: darkTextColor),
         bodyMedium: TextStyle(color: darkTextColor),
       ),

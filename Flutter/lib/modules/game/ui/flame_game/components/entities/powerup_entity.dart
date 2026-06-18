@@ -1,49 +1,120 @@
 import 'package:flame/components.dart';
+import 'package:flame/collisions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
-import '../base/base_sprite_entity.dart';
 import '../base/behaviors.dart';
 import 'player_entity.dart';
 import 'enemy_entity.dart';
+import '../../astro_game.dart';
 import '../../../../logic/bloc/game_bloc.dart';
 
 enum PowerUpType { flutter, backend, cybersecurity, uiux, hr, logistics }
 
-class PowerUpEntity extends BaseSpriteEntity with MovementBehavior {
+class PowerUpEntity extends PositionComponent
+    with MovementBehavior, CollisionCallbacks, HasGameReference<AstroGame> {
   late PowerUpType type;
+  late double _time;
+  late SpriteComponent sprite;
+  late CircleComponent aura;
+  late TextComponent labelText;
 
   PowerUpEntity() : super(size: Vector2(40, 40), anchor: Anchor.center) {
     speed = 100.0;
     velocity = Vector2(0, 1); // Move downwards
     type = PowerUpType.values[Random().nextInt(PowerUpType.values.length)];
+    _time = Random().nextDouble() * 10;
+    add(RectangleHitbox());
   }
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    
+
     String spriteName = 'hd_powerup_1781686488826.jpg'; // generic
-    if (type == PowerUpType.backend) {
+    String label = 'POWER';
+    Color auraColor = Colors.yellowAccent;
+
+    if (type == PowerUpType.flutter) {
+      label = 'LASER';
+      auraColor = Colors.blueAccent;
+    } else if (type == PowerUpType.backend) {
       spriteName = 'hd_powerup_backend_1781686742263.jpg';
+      label = 'BOMB';
+      auraColor = Colors.orangeAccent;
     } else if (type == PowerUpType.uiux) {
       spriteName = 'hd_powerup_uiux_1781686753399.jpg';
+      label = 'STUN';
+      auraColor = Colors.purpleAccent;
+    } else if (type == PowerUpType.cybersecurity) {
+      label = 'SHIELD';
+      auraColor = Colors.cyanAccent;
+    } else if (type == PowerUpType.hr) {
+      label = 'HEAL';
+      auraColor = Colors.greenAccent;
+    } else if (type == PowerUpType.logistics) {
+      label = 'WIPE';
+      auraColor = Colors.redAccent;
     }
-    
-    await loadAsset(spriteName);
+
+    // Add glowing magical aura behind the sprite
+    aura = CircleComponent(
+      radius: 30,
+      paint: Paint()
+        ..color = auraColor.withValues(alpha: 0.5)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10),
+      anchor: Anchor.center,
+      position: size / 2,
+    );
+    add(aura);
+
+    sprite = SpriteComponent()
+      ..sprite = await game.loadSprite(spriteName)
+      ..size =
+          Vector2(30, 30) // slightly smaller than aura
+      ..anchor = Anchor.center
+      ..position = size / 2;
+    add(sprite);
+
+    labelText = TextComponent(
+      text: label,
+      textRenderer: TextPaint(
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 13,
+          fontWeight: FontWeight.w900,
+          shadows: [Shadow(color: auraColor, blurRadius: 10)],
+        ),
+      ),
+      anchor: Anchor.topCenter,
+      position: Vector2(size.x / 2, size.y + 8),
+    );
+    add(labelText);
+
     position = Vector2(Random().nextDouble() * game.size.x, -50);
   }
 
   @override
   void update(double dt) {
     super.update(dt);
+    _time += dt;
+
+    // Pulsate the aura
+    aura.scale = Vector2.all(1.0 + 0.2 * sin(_time * 4));
+
+    // Smoothly rotate the inner sprite
+    sprite.angle += 2.0 * dt;
+
     if (position.y > game.size.y + 50) {
       removeFromParent();
     }
   }
 
   @override
-  void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) {
+  void onCollisionStart(
+    Set<Vector2> intersectionPoints,
+    PositionComponent other,
+  ) {
     super.onCollisionStart(intersectionPoints, other);
 
     if (other is PlayerEntity) {

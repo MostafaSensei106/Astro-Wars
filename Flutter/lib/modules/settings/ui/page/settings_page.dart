@@ -112,7 +112,9 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Text(
               value ? 'ON' : 'OFF',
               style: TextStyle(
-                color: value ? NeuTheme.accentColor(context) : NeuTheme.textColor(context).withOpacity(0.5),
+                color: value
+                    ? NeuTheme.accentColor(context)
+                    : NeuTheme.textColor(context).withValues(alpha: 0.5),
                 fontWeight: FontWeight.bold,
               ),
             ),

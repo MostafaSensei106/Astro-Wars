@@ -1,6 +1,6 @@
 import 'package:flame/game.dart';
 import 'package:flame/events.dart';
-import 'package:flame/timer.dart';
+import 'package:flame/components.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import '../../logic/bloc/game_bloc.dart';
 import 'components/entities/player_entity.dart';
@@ -8,15 +8,29 @@ import 'components/entities/enemy_entity.dart';
 import 'components/entities/boss_entity.dart';
 import 'components/entities/powerup_entity.dart';
 
+class ShootDetector extends PositionComponent with TapCallbacks {
+  final PlayerEntity player;
+  ShootDetector(this.player);
+
+  @override
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    this.size = size;
+  }
+
+  @override
+  void onTapDown(TapDownEvent event) {
+    player.shoot();
+  }
+}
+
 class AstroGame extends FlameGame with HasCollisionDetection, PanDetector {
   final GameBloc gameBloc;
 
   AstroGame({required this.gameBloc});
 
   late PlayerEntity player;
-  late Timer enemySpawner;
   late Timer powerupSpawner;
-  double currentSpawnInterval = 2.0;
   bool bossActive = false;
 
   @override
@@ -30,6 +44,7 @@ class AstroGame extends FlameGame with HasCollisionDetection, PanDetector {
     );
 
     await add(blocProvider);
+    await add(ShootDetector(player));
 
     powerupSpawner = Timer(
       10.0,
@@ -40,21 +55,22 @@ class AstroGame extends FlameGame with HasCollisionDetection, PanDetector {
       },
       repeat: true,
     );
+  }
 
-    enemySpawner = Timer(
-      currentSpawnInterval,
-      onTick: () {
-        if (!gameBloc.state.entity.isGameOver && !bossActive) {
-          if (gameBloc.state.entity.score > 0 && gameBloc.state.entity.score % 500 == 0) {
-            bossActive = true;
-            add(BossEntity());
-          } else {
-            add(EnemyEntity());
-          }
-        }
-      },
-      repeat: true,
-    );
+  void spawnEnemyWave() {
+    int rows = 3;
+    int cols = 5;
+    double paddingX = size.x / (cols + 1);
+    double paddingY = 60.0;
+
+    for (int r = 0; r < rows; r++) {
+      for (int c = 0; c < cols; c++) {
+        final enemy = EnemyEntity()
+          ..position = Vector2((c + 1) * paddingX, -150 + (r * paddingY))
+          ..targetHoverY = 50.0 + (r * paddingY);
+        add(enemy);
+      }
+    }
   }
 
   @override
@@ -63,30 +79,37 @@ class AstroGame extends FlameGame with HasCollisionDetection, PanDetector {
 
     if (gameBloc.state.entity.isGameOver) return;
 
-    // Difficulty scaling: reduce spawn interval based on score
-    final score = gameBloc.state.entity.score;
-    // Every 100 points, reduce by 0.2s, down to a minimum of 0.5s
-    double newInterval = (2.0 - (score / 100) * 0.2).clamp(0.5, 2.0);
-
-    if (newInterval != currentSpawnInterval) {
-      currentSpawnInterval = newInterval;
-      enemySpawner.limit = currentSpawnInterval;
+    final enemies = children.whereType<EnemyEntity>();
+    if (enemies.isEmpty && !bossActive) {
+      if (gameBloc.state.entity.score > 0 &&
+          gameBloc.state.entity.score % 500 == 0) {
+        bossActive = true;
+        add(BossEntity());
+      } else {
+        spawnEnemyWave();
+      }
     }
 
-    enemySpawner.update(dt);
     powerupSpawner.update(dt);
   }
 
   @override
   void onPanUpdate(DragUpdateInfo info) {
     if (!gameBloc.state.entity.isGameOver) {
-      player.position.add(Vector2(info.delta.global.x, 0));
-      // Keep player inside screen
-      player.position.x = player.position.x.clamp(
-        player.size.x / 2,
-        size.x - player.size.x / 2,
+      player.position.add(info.delta.global);
+
+      // Screen wrapping horizontally
+      if (player.position.x > size.x + player.size.x / 2) {
+        player.position.x = -player.size.x / 2;
+      } else if (player.position.x < -player.size.x / 2) {
+        player.position.x = size.x + player.size.x / 2;
+      }
+
+      // Keep player inside screen vertically
+      player.position.y = player.position.y.clamp(
+        player.size.y / 2,
+        size.y - player.size.y / 2,
       );
-      // Disabled Y movement to match classic space shooters
     }
   }
 }

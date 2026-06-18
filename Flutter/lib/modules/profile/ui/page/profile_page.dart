@@ -76,7 +76,9 @@ class ProfilePage extends StatelessWidget {
               // Stats
               Row(
                 children: [
-                  Expanded(child: _buildStatCard(context, 'HIGH SCORE', '24,500')),
+                  Expanded(
+                    child: _buildStatCard(context, 'HIGH SCORE', '24,500'),
+                  ),
                   const SizedBox(width: 16),
                   Expanded(child: _buildStatCard(context, 'LEVEL', '7')),
                 ],
@@ -86,7 +88,9 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   Expanded(child: _buildStatCard(context, 'BOSSES', '3')),
                   const SizedBox(width: 16),
-                  Expanded(child: _buildStatCard(context, 'HOURS PLAYED', '12.5')),
+                  Expanded(
+                    child: _buildStatCard(context, 'HOURS PLAYED', '12.5'),
+                  ),
                 ],
               ),
               const SizedBox(height: 40),

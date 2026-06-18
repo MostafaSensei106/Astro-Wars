@@ -12,22 +12,10 @@ class _ThemePageState extends State<ThemePage> {
   int _selectedThemeIndex = 0;
 
   final List<Map<String, dynamic>> _themes = [
-    {
-      'name': 'Deep Space',
-      'color': Colors.purpleAccent,
-    },
-    {
-      'name': 'Neon Red',
-      'color': Colors.redAccent,
-    },
-    {
-      'name': 'Cyber Blue',
-      'color': Colors.blueAccent,
-    },
-    {
-      'name': 'Toxic Green',
-      'color': Colors.greenAccent,
-    },
+    {'name': 'Deep Space', 'color': Colors.purpleAccent},
+    {'name': 'Neon Red', 'color': Colors.redAccent},
+    {'name': 'Cyber Blue', 'color': Colors.blueAccent},
+    {'name': 'Toxic Green', 'color': Colors.greenAccent},
   ];
 
   @override
@@ -116,7 +104,9 @@ class _ThemePageState extends State<ThemePage> {
                               theme['name'],
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: isSelected ? theme['color'] : NeuTheme.textColor(context),
+                                color: isSelected
+                                    ? theme['color']
+                                    : NeuTheme.textColor(context),
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 1,
                               ),
