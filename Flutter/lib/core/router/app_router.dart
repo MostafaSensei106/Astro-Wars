@@ -17,6 +17,10 @@ final class AppRouter {
     navigatorKey: navigatorKey,
     initialLocation: RoutesNames.game,
     debugLogDiagnostics: true,
-    routes: [...authRoutes, ...gameRoutes, ...settingsRoutes],
+    routes: [
+      ...authRoutes, ...gameRoutes,
+
+      //...settingsRoutes
+    ],
   );
 }
