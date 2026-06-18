@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flame/effects.dart';
 import '../base/base_sprite_entity.dart';
 import '../base/behaviors.dart';
 import 'player_entity.dart';
@@ -103,6 +104,23 @@ class BossEntity extends BaseSpriteEntity
     textPainter.paint(
       canvas,
       Offset(barWidth / 2 - textPainter.width / 2, offsetY + barHeight / 2 - textPainter.height / 2),
+    );
+  }
+
+  @override
+  void takeDamage(int amount) {
+    super.takeDamage(amount);
+    
+    // Slight knockback
+    position.y -= 5;
+
+    // Flash effect
+    add(
+      ColorEffect(
+        Colors.white,
+        EffectController(duration: 0.1, alternate: true),
+        opacityTo: 0.8,
+      ),
     );
   }
 

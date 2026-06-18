@@ -1,6 +1,7 @@
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
+import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
@@ -44,8 +45,17 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
   void takeDamage(int amount) {
     super.takeDamage(amount);
     // Knockback on hit
-    position.y -= 15;
-    position.x += (Random().nextDouble() - 0.5) * 10;
+    position.y -= 20; // Increased knockback
+    position.x += (Random().nextDouble() - 0.5) * 15;
+
+    // Flash effect
+    add(
+      ColorEffect(
+        Colors.white,
+        EffectController(duration: 0.1, alternate: true),
+        opacityTo: 0.8,
+      ),
+    );
   }
 
   @override

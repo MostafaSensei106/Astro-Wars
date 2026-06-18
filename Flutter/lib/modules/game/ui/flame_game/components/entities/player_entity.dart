@@ -277,7 +277,7 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
     HapticFeedback.lightImpact();
 
     // Shoot recoil (knockback)
-    position.y = (position.y + 2).clamp(size.y / 2, game.size.y - size.y / 2);
+    position.y = (position.y + 10).clamp(size.y / 2, game.size.y - size.y / 2);
 
     if (activeWeapon == PowerUpType.flutter) {
       // Dual lasers with spread based on level
