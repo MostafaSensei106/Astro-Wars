@@ -97,9 +97,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i368.ThemeService>(),
       ),
     );
-    gh.factory<_i808.SubmitRunUseCase>(
-      () => _i808.SubmitRunUseCase(gh<_i199.GameRepository>()),
-    );
     gh.lazySingleton<_i71.SecureStorageService>(
       () => _i71.SecureStorageService(gh<_i558.FlutterSecureStorage>()),
     );
@@ -127,9 +124,6 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       preResolve: true,
     );
-    gh.factory<_i198.GameBloc>(
-      () => _i198.GameBloc(gh<_i808.SubmitRunUseCase>()),
-    );
     gh.lazySingleton<_i877.BaseThemeRepository>(
       () => _i297.ThemeRepository(gh<_i955.BasePrefStorageService>()),
     );
@@ -142,8 +136,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i814.ApiService>(
       () => injectionModule.apiService(gh<_i361.Dio>()),
     );
-    gh.factory<_i259.GameRepositoryImpl>(
+    gh.factory<_i199.GameRepository>(
       () => _i259.GameRepositoryImpl(gh<_i814.ApiService>()),
+    );
+    gh.factory<_i808.SubmitRunUseCase>(
+      () => _i808.SubmitRunUseCase(gh<_i199.GameRepository>()),
+    );
+    gh.factory<_i198.GameBloc>(
+      () => _i198.GameBloc(gh<_i808.SubmitRunUseCase>()),
     );
     return this;
   }
@@ -164,8 +164,6 @@ extension GetItInjectableX on _i174.GetIt {
   _i187.ToastificationService get toastificationService =>
       get<_i187.ToastificationService>();
 
-  _i808.SubmitRunUseCase get submitRunUseCase => get<_i808.SubmitRunUseCase>();
-
   _i71.SecureStorageService get secureStorageService =>
       get<_i71.SecureStorageService>();
 
@@ -179,8 +177,6 @@ extension GetItInjectableX on _i174.GetIt {
 
   _i426.AppInfoService get appInfoService => get<_i426.AppInfoService>();
 
-  _i198.GameBloc get gameBloc => get<_i198.GameBloc>();
-
   _i297.ThemeRepository get themeRepository => get<_i297.ThemeRepository>();
 
   _i784.LocalizationRepository get localizationRepository =>
@@ -188,6 +184,10 @@ extension GetItInjectableX on _i174.GetIt {
 
   _i259.GameRepositoryImpl get gameRepositoryImpl =>
       get<_i259.GameRepositoryImpl>();
+
+  _i808.SubmitRunUseCase get submitRunUseCase => get<_i808.SubmitRunUseCase>();
+
+  _i198.GameBloc get gameBloc => get<_i198.GameBloc>();
 }
 
 class _$InjectionModule extends _i840.InjectionModule {}

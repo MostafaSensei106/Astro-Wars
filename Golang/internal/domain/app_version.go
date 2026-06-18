@@ -1,10 +1,29 @@
 package domain
 
+import (
+	"context"
+
+	e "github.com/MostafaSensei106/Astro-Wars/Golang/internal/errors"
+)
+
 type AppVersion struct {
 	BaseEntity
-	Version     string `json:"version" gorm:"type:varchar(20);not null;unique" example:"1.0.2"`
-	Platform    string `json:"platform" gorm:"type:varchar(20);not null" example:"Android"` // Android, iOS, Windows
-	IsMandatory bool   `json:"is_mandatory" gorm:"default:false" example:"true"`
-	DownloadURL string `json:"download_url" gorm:"type:text" example:"https://play.google.com/store/apps/details?id=com.astrowars"`
-	ReleaseNote string `json:"release_note" gorm:"type:text" example:"Fixed NullPointerException Boss bug"`
+	VersionName         string `json:"version_name" gorm:"type:varchar(20);not null;default:'1.0.0'" example:"1.0"`
+	VersionCode         int    `json:"version_code" gorm:"type:int;not null;default:1" example:"1"`
+	MinSupportedVersion int    `json:"min_supported_version" gorm:"type:int;not null;default:1" example:"1"`
+	DownloadURL         string `json:"download_url" gorm:"type:varchar(255);not null" default:"https://github.com/MostafaSensei106/Astro-Wars/releases" example:"https://github.com/MostafaSensei106/Astro-Wars/releases"`
+	ReleaseNotes        string `json:"release_notes" gorm:"type:text;not null;default:'Bug Fixes and Improvements'"`
+	IsPublished         bool   `json:"is_published" gorm:"type:boolean;default:false"`
+}
+
+type AppVersionRepository interface {
+	Create(ctx context.Context, appVersion *AppVersion) e.Result[*AppVersion, error]
+	GetLatestVersion(ctx context.Context, platform string) e.Result[*AppVersion, error]
+	Update(ctx context.Context, appVersion *AppVersion) e.Result[*AppVersion, error]
+	Delete(ctx context.Context, id string) e.Result[bool, error]
+}
+
+type AppVersionUseCase interface {
+	GetLatestVersion(ctx context.Context, platform string) e.Result[*AppVersion, error]
+	PublishVersion(ctx context.Context, appVersion *AppVersion) e.Result[*AppVersion, error]
 }

@@ -15,7 +15,7 @@ func ConnectPostgres(dsn string) *gorm.DB {
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
-	err = db.AutoMigrate(&domain.User{}, &domain.Spacecraft{}, &domain.Runs{})
+	err = db.AutoMigrate(&domain.User{}, &domain.Spacecraft{}, &domain.Runs{}, domain.AppVersion{})
 	if err != nil {
 		log.Fatalf("failed to migrate database: %v", err)
 	}
