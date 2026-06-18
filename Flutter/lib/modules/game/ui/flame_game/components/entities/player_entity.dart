@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
+import 'package:flame/effects.dart';
 import '../base/base_sprite_entity.dart';
 import '../base/behaviors.dart';
 import '../projectiles/projectile.dart';
@@ -277,8 +278,8 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
 
     HapticFeedback.lightImpact();
 
-    // Shoot recoil (knockback)
-    position.y = (position.y + 10).clamp(size.y / 2, game.size.y - size.y / 2);
+    // Shoot recoil (knockback with return effect)
+    add(MoveEffect.by(Vector2(0, 8), EffectController(duration: 0.05, alternate: true)));
 
     if (activeWeapon == PowerUpType.flutter) {
       // Dual lasers with spread based on level

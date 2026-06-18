@@ -80,7 +80,8 @@ class Projectile extends PositionComponent
   void update(double dt) {
     super.update(dt);
     // Remove if it goes off-screen
-    if (position.y < -50 || position.y > game.size.y + 50) {
+    if (position.y < -50 || position.y > game.size.y + 50 || 
+        position.x < -50 || position.x > game.size.x + 50) {
       removeFromParent();
     }
   }
