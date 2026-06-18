@@ -1,3 +1,4 @@
+import 'package:flame_audio/flame_audio.dart';
 import 'dart:math';
 import 'package:flame/collisions.dart';
 import 'package:flutter/services.dart';
@@ -83,7 +84,9 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
   void update(double dt) {
     super.update(dt);
 
-    if (game.gameBloc.state.entity.isGameOver) return;
+    if (game.gameBloc.state.entity.isGameOver) {
+      return;
+    }
 
     // Engine exhaust particles
     _particleTimer += dt;
@@ -189,8 +192,9 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
 
   @override
   void takeDamage(int amount) {
-    if (hasShield || isInvincible || game.gameBloc.state.entity.isGameOver)
+    if (hasShield || isInvincible || game.gameBloc.state.entity.isGameOver) {
       return;
+    }
 
     // Lose a weapon level on hit
     if (weaponLevel > 1) {
@@ -199,6 +203,7 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
       activeWeapon = null; // lose weapon entirely
     }
 
+    FlameAudio.play('hit.wav', volume: 0.5);
     // Knockback
     position.add(Vector2((Random().nextDouble() - 0.5) * 40, 30));
 
@@ -225,6 +230,7 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
   @override
   void onDeath() {
     HapticFeedback.heavyImpact();
+    FlameAudio.play('gameover.wav', volume: 0.8);
 
     // Death Explosion
     final random = Random();
@@ -258,11 +264,15 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
   }
 
   void shoot() {
-    if (!_canShoot) return;
+    if (!_canShoot) {
+      return;
+    }
     _canShoot = false;
     Future.delayed(Duration(milliseconds: _fireRateMs), () {
       _canShoot = true;
     });
+
+    FlameAudio.play('laser.wav', volume: 0.25);
 
     HapticFeedback.lightImpact();
 
@@ -281,7 +291,7 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
             startPosition: position.clone()
               ..translate(startX + (i * spread), -size.y / 2),
             direction: Vector2(0, -1),
-          )..paint = (Paint()..color = Colors.blueAccent),
+          )..basePaint = (Paint()..color = Colors.blueAccent),
         );
       }
     } else if (activeWeapon == PowerUpType.backend) {
@@ -304,7 +314,7 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
                 20 + (weaponLevel * 3.0),
                 20 + (weaponLevel * 3.0),
               )
-              ..paint = (Paint()..color = Colors.orangeAccent);
+              ..basePaint = (Paint()..color = Colors.orangeAccent);
         game.add(bullet);
       }
     } else {

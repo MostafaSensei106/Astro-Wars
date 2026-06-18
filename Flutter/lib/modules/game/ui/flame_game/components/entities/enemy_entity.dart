@@ -1,6 +1,6 @@
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
-import 'package:flame/timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
@@ -138,6 +138,7 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
       isEnemyProjectile: true,
       damage: 20.0,
     );
+    FlameAudio.play('laser_enemy.wav', volume: 0.3);
     game.add(bullet);
   }
 
@@ -160,6 +161,7 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
   void onDeath() {
     super.onDeath();
     HapticFeedback.lightImpact();
+    FlameAudio.play('explosion.wav', volume: 0.5);
     game.gameBloc.add(const GameEvent.scoreIncreased(10));
 
     // Add simple particle explosion

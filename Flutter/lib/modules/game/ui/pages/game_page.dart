@@ -38,36 +38,40 @@ class GameView extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: BlocBuilder<GameBloc, GameState>(
                 builder: (context, state) {
-                  return CardComponent(
-                    color: Colors.black45,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Score: ${state.entity.score}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Row(
+                  return Stack(
+                    children: [
+                      // Bottom Left: Hearts
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: List.generate(3, (index) {
                             return Icon(
                               index < state.entity.health
                                   ? Icons.favorite
                                   : Icons.favorite_border,
                               color: Colors.redAccent,
-                              size: 24,
+                              size: 32,
+                              shadows: const [Shadow(blurRadius: 10, color: Colors.black)],
                             );
                           }),
                         ),
-                      ],
-                    ),
+                      ),
+                      // Bottom Right: Score
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Text(
+                          '${state.entity.score}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 32,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 2.0,
+                            shadows: [Shadow(blurRadius: 10, color: Colors.black)],
+                          ),
+                        ),
+                      ),
+                    ],
                   );
                 },
               ),

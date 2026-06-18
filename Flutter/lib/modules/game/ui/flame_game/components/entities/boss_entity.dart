@@ -3,6 +3,7 @@ import 'package:flame/particles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
+import 'package:flame_audio/flame_audio.dart';
 import '../base/base_sprite_entity.dart';
 import '../base/behaviors.dart';
 import 'player_entity.dart';
@@ -13,9 +14,10 @@ class BossEntity extends BaseSpriteEntity
     with MovementBehavior, HealthBehavior {
   late Timer shootTimer;
   int direction = 1;
+  final int maxHealth = 500;
 
   BossEntity() : super(size: Vector2(150, 150), anchor: Anchor.center) {
-    health = 500; // Big health
+    health = maxHealth; // Big health
     speed = 80.0;
     velocity = Vector2(1, 0); // Move side to side
   }
@@ -61,6 +63,47 @@ class BossEntity extends BaseSpriteEntity
       );
       game.add(bullet);
     }
+    FlameAudio.play('laser_enemy.wav', volume: 0.4);
+  }
+
+  @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+
+    // Draw Health Bar
+    final double healthPercent = (health / maxHealth).clamp(0.0, 1.0);
+    final double barWidth = size.x;
+    const double barHeight = 12.0;
+    const double offsetY = -25.0; // Above the boss
+
+    // Background (Red)
+    final bgPaint = Paint()..color = Colors.redAccent.withValues(alpha: 0.6);
+    final bgRect = Rect.fromLTWH(0, offsetY, barWidth, barHeight);
+    canvas.drawRRect(RRect.fromRectAndRadius(bgRect, const Radius.circular(6)), bgPaint);
+
+    // Foreground (Green)
+    final fgPaint = Paint()..color = Colors.greenAccent;
+    final fgRect = Rect.fromLTWH(0, offsetY, barWidth * healthPercent, barHeight);
+    canvas.drawRRect(RRect.fromRectAndRadius(fgRect, const Radius.circular(6)), fgPaint);
+
+    // Percentage Text
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: '${(healthPercent * 100).toInt()}%',
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          shadows: [Shadow(blurRadius: 2, color: Colors.black)],
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+    textPainter.paint(
+      canvas,
+      Offset(barWidth / 2 - textPainter.width / 2, offsetY + barHeight / 2 - textPainter.height / 2),
+    );
   }
 
   @override
@@ -80,6 +123,7 @@ class BossEntity extends BaseSpriteEntity
   void onDeath() {
     super.onDeath();
     HapticFeedback.heavyImpact();
+    FlameAudio.play('explosion.wav', volume: 0.8);
     game.gameBloc.add(const GameEvent.scoreIncreased(200));
     game.bossActive = false; // Notify game boss is dead
 

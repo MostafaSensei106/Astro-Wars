@@ -25,4 +25,7 @@ class RunRequestBody {
     required this.accuracy,
     required this.coffeeCups,
   });
+
+  factory RunRequestBody.fromJson(Map<String, dynamic> json) => _$RunRequestBodyFromJson(json);
+  Map<String, dynamic> toJson() => _$RunRequestBodyToJson(this);
 }

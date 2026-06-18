@@ -2,14 +2,14 @@ import 'dart:math';
 import 'package:flame/game.dart';
 import 'package:flame/events.dart';
 import 'package:flame/components.dart';
-import 'package:flutter/material.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'components/background/starfield.dart';
 import 'components/entities/player_entity.dart';
 import 'components/entities/enemy_entity.dart';
 import 'components/entities/boss_entity.dart';
 import 'components/entities/meteor_entity.dart';
 import 'components/entities/powerup_entity.dart';
-import '../../../logic/bloc/game_bloc.dart';
+import '../../logic/bloc/game_bloc.dart';
 
 class ShootDetector extends PositionComponent with TapCallbacks {
   final PlayerEntity player;
@@ -38,6 +38,10 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
   @override
   Future<void> onLoad() async {
     super.onLoad();
+    await FlameAudio.audioCache.loadAll([
+      'laser.wav', 'explosion.wav', 'laser_enemy.wav', 
+      'powerup.wav', 'hit.wav', 'gameover.wav', 'levelup.wav'
+    ]);
 
     // Background
     add(StarfieldComponent());
@@ -57,20 +61,7 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     );
   }
 
-  @override
-  void render(Canvas canvas) {
-    // Deep space background gradient
-    final Rect bgRect = Rect.fromLTWH(0, 0, size.x, size.y);
-    final paint = Paint()
-      ..shader = const LinearGradient(
-        colors: [Color(0xFF0B0C10), Color(0xFF1F2833), Color(0xFF000000)],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-      ).createShader(bgRect);
-    canvas.drawRect(bgRect, paint);
 
-    super.render(canvas);
-  }
 
   int currentLevel = 1;
   int wavesCleared = 0;
@@ -127,6 +118,7 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
 
     if (bossActive && bosses.isEmpty) {
       // Boss defeated! Level Up!
+      FlameAudio.play('levelup.wav', volume: 0.7);
       bossActive = false;
       currentLevel++;
       wavesCleared = 0;

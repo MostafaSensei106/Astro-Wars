@@ -1,8 +1,10 @@
+import 'package:flame_audio/flame_audio.dart';
 import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
 import 'package:flame/collisions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../base/behaviors.dart';
 import 'player_entity.dart';
 import '../../astro_game.dart';
@@ -100,13 +102,16 @@ class MeteorEntity extends PositionComponent with MovementBehavior, HealthBehavi
     position.y -= 5;
     
     if (health <= 0) {
-       _explode();
+       onDeath();
        removeFromParent();
     }
   }
 
-  void _explode() {
-    // Score!
+  @override
+  void onDeath() {
+    super.onDeath();
+    HapticFeedback.mediumImpact();
+    FlameAudio.play('explosion.wav', volume: 0.6);
     game.gameBloc.add(GameEvent.scoreIncreased((size.x).toInt()));
     
     // Particle explosion

@@ -9,7 +9,7 @@ class Projectile extends PositionComponent
   final double damage;
   final bool isEnemyProjectile;
   final bool isAoE;
-  late Paint _basePaint;
+  late Paint basePaint;
 
   Projectile({
     required Vector2 startPosition,
@@ -21,16 +21,10 @@ class Projectile extends PositionComponent
     position = startPosition;
     velocity = direction;
     speed = 400.0;
-    _basePaint = Paint()
+    basePaint = Paint()
       ..color = isEnemyProjectile ? Colors.redAccent : Colors.cyanAccent;
     add(RectangleHitbox());
   }
-
-  set paint(Paint p) {
-    _basePaint = p;
-  }
-
-  Paint get paint => _basePaint;
 
   @override
   void render(Canvas canvas) {
@@ -59,7 +53,7 @@ class Projectile extends PositionComponent
         Radius.circular(size.x / 2),
       );
 
-      final baseColor = _basePaint.color;
+      final baseColor = basePaint.color;
 
       final outerGlow = Paint()
         ..color = baseColor.withValues(alpha: 0.4)

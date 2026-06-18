@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/collisions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'dart:math';
 import '../base/behaviors.dart';
 import 'player_entity.dart';
@@ -120,6 +121,7 @@ class PowerUpEntity extends PositionComponent
     if (other is PlayerEntity) {
       HapticFeedback.mediumImpact();
       applyPowerUp(other);
+      FlameAudio.play('powerup.wav', volume: 0.6);
       removeFromParent();
     }
   }
