@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:math';
 import '../base/base_sprite_entity.dart';
 import '../base/behaviors.dart';
@@ -66,6 +67,7 @@ class EnemyEntity extends BaseSpriteEntity
   @override
   void onDeath() {
     super.onDeath();
+    HapticFeedback.lightImpact();
     game.gameBloc.add(const GameEvent.scoreIncreased(10));
 
     // Add simple particle explosion

@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/widgets/neu_widgets.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends HookWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final selectedShip = useState('hd_ship_sleek_1781686447510.jpg');
+
+    useEffect(() {
+      SharedPreferences.getInstance().then((prefs) {
+        final ship = prefs.getString('selected_ship');
+        if (ship != null) {
+          selectedShip.value = ship;
+        }
+      });
+      return null;
+    }, []);
+
     return Scaffold(
       backgroundColor: NeuTheme.bgColor(context),
       body: SafeArea(
@@ -15,13 +29,110 @@ class HomePage extends StatelessWidget {
             _buildTopBar(context),
             const SizedBox(height: 20),
             _buildTitle(context),
-            const SizedBox(height: 40),
+            const SizedBox(height: 30),
+            _buildShipSelection(context, selectedShip),
+            const SizedBox(height: 30),
             _buildStoryModeButton(context),
-            const SizedBox(height: 40),
+            const SizedBox(height: 20),
             Expanded(child: _buildLevelsGrid()),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildShipSelection(BuildContext context, ValueNotifier<String> selectedShip) {
+    final ships = [
+      {"asset": "hd_ship_sleek_1781686447510.jpg", "name": "SLEEK FIGHTER"},
+      {"asset": "hd_ship_heavy_1781686457671.jpg", "name": "HEAVY CRUISER"},
+      {"asset": "hd_ship_pixel_1781686721018.jpg", "name": "PIXEL GLIDER"},
+      {"asset": "hd_ship_cipher_1781686731026.jpg", "name": "CIPHER STEALTH"}
+    ];
+
+    return Column(
+      children: [
+        NeuContainer(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+          borderRadius: 20,
+          child: Text(
+            "HANGAR",
+            style: TextStyle(
+              color: NeuTheme.accentColor(context),
+              fontSize: 18,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 4,
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: ships.map((shipData) {
+              final ship = shipData["asset"]!;
+              final name = shipData["name"]!;
+              final isSelected = selectedShip.value == ship;
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: GestureDetector(
+                  onTap: () async {
+                    selectedShip.value = ship;
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setString('selected_ship', ship);
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOutCubic,
+                    transform: Matrix4.identity()..scale(isSelected ? 1.1 : 1.0),
+                    child: Column(
+                      children: [
+                        NeuContainer(
+                          width: isSelected ? 100 : 80,
+                          height: isSelected ? 100 : 80,
+                          isInner: isSelected, // Recessed if selected
+                          padding: const EdgeInsets.all(12),
+                          borderRadius: 24,
+                          child: Container(
+                            decoration: isSelected ? BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: NeuTheme.accentColor(context).withValues(alpha: 0.5),
+                                  blurRadius: 20,
+                                  spreadRadius: 2,
+                                )
+                              ]
+                            ) : null,
+                            child: Image.asset("assets/images/$ship", fit: BoxFit.contain),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        AnimatedOpacity(
+                          opacity: isSelected ? 1.0 : 0.5,
+                          duration: const Duration(milliseconds: 300),
+                          child: Text(
+                            name,
+                            style: TextStyle(
+                              color: isSelected ? NeuTheme.accentColor(context) : NeuTheme.textColor(context),
+                              fontSize: isSelected ? 14 : 12,
+                              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
     );
   }
 

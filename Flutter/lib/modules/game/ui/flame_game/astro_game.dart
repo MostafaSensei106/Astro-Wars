@@ -5,6 +5,8 @@ import 'package:flame_bloc/flame_bloc.dart';
 import '../../logic/bloc/game_bloc.dart';
 import 'components/entities/player_entity.dart';
 import 'components/entities/enemy_entity.dart';
+import 'components/entities/boss_entity.dart';
+import 'components/entities/powerup_entity.dart';
 
 class AstroGame extends FlameGame with HasCollisionDetection, PanDetector {
   final GameBloc gameBloc;
@@ -13,7 +15,9 @@ class AstroGame extends FlameGame with HasCollisionDetection, PanDetector {
 
   late PlayerEntity player;
   late Timer enemySpawner;
+  late Timer powerupSpawner;
   double currentSpawnInterval = 2.0;
+  bool bossActive = false;
 
   @override
   Future<void> onLoad() async {
@@ -27,11 +31,26 @@ class AstroGame extends FlameGame with HasCollisionDetection, PanDetector {
 
     await add(blocProvider);
 
+    powerupSpawner = Timer(
+      10.0,
+      onTick: () {
+        if (!gameBloc.state.entity.isGameOver) {
+          add(PowerUpEntity());
+        }
+      },
+      repeat: true,
+    );
+
     enemySpawner = Timer(
       currentSpawnInterval,
       onTick: () {
-        if (!gameBloc.state.entity.isGameOver) {
-          add(EnemyEntity());
+        if (!gameBloc.state.entity.isGameOver && !bossActive) {
+          if (gameBloc.state.entity.score > 0 && gameBloc.state.entity.score % 500 == 0) {
+            bossActive = true;
+            add(BossEntity());
+          } else {
+            add(EnemyEntity());
+          }
         }
       },
       repeat: true,
@@ -55,21 +74,19 @@ class AstroGame extends FlameGame with HasCollisionDetection, PanDetector {
     }
 
     enemySpawner.update(dt);
+    powerupSpawner.update(dt);
   }
 
   @override
   void onPanUpdate(DragUpdateInfo info) {
     if (!gameBloc.state.entity.isGameOver) {
-      player.position.add(info.delta.global);
+      player.position.add(Vector2(info.delta.global.x, 0));
       // Keep player inside screen
       player.position.x = player.position.x.clamp(
         player.size.x / 2,
         size.x - player.size.x / 2,
       );
-      player.position.y = player.position.y.clamp(
-        player.size.y / 2,
-        size.y - player.size.y / 2,
-      );
+      // Disabled Y movement to match classic space shooters
     }
   }
 }
