@@ -168,8 +168,7 @@ class HangarPage extends HookWidget {
                       onPressed: () async {
                         await AstroDesign.selectShip(
                             ships[page.value].asset);
-                        setState(
-                            () => _selected = ships[page.value].asset);
+                        selected.value = ships[page.value].asset;
                       },
                       icon: const Icon(Icons.check_rounded),
                       label: const Text('SELECT SHIP',

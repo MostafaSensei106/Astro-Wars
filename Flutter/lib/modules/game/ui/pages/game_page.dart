@@ -2,13 +2,14 @@ import 'dart:async';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/di/di.dart';
 import '../../../../core/widgets/buttons/elevated_button/elevated_button_component.dart';
 import '../../../../core/widgets/display/card/card_component.dart';
 import '../../logic/bloc/game_bloc.dart';
-import '../flame_game/astro_game.dart';
-import '../flame_game/components/entities/boss_entity.dart';
+import '../flamegame/astrogame.dart';
+import '../flamegame/components/entities/boss_entity.dart';
 import '../../../../core/utils/theme/astro_design.dart';
 
 class GamePage extends StatelessWidget {
@@ -24,109 +25,97 @@ class GamePage extends StatelessWidget {
   }
 }
 
-class GameView extends StatefulWidget {
+class GameView extends HookWidget {
   final int startLevel;
   const GameView({super.key, this.startLevel = 1});
 
   @override
-  State<GameView> createState() => _GameViewState();
-}
-
-class _GameViewState extends State<GameView> {
-  late final AstroGame _game;
-  late final GameBloc _bloc;
-  int _best = 0;
-  bool _bestLoaded = false;
-  StreamSubscription? _blocSub;
-
-  @override
-  void initState() {
-    super.initState();
-    _bloc = context.read<GameBloc>();
+  Widget build(BuildContext context) {
+    final bloc = context.read<GameBloc>();
     // Single game instance for the whole route (fixes rebuild recreation).
-    _game = AstroGame(gameBloc: _bloc, startLevel: widget.startLevel);
-    _loadBest();
-    _blocSub = _bloc.stream.listen((state) async {
-      if (state.entity.isGameOver) {
-        // Persist best score, unlocked levels and run count in one place.
-        await AstroDesign.recordRun(
-          score: state.entity.score,
-          levelReached: _game.currentLevel,
-        );
-        final best = await AstroDesign.bestScore();
-        if (mounted) setState(() => _best = best);
-      }
-    });
-  }
+    final game = useMemoized(
+      () => AstroGame(gameBloc: bloc, startLevel: startLevel),
+      [],
+    );
+    final best = useState(0);
+    final bestLoaded = useState(false);
 
-  Future<void> _loadBest() async {
-    final best = await AstroDesign.bestScore();
-    if (!mounted) return;
-    setState(() {
-      _best = best;
-      _bestLoaded = true;
-    });
-  }
+    useEffect(() {
+      var alive = true;
+      AstroDesign.bestScore().then((b) {
+        if (!alive) return;
+        best.value = b;
+        bestLoaded.value = true;
+      });
+      final sub = bloc.stream.listen((state) async {
+        if (state.entity.isGameOver) {
+          // Persist best score, unlocked levels and run count in one place.
+          await AstroDesign.recordRun(
+            score: state.entity.score,
+            levelReached: game.currentLevel,
+          );
+          final b = await AstroDesign.bestScore();
+          if (alive) best.value = b;
+        }
+      });
+      return () {
+        alive = false;
+        sub.cancel();
+      };
+    }, const []);
 
-  @override
-  void dispose() {
-    _blocSub?.cancel();
-    super.dispose();
-  }
-
-  void _showPauseMenu() {
-    _game.pause();
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) => Center(
-        child: CardComponent(
-          color: const Color(0xE6141626),
-          padding: const EdgeInsets.all(28),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('PAUSED',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 4)),
-              const SizedBox(height: 8),
-              Text('LEVEL ${_game.currentLevel}  •  SCORE ${_bloc.state.entity.score}',
-                  style: const TextStyle(color: Colors.white70)),
-              const SizedBox(height: 24),
-              ElevatedButtonComponent(
-                  label: 'Resume',
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                    _game.resume();
-                  }),
-              const SizedBox(height: 12),
-              ElevatedButtonComponent(
-                  label: 'Restart',
-                  onPressed: () async {
-                    Navigator.of(ctx).pop();
-                    await _game.reset();
-                  }),
-              const SizedBox(height: 12),
-              ElevatedButtonComponent(
-                  label: 'Quit to Base',
-                  onPressed: () => context.pop()),
-            ],
+    void showPauseMenu() {
+      game.pause();
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => Center(
+          child: CardComponent(
+            color: const Color(0xE6141626),
+            padding: const EdgeInsets.all(28),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('PAUSED',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 4)),
+                const SizedBox(height: 8),
+                Text(
+                    'LEVEL ${game.currentLevel}  •  SCORE ${bloc.state.entity.score}',
+                    style: const TextStyle(color: Colors.white70)),
+                const SizedBox(height: 24),
+                ElevatedButtonComponent(
+                    label: 'Resume',
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                      game.resume();
+                    }),
+                const SizedBox(height: 12),
+                ElevatedButtonComponent(
+                    label: 'Restart',
+                    onPressed: () async {
+                      Navigator.of(ctx).pop();
+                      await game.reset();
+                    }),
+                const SizedBox(height: 12),
+                ElevatedButtonComponent(
+                    label: 'Quit to Base',
+                    onPressed: () => context.pop()),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
+    }
 
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          GameWidget(game: _game),
+          GameWidget(game: game),
           // Live HUD — polls lightweight game fields at 5Hz.
           StreamBuilder(
             stream: Stream.periodic(const Duration(milliseconds: 200)),
@@ -136,7 +125,7 @@ class _GameViewState extends State<GameView> {
                 child: BlocBuilder<GameBloc, GameState>(
                   builder: (context, state) {
                     final bosses =
-                        _game.children.whereType<BossEntity>().toList();
+                        game.children.whereType<BossEntity>().toList();
                     final bossHp = bosses.isEmpty
                         ? 0.0
                         : (bosses.first.health / bosses.first.maxHealth)
@@ -147,22 +136,22 @@ class _GameViewState extends State<GameView> {
                           children: [
                             _HudButton(
                                 icon: Icons.pause_rounded,
-                                onTap: _showPauseMenu),
+                                onTap: showPauseMenu),
                             const SizedBox(width: 8),
                             _Pill(
-                                text: 'LV ${_game.currentLevel}',
+                                text: 'LV ${game.currentLevel}',
                                 color: Colors.deepPurpleAccent),
                             const SizedBox(width: 8),
                             _Pill(
-                                text: _game.waveProgressText,
+                                text: game.waveProgressText,
                                 color: Colors.cyanAccent),
                             const Spacer(),
-                            if (_game.comboMultiplier > 1)
+                            if (game.comboMultiplier > 1)
                               _Pill(
                                   text:
-                                      'x${_game.comboMultiplier} COMBO',
+                                      'x${game.comboMultiplier} COMBO',
                                   color: Colors.orangeAccent),
-                            if (_game.comboMultiplier > 1)
+                            if (game.comboMultiplier > 1)
                               const SizedBox(width: 8),
                             Text('${state.entity.score}',
                                 style: const TextStyle(
@@ -176,13 +165,13 @@ class _GameViewState extends State<GameView> {
                                     ])),
                           ],
                         ),
-                        if (_game.comboCount > 0)
+                        if (game.comboCount > 0)
                           Align(
                             alignment: Alignment.centerRight,
                             child: SizedBox(
                               width: 120,
                               child: LinearProgressIndicator(
-                                value: _game.comboProgress,
+                                value: game.comboProgress,
                                 minHeight: 4,
                                 backgroundColor: Colors.white24,
                                 color: Colors.orangeAccent,
@@ -190,19 +179,19 @@ class _GameViewState extends State<GameView> {
                             ),
                           ),
                         // Overheat bar (CI-style heat management).
-                        if (_game.player.isMounted) ...[
+                        if (game.player.isMounted) ...[
                           const SizedBox(height: 6),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
-                                _game.player.overheated
+                                game.player.overheated
                                     ? Icons.thermostat_rounded
                                     : Icons.whatshot_rounded,
                                 size: 14,
-                                color: _game.player.overheated
+                                color: game.player.overheated
                                     ? Colors.redAccent
-                                    : _game.player.heat01 > 0.8
+                                    : game.player.heat01 > 0.8
                                         ? Colors.orangeAccent
                                         : Colors.white38,
                               ),
@@ -210,17 +199,17 @@ class _GameViewState extends State<GameView> {
                               SizedBox(
                                 width: 140,
                                 child: LinearProgressIndicator(
-                                  value: _game.player.heat01,
+                                  value: game.player.heat01,
                                   minHeight: 6,
                                   backgroundColor: Colors.white12,
-                                  color: _game.player.overheated
+                                  color: game.player.overheated
                                       ? Colors.redAccent
-                                      : _game.player.heat01 > 0.8
+                                      : game.player.heat01 > 0.8
                                           ? Colors.orangeAccent
                                           : Colors.cyanAccent,
                                 ),
                               ),
-                              if (_game.player.overheated) ...[
+                              if (game.player.overheated) ...[
                                 const SizedBox(width: 6),
                                 const Text('OVERHEATED',
                                     style: TextStyle(
@@ -273,7 +262,7 @@ class _GameViewState extends State<GameView> {
                             const Spacer(),
                             // Missile launcher (commit economy).
                             GestureDetector(
-                              onTap: _game.fireMissile,
+                              onTap: game.fireMissile,
                               child: Stack(
                                 clipBehavior: Clip.none,
                                 children: [
@@ -282,7 +271,7 @@ class _GameViewState extends State<GameView> {
                                     height: 52,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: _game.missiles > 0
+                                      color: game.missiles > 0
                                           ? Colors.orangeAccent
                                               .withValues(alpha: 0.9)
                                           : Colors.white10,
@@ -293,7 +282,7 @@ class _GameViewState extends State<GameView> {
                                     ),
                                     child: Icon(
                                         Icons.rocket_launch_rounded,
-                                        color: _game.missiles > 0
+                                        color: game.missiles > 0
                                             ? Colors.black87
                                             : Colors.white38,
                                         size: 26),
@@ -310,7 +299,7 @@ class _GameViewState extends State<GameView> {
                                         color: Colors.redAccent,
                                       ),
                                       child: Text(
-                                          '${_game.missiles}',
+                                          '${game.missiles}',
                                           style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 11,
@@ -322,8 +311,8 @@ class _GameViewState extends State<GameView> {
                               ),
                             ),
                             const SizedBox(width: 12),
-                            if (_bestLoaded && _best > 0)
-                              Text('BEST $_best',
+                            if (bestLoaded.value && best.value > 0)
+                              Text('BEST $best.value',
                                   style: const TextStyle(
                                       color: Colors.white54,
                                       fontWeight: FontWeight.bold)),
@@ -337,7 +326,7 @@ class _GameViewState extends State<GameView> {
             ),
           ),
           // Wave / boss / sector banner.
-          if (_game.bannerVisible)
+          if (game.bannerVisible)
             Positioned(
               top: MediaQuery.of(context).size.height * 0.3,
               left: 0,
@@ -355,7 +344,7 @@ class _GameViewState extends State<GameView> {
                               .withValues(alpha: 0.6)),
                     ),
                     child: Text(
-                      _game.bannerText ?? '',
+                      game.bannerText ?? '',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -378,7 +367,7 @@ class _GameViewState extends State<GameView> {
             builder: (context, state) {
               if (!state.entity.isGameOver) return const SizedBox.shrink();
               final isRecord =
-                  _bestLoaded && state.entity.score >= _best && state.entity.score > 0;
+                  bestLoaded.value && state.entity.score >= best.value && state.entity.score > 0;
               return Container(
                 color: Colors.black54,
                 child: Center(
@@ -409,15 +398,15 @@ class _GameViewState extends State<GameView> {
                                 color: Colors.white,
                                 fontSize: 48,
                                 fontWeight: FontWeight.w900)),
-                        Text('BEST  •  ${_best > state.entity.score ? _best : state.entity.score}',
+                        Text('BEST  •  ${best.value > state.entity.score ? best.value : state.entity.score}',
                             style: const TextStyle(color: Colors.white54)),
                         const SizedBox(height: 8),
-                        Text('REACHED LEVEL ${_game.currentLevel}',
+                        Text('REACHED LEVEL ${game.currentLevel}',
                             style: const TextStyle(color: Colors.white70)),
                         const SizedBox(height: 24),
                         ElevatedButtonComponent(
                             label: 'Retry',
-                            onPressed: () => _game.reset()),
+                            onPressed: () => game.reset()),
                         const SizedBox(height: 12),
                         ElevatedButtonComponent(
                             label: 'Back to Base',
