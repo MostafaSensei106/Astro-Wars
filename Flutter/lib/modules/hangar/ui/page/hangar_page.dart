@@ -38,13 +38,13 @@ class HangarPage extends HookWidget {
           const Gap(8),
           Expanded(
             child: PageView.builder(
-              controller: _controller,
+              controller: controller,
               itemCount: ships.length,
-              onPageChanged: (i) => setState(() => _page = i),
+              onPageChanged: (i) => page.value = i,
               itemBuilder: (context, i) {
                 final ship = ships[i];
-                final active = i == _page;
-                final isSelected = ship.asset == _selected;
+                final active = i == page.value;
+                final isSelected = ship.asset == selected.value;
                 return AnimatedScale(
                   scale: active ? 1.0 : 0.92,
                   duration: const Duration(milliseconds: 250),
@@ -138,10 +138,10 @@ class HangarPage extends HookWidget {
                 ships.length,
                 (i) => Container(
                       margin: const EdgeInsets.all(4),
-                      width: i == _page ? 24 : 8,
+                      width: i == page.value ? 24 : 8,
                       height: 8,
                       decoration: BoxDecoration(
-                        color: i == _page
+                        color: i == page.value
                             ? scheme.primary
                             : Colors.grey.withValues(alpha: 0.4),
                         borderRadius: BorderRadius.circular(4),
@@ -154,7 +154,7 @@ class HangarPage extends HookWidget {
             child: SizedBox(
               width: double.infinity,
               height: 56,
-              child: ships[_page].asset == _selected
+              child: ships[page.value].asset == selected.value
                   ? FilledButton.tonalIcon(
                       onPressed: () => context.go(
                           '${RoutesNames.game}?level=1'),
@@ -167,9 +167,9 @@ class HangarPage extends HookWidget {
                   : FilledButton.icon(
                       onPressed: () async {
                         await AstroDesign.selectShip(
-                            ships[_page].asset);
+                            ships[page.value].asset);
                         setState(
-                            () => _selected = ships[_page].asset);
+                            () => _selected = ships[page.value].asset);
                       },
                       icon: const Icon(Icons.check_rounded),
                       label: const Text('SELECT SHIP',
