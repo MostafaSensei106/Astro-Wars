@@ -1,4 +1,5 @@
 import 'package:flame_audio/flame_audio.dart';
+import '../../../../../../core/utils/theme/astro_design.dart';
 import 'dart:math';
 import 'package:flame/collisions.dart';
 import 'package:flutter/services.dart';
@@ -220,7 +221,7 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
       activeWeapon = null; // lose weapon entirely
     }
 
-    FlameAudio.play('hit.wav', volume: 0.5);
+    Sfx.play('hit.wav', volume: 0.5);
     // Knockback
     position.add(Vector2((Random().nextDouble() - 0.5) * 40, 30));
 
@@ -249,7 +250,7 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
   void onDeath() {
     HapticFeedback.heavyImpact();
     FlameAudio.bgm.stop();
-    FlameAudio.play('gameover.wav', volume: 0.8);
+    Sfx.play('gameover.wav', volume: 0.8);
 
     // Death Explosion
     final random = Random();
@@ -291,7 +292,7 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
       _canShoot = true;
     });
 
-    FlameAudio.play('laser.wav', volume: 0.25);
+    Sfx.play('laser.wav', volume: 0.25);
 
     HapticFeedback.lightImpact();
 

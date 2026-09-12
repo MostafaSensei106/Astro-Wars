@@ -1,4 +1,4 @@
-import 'package:flame_audio/flame_audio.dart';
+import '../../../../../../core/utils/theme/astro_design.dart';
 import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
@@ -131,7 +131,7 @@ class MeteorEntity extends PositionComponent
   void onDeath() {
     super.onDeath();
     HapticFeedback.mediumImpact();
-    FlameAudio.play('explosion.wav', volume: 0.6);
+    Sfx.play('explosion.wav', volume: 0.6);
     game.registerKill((size.x).toInt());
 
     // Particle explosion

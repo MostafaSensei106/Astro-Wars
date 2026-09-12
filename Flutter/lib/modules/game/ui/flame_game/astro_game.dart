@@ -11,6 +11,7 @@ import 'components/entities/boss_entity.dart';
 import 'components/entities/meteor_entity.dart';
 import 'components/entities/powerup_entity.dart';
 import '../../logic/bloc/game_bloc.dart';
+import '../../../../core/utils/theme/astro_design.dart';
 
 class ShootDetector extends PositionComponent with TapCallbacks {
   final PlayerEntity player;
@@ -30,6 +31,7 @@ class ShootDetector extends PositionComponent with TapCallbacks {
 
 class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
   final GameBloc gameBloc;
+  final int startLevel;
   late PlayerEntity player;
   late Timer powerupSpawner;
   bool bossActive = false;
@@ -44,18 +46,20 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
   int get comboMultiplier => (1 + comboCount ~/ 8).clamp(1, maxComboMultiplier);
   double get comboProgress => (comboTimer / comboWindow).clamp(0.0, 1.0);
 
-  AstroGame({required this.gameBloc});
+  AstroGame({required this.gameBloc, this.startLevel = 1});
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+    currentLevel = startLevel;
+    await Sfx.loadFromPrefs();
     await FlameAudio.audioCache.loadAll([
       'laser.wav', 'explosion.wav', 'laser_enemy.wav',
       'powerup.wav', 'hit.wav', 'gameover.wav', 'levelup.wav', 'bgm.wav'
     ]);
 
     FlameAudio.bgm.initialize();
-    FlameAudio.bgm.play('bgm.wav', volume: 0.3);
+    if (Sfx.bgmEnabled) FlameAudio.bgm.play('bgm.wav', volume: 0.3);
 
     // Parallax background (generated layers + legacy space art fallback)
     add(StarfieldComponent());
@@ -104,7 +108,7 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
 
   void resume() {
     isPaused = false;
-    if (!gameBloc.state.entity.isGameOver) {
+    if (!gameBloc.state.entity.isGameOver && Sfx.bgmEnabled) {
       FlameAudio.bgm.resume();
     }
   }
@@ -120,7 +124,7 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     }
     bossActive = false;
     isPaused = false;
-    currentLevel = 1;
+    currentLevel = startLevel;
     wavesCleared = 0;
     _meteorTimer = 0;
     resetCombo();
@@ -130,7 +134,7 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     add(ShootDetector(player));
     powerupSpawner.start();
     await FlameAudio.bgm.stop();
-    FlameAudio.bgm.play('bgm.wav', volume: 0.3);
+    if (Sfx.bgmEnabled) FlameAudio.bgm.play('bgm.wav', volume: 0.3);
   }
 
   void spawnEnemyWave() {
@@ -205,7 +209,7 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
 
     if (bossActive && bosses.isEmpty) {
       // Boss defeated! Level Up!
-      FlameAudio.play('levelup.wav', volume: 0.7);
+      Sfx.play('levelup.wav', volume: 0.7);
       bossActive = false;
       currentLevel++;
       wavesCleared = 0;
