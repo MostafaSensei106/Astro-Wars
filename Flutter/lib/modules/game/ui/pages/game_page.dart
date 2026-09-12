@@ -10,21 +10,24 @@ import '../../../../core/widgets/display/card/card_component.dart';
 import '../../logic/bloc/game_bloc.dart';
 import '../flame_game/astro_game.dart';
 import '../flame_game/components/entities/boss_entity.dart';
+import '../../../../core/utils/theme/astro_design.dart';
 
 class GamePage extends StatelessWidget {
-  const GamePage({super.key});
+  final int startLevel;
+  const GamePage({super.key, this.startLevel = 1});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<GameBloc>(),
-      child: const GameView(),
+      child: GameView(startLevel: startLevel),
     );
   }
 }
 
 class GameView extends StatefulWidget {
-  const GameView({super.key});
+  final int startLevel;
+  const GameView({super.key, this.startLevel = 1});
 
   @override
   State<GameView> createState() => _GameViewState();
@@ -42,27 +45,28 @@ class _GameViewState extends State<GameView> {
     super.initState();
     _bloc = context.read<GameBloc>();
     // Single game instance for the whole route (fixes rebuild recreation).
-    _game = AstroGame(gameBloc: _bloc);
+    _game = AstroGame(gameBloc: _bloc, startLevel: widget.startLevel);
     _loadBest();
-    _blocSub = _bloc.stream.listen((state) {
-      if (state.entity.isGameOver) _saveBest(state.entity.score);
+    _blocSub = _bloc.stream.listen((state) async {
+      if (state.entity.isGameOver) {
+        // Persist best score, unlocked levels and run count in one place.
+        await AstroDesign.recordRun(
+          score: state.entity.score,
+          levelReached: _game.currentLevel,
+        );
+        final best = await AstroDesign.bestScore();
+        if (mounted) setState(() => _best = best);
+      }
     });
   }
 
   Future<void> _loadBest() async {
-    final prefs = await SharedPreferences.getInstance();
+    final best = await AstroDesign.bestScore();
     if (!mounted) return;
     setState(() {
-      _best = prefs.getInt('best_score') ?? 0;
+      _best = best;
       _bestLoaded = true;
     });
-  }
-
-  Future<void> _saveBest(int score) async {
-    if (score <= _best) return;
-    _best = score;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('best_score', score);
   }
 
   @override
