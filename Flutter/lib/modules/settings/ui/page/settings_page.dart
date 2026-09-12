@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../../core/widgets/neu_widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/utils/theme/astro_design.dart';
 
+/// Settings with real persistence: SFX/BGM gates + danger-zone reset.
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
@@ -9,117 +13,161 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool _soundEnabled = true;
-  bool _musicEnabled = true;
-  bool _notificationsEnabled = false;
+  bool _sfx = true;
+  bool _bgm = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Sfx.loadFromPrefs().then((_) {
+      if (!mounted) return;
+      setState(() {
+        _sfx = Sfx.enabled;
+        _bgm = Sfx.bgmEnabled;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: NeuTheme.bgColor(context),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: NeuIconButton(
-            icon: Icons.arrow_back_rounded,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
-        title: Text(
-          'SETTINGS',
-          style: TextStyle(
-            color: NeuTheme.textColor(context),
-            fontWeight: FontWeight.bold,
-            letterSpacing: 2,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(24.0),
-          children: [
-            _buildSettingItem(
-              icon: Icons.volume_up_rounded,
-              title: 'Sound Effects',
-              value: _soundEnabled,
-              onChanged: (val) => setState(() => _soundEnabled = val),
-            ),
-            const SizedBox(height: 24),
-            _buildSettingItem(
-              icon: Icons.music_note_rounded,
-              title: 'Background Music',
-              value: _musicEnabled,
-              onChanged: (val) => setState(() => _musicEnabled = val),
-            ),
-            const SizedBox(height: 24),
-            _buildSettingItem(
-              icon: Icons.notifications_rounded,
-              title: 'Notifications',
-              value: _notificationsEnabled,
-              onChanged: (val) => setState(() => _notificationsEnabled = val),
-            ),
-            const SizedBox(height: 48),
-            NeuButton(
-              onPressed: () {
-                // Logout or reset progress
+      appBar: AppBar(title: const Text('SETTINGS')),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          _Tile(
+            icon: Icons.volume_up_rounded,
+            title: 'Sound effects',
+            subtitle: 'Lasers, explosions, pickups',
+            trailing: Switch(
+              value: _sfx,
+              onChanged: (v) async {
+                await Sfx.setEnabled(v);
+                setState(() => _sfx = v);
               },
-              child: Text(
-                'RESET PROGRESS',
-                style: TextStyle(
-                  color: Colors.redAccent,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.5,
-                ),
-              ),
             ),
-          ],
-        ),
+          ),
+          const Gap(12),
+          _Tile(
+            icon: Icons.music_note_rounded,
+            title: 'Background music',
+            subtitle: 'Synthwave loop during missions',
+            trailing: Switch(
+              value: _bgm,
+              onChanged: (v) async {
+                await Sfx.setBgmEnabled(v);
+                setState(() => _bgm = v);
+              },
+            ),
+          ),
+          const Gap(12),
+          _Tile(
+            icon: Icons.palette_outlined,
+            title: 'Theme & accent',
+            subtitle: 'Dark / light, neon accent',
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => context.push('/theme'),
+          ),
+          const Gap(32),
+          const Text('DANGER ZONE',
+              style: TextStyle(
+                  color: AstroDesign.danger,
+                  letterSpacing: 2,
+                  fontWeight: FontWeight.bold)),
+          const Gap(12),
+          OutlinedButton.icon(
+            onPressed: () => _confirmReset(context),
+            icon: const Icon(Icons.delete_forever_rounded),
+            label: const Text('RESET PROGRESS'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AstroDesign.danger,
+              side: const BorderSide(color: AstroDesign.danger),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildSettingItem({
-    required IconData icon,
-    required String title,
-    required bool value,
-    required ValueChanged<bool> onChanged,
-  }) {
-    return NeuContainer(
-      padding: const EdgeInsets.all(20.0),
-      child: Row(
-        children: [
-          Icon(icon, color: NeuTheme.accentColor(context), size: 28),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              title,
-              style: TextStyle(
-                color: NeuTheme.textColor(context),
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 1,
-              ),
-            ),
-          ),
-          NeuButton(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            onPressed: () => onChanged(!value),
-            child: Text(
-              value ? 'ON' : 'OFF',
-              style: TextStyle(
-                color: value
-                    ? NeuTheme.accentColor(context)
-                    : NeuTheme.textColor(context).withValues(alpha: 0.5),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+  Future<void> _confirmReset(BuildContext context) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Reset all progress?'),
+        content: const Text(
+            'Best score, unlocked sectors and mission count will be erased.'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: FilledButton.styleFrom(
+                backgroundColor: AstroDesign.danger),
+            child: const Text('Reset'),
           ),
         ],
+      ),
+    );
+    if (ok == true && context.mounted) {
+      await AstroDesign.resetProgress();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Progress erased. Fresh start, Commander.')),
+      );
+    }
+  }
+}
+
+class _Tile extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Widget trailing;
+  final VoidCallback? onTap;
+  const _Tile(
+      {required this.icon,
+      required this.title,
+      required this.subtitle,
+      required this.trailing,
+      this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Material(
+      color: scheme.surfaceContainerHighest.withValues(alpha: 0.5),
+      borderRadius:
+          BorderRadius.circular(AstroDesign.radiusMd),
+      child: InkWell(
+        borderRadius:
+            BorderRadius.circular(AstroDesign.radiusMd),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Icon(icon, color: scheme.primary, size: 28),
+              const Gap(16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16)),
+                    Text(subtitle,
+                        style: TextStyle(
+                            color: scheme.onSurfaceVariant,
+                            fontSize: 13)),
+                  ],
+                ),
+              ),
+              trailing,
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -1,142 +1,125 @@
 import 'package:flutter/material.dart';
-import '../../../../core/widgets/neu_widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
+import '../../../../core/utils/theme/astro_design.dart';
+import '../../../../core/utils/theme/logic/cubit/theme_cubit.dart';
 
-class ThemePage extends StatefulWidget {
+/// Theme studio: mode (system/dark/light) + neon accent, all persisted
+/// through the hydrated [ThemeCubit] (was local throwaway state before).
+class ThemePage extends StatelessWidget {
   const ThemePage({super.key});
-
-  @override
-  State<ThemePage> createState() => _ThemePageState();
-}
-
-class _ThemePageState extends State<ThemePage> {
-  int _selectedThemeIndex = 0;
-
-  final List<Map<String, dynamic>> _themes = [
-    {'name': 'Deep Space', 'color': Colors.purpleAccent},
-    {'name': 'Neon Red', 'color': Colors.redAccent},
-    {'name': 'Cyber Blue', 'color': Colors.blueAccent},
-    {'name': 'Toxic Green', 'color': Colors.greenAccent},
-  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: NeuTheme.bgColor(context),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: NeuIconButton(
-            icon: Icons.arrow_back_rounded,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
-        title: Text(
-          'THEME',
-          style: TextStyle(
-            color: NeuTheme.textColor(context),
-            fontWeight: FontWeight.bold,
-            letterSpacing: 2,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      appBar: AppBar(title: const Text('THEME')),
+      body: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, state) {
+          final cubit = context.read<ThemeCubit>();
+          return ListView(
+            padding: const EdgeInsets.all(20),
             children: [
-              Text(
-                'SELECT ACCENT COLOR',
-                style: TextStyle(
-                  color: NeuTheme.textColor(context),
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
-                ),
+              const Text('APPEARANCE',
+                  style: TextStyle(
+                      letterSpacing: 2, fontWeight: FontWeight.bold)),
+              const Gap(12),
+              SegmentedButton<ThemeMode>(
+                segments: const [
+                  ButtonSegment(
+                      value: ThemeMode.system,
+                      icon: Icon(Icons.settings_suggest_rounded),
+                      label: Text('Auto')),
+                  ButtonSegment(
+                      value: ThemeMode.dark,
+                      icon: Icon(Icons.dark_mode_rounded),
+                      label: Text('Dark')),
+                  ButtonSegment(
+                      value: ThemeMode.light,
+                      icon: Icon(Icons.light_mode_rounded),
+                      label: Text('Light')),
+                ],
+                selected: {state.themeMode},
+                onSelectionChanged: (s) =>
+                    cubit.changeTheme(s.first),
               ),
-              const SizedBox(height: 24),
-              Expanded(
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 24,
-                    mainAxisSpacing: 24,
-                    childAspectRatio: 0.8,
-                  ),
-                  itemCount: _themes.length,
-                  itemBuilder: (context, index) {
-                    final theme = _themes[index];
-                    final isSelected = _selectedThemeIndex == index;
-
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedThemeIndex = index;
-                        });
-                      },
-                      child: NeuContainer(
-                        padding: const EdgeInsets.all(16.0),
-                        isInner: isSelected, // Makes it look pressed/selected
+              const Gap(28),
+              const Text('NEON ACCENT',
+                  style: TextStyle(
+                      letterSpacing: 2, fontWeight: FontWeight.bold)),
+              const Gap(12),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate:
+                    const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 1.4,
+                ),
+                itemCount: AstroDesign.accents.length,
+                itemBuilder: (context, i) {
+                  final color = AstroDesign.accents[i];
+                  final selected =
+                      state.accentValue == color.toARGB32();
+                  return Material(
+                    color: color.withValues(
+                        alpha: selected ? 0.25 : 0.08),
+                    borderRadius: BorderRadius.circular(
+                        AstroDesign.radiusMd),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(
+                          AstroDesign.radiusMd),
+                      onTap: () =>
+                          cubit.changeAccent(color.toARGB32()),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                              AstroDesign.radiusMd),
+                          border: Border.all(
+                            color: selected
+                                ? color
+                                : Colors.grey
+                                    .withValues(alpha: 0.3),
+                            width: selected ? 2 : 1,
+                          ),
+                        ),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment:
+                              MainAxisAlignment.center,
                           children: [
                             Container(
-                              width: 60,
-                              height: 60,
+                              width: 44,
+                              height: 44,
                               decoration: BoxDecoration(
-                                color: theme['color'],
+                                color: color,
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: theme['color'].withOpacity(0.5),
-                                    blurRadius: 15,
-                                  ),
+                                      color: color.withValues(
+                                          alpha: 0.6),
+                                      blurRadius: 16)
                                 ],
                               ),
+                              child: selected
+                                  ? const Icon(Icons.check_rounded,
+                                      color: Colors.white)
+                                  : null,
                             ),
-                            const SizedBox(height: 24),
-                            Text(
-                              theme['name'],
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: isSelected
-                                    ? theme['color']
-                                    : NeuTheme.textColor(context),
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1,
-                              ),
-                            ),
+                            const Gap(8),
+                            Text(AstroDesign.accentNames[i],
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
                           ],
                         ),
                       ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 24),
-              NeuButton(
-                onPressed: () {
-                  // Apply theme logic
-                  Navigator.of(context).pop();
+                    ),
+                  );
                 },
-                width: double.infinity,
-                child: Text(
-                  'APPLY THEME',
-                  style: TextStyle(
-                    color: NeuTheme.accentColor(context),
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5,
-                  ),
-                ),
               ),
             ],
-          ),
-        ),
+          );
+        },
       ),
     );
   }
