@@ -1,13 +1,13 @@
 import '../../../../../../core/utils/theme/astro_design.dart';
 import 'dart:math';
 import 'package:flame/components.dart';
-import 'package:flame/particles.dart';
 import 'package:flame/collisions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../base/behaviors.dart';
 import 'player_entity.dart';
 import '../../astro_game.dart';
+import '../particles/fx.dart';
 
 class MeteorEntity extends PositionComponent
     with
@@ -134,32 +134,8 @@ class MeteorEntity extends PositionComponent
     Sfx.play('explosion.wav', volume: 0.6);
     game.registerKill((size.x).toInt());
 
-    // Particle explosion
-    final random = Random();
-    game.add(
-      ParticleSystemComponent(
-        particle: Particle.generate(
-          count: 10,
-          lifespan: 0.5,
-          generator: (i) {
-            return AcceleratedParticle(
-              acceleration: Vector2(
-                (random.nextDouble() - 0.5) * 100,
-                (random.nextDouble() - 0.5) * 100,
-              ),
-              speed: Vector2(
-                (random.nextDouble() - 0.5) * 200,
-                (random.nextDouble() - 0.5) * 200,
-              ),
-              position: position.clone(),
-              child: CircleParticle(
-                radius: 1.0 + random.nextDouble() * 3.0,
-                paint: Paint()..color = meteorColor,
-              ),
-            );
-          },
-        ),
-      ),
-    );
+    // Rocky breakup: smoke + tumbling debris.
+    Fx.smoke(game, position.clone(), meteorColor, count: 8, size: size.x / 6);
+    Fx.feathers(game, position.clone(), const Color(0xFF8A7A6A), count: 8);
   }
 }

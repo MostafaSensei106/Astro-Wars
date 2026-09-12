@@ -1,6 +1,5 @@
 import '../../../../../../core/utils/theme/astro_design.dart';
 import 'package:flame/components.dart';
-import 'package:flame/particles.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +7,9 @@ import 'dart:math';
 import '../base/base_sprite_entity.dart';
 import '../base/behaviors.dart';
 import 'player_entity.dart';
+import 'commit_entity.dart';
 import '../projectiles/projectile.dart';
+import '../particles/fx.dart';
 
 enum EnemyState { flyingIn, formation, swooping, returning }
 
@@ -37,7 +38,7 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
     super.onLoad();
 
     await loadAsset(game.currentConfig.enemySprite);
-    speed *= game.currentConfig.enemySpeedMultiplier;
+    speed *= game.currentConfig.enemySpeedMultiplier * game.waveSpeedMult;
 
     final random = Random();
     shootTimer = Timer(3.0 + random.nextDouble() * 4, onTick: shoot, repeat: true);
@@ -174,27 +175,19 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
   void onDeath() {
     super.onDeath();
     HapticFeedback.lightImpact();
-    Sfx.play('explosion.wav', volume: 0.5);
     game.registerKill(10);
 
-    // Add simple particle explosion
-    final particleComponent = ParticleSystemComponent(
-      particle: Particle.generate(
-        count: 20,
-        lifespan: 0.5,
-        generator: (i) => AcceleratedParticle(
-          speed: Vector2(
-            (Random().nextDouble() - 0.5) * 400,
-            (Random().nextDouble() - 0.5) * 400,
-          ),
-          position: position.clone(),
-          child: CircleParticle(
-            radius: 2.5,
-            paint: Paint()..color = Colors.orangeAccent,
-          ),
-        ),
-      ),
-    );
-    game.add(particleComponent);
+    // Cartoon kill: feather burst tinted by enemy type + occasional cluck.
+    final featherColor = assetName.contains('spaghetti')
+        ? const Color(0xFFFFC233)
+        : const Color(0xFF3DFF88);
+    Fx.feathers(game, position.clone(), featherColor);
+    if (Random().nextDouble() < 0.3) {
+      Sfx.play('cluck', volume: 0.4);
+    }
+    // Drumstick economy: 60% chance to drop a commit pickup.
+    if (Random().nextDouble() < 0.6) {
+      game.add(CommitEntity(startPosition: position.clone()));
+    }
   }
 }

@@ -11,6 +11,7 @@ import 'package:flame/effects.dart';
 import '../base/base_sprite_entity.dart';
 import '../base/behaviors.dart';
 import '../projectiles/projectile.dart';
+import '../particles/fx.dart';
 import 'powerup_entity.dart';
 import 'enemy_entity.dart';
 import '../../../../logic/bloc/game_bloc.dart';
@@ -67,6 +68,25 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
   /// Hold-to-fire: the game loop calls [tickAutofire] every frame.
   bool autofireEnabled = true;
 
+  // --- Overheat (CI-style): sustained fire builds heat; at 100 the
+  // weapon locks for 3s. Backend rockets run hotter than lasers.
+  double heat = 0;
+  bool overheated = false;
+  double _overheatTimer = 0;
+  bool _warnPlayed = false;
+  static const double _coolRate = 30;
+  static const double _overheatLockout = 3.0;
+
+  static const int maxWeaponLevel = 10;
+
+  double get heat01 => (heat / 100).clamp(0.0, 1.0);
+
+  double get _heatPerShot => switch (activeWeapon) {
+        PowerUpType.backend => 9.0,
+        PowerUpType.flutter => 4.0,
+        _ => 5.5,
+      };
+
   double _particleTimer = 0;
 
   PlayerEntity() : super(size: Vector2(64, 64), anchor: Anchor.center) {
@@ -106,11 +126,31 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
       _spawnSmokeParticles();
     }
 
+    // Heat dissipation + overheat lockout countdown.
+    if (overheated) {
+      _overheatTimer -= dt;
+      if (_overheatTimer <= 0) {
+        overheated = false;
+        heat = 0;
+        _warnPlayed = false;
+      }
+    } else if (heat > 0) {
+      heat = (heat - _coolRate * dt).clamp(0.0, 100.0);
+      if (heat < 70) _warnPlayed = false;
+    }
+
     // Autofire: tap-to-shoot still works via ShootDetector, but holding
     // is no longer required — the ship fires at its fire-rate automatically.
     if (autofireEnabled) {
       shoot();
     }
+  }
+
+  /// Instantly vent all heat (Coolant pickup).
+  void ventHeat() {
+    heat = 0;
+    overheated = false;
+    _warnPlayed = false;
   }
 
   /// Heal clamped to [maxHealth]. The matching bloc event
@@ -120,73 +160,29 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
   }
 
   void _spawnEngineParticles() {
-    final random = Random();
-    game.add(
-      ParticleSystemComponent(
-        particle: Particle.generate(
-          count: 3,
-          lifespan: 0.2,
-          generator: (i) {
-            return AcceleratedParticle(
-              acceleration: Vector2(0, 300),
-              speed: Vector2(
-                (random.nextDouble() - 0.5) * 40,
-                50 + random.nextDouble() * 50,
-              ),
-              position: position.clone()
-                ..translate((random.nextDouble() - 0.5) * 20, size.y / 2 - 5),
-              child: CircleParticle(
-                radius: 1.5 + random.nextDouble() * 2.0,
-                paint: Paint()
-                  ..color = Colors.cyanAccent.withValues(alpha: 0.8),
-              ),
-            );
-          },
-        ),
-      ),
+    Fx.trail(
+      game,
+      position.clone()..translate(0, size.y / 2 - 5),
+      Colors.cyanAccent,
     );
   }
 
   void _spawnSmokeParticles() {
-    final random = Random();
-    game.add(
-      ParticleSystemComponent(
-        particle: Particle.generate(
-          count: 2,
-          lifespan: 0.5,
-          generator: (i) {
-            return AcceleratedParticle(
-              acceleration: Vector2((random.nextDouble() - 0.5) * 100, -100),
-              speed: Vector2((random.nextDouble() - 0.5) * 20, -50),
-              position: position.clone()
-                ..translate(
-                  (random.nextDouble() - 0.5) * 30,
-                  (random.nextDouble() - 0.5) * 30,
-                ),
-              child: CircleParticle(
-                radius: 2.0 + random.nextDouble() * 3.0,
-                paint: Paint()..color = Colors.black54,
-              ),
-            );
-          },
-        ),
-      ),
-    );
+    Fx.smoke(game, position.clone(), Colors.black54, count: 2, size: 5);
   }
 
   void activateWeapon(PowerUpType type, {required double fireRate}) {
     if (activeWeapon == type) {
-      weaponLevel = (weaponLevel + 1).clamp(1, 5);
+      // CI-style: gifts stack up to power level 10.
+      weaponLevel = (weaponLevel + 1).clamp(1, maxWeaponLevel);
     } else {
       activeWeapon = type;
       weaponLevel = 1;
     }
 
-    // Fire rate gets slightly faster with each level
-    double upgradedFireRate = fireRate - ((weaponLevel - 1) * 0.02);
+    // Fire rate gets slightly faster with each level.
+    double upgradedFireRate = fireRate - ((weaponLevel - 1) * 0.015);
     _fireRateMs = (max(0.05, upgradedFireRate) * 1000).toInt();
-
-    // Weapons are now permanent until taking damage (no 10 sec timer)
   }
 
   void activateShield() {
@@ -214,11 +210,13 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
       return;
     }
 
-    // Lose a weapon level on hit
+    // Lose ONE weapon level per hit (CI-style), never the whole weapon.
     if (weaponLevel > 1) {
       weaponLevel--;
-    } else {
-      activeWeapon = null; // lose weapon entirely
+      double baseRate =
+          activeWeapon == PowerUpType.backend ? 0.6 : 0.1;
+      _fireRateMs =
+          (max(0.05, baseRate - ((weaponLevel - 1) * 0.015)) * 1000).toInt();
     }
 
     Sfx.play('hit.wav', volume: 0.5);
@@ -284,13 +282,27 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
   }
 
   void shoot() {
-    if (!_canShoot) {
+    if (!_canShoot || overheated) {
       return;
     }
     _canShoot = false;
     Future.delayed(Duration(milliseconds: _fireRateMs), () {
       _canShoot = true;
     });
+
+    // Build heat; warn near the top, lock out at 100.
+    heat = (heat + _heatPerShot).clamp(0.0, 100.0);
+    if (heat >= 80 && !_warnPlayed) {
+      _warnPlayed = true;
+      Sfx.play('overheat_warn', volume: 0.5);
+    }
+    if (heat >= 100) {
+      overheated = true;
+      _overheatTimer = _overheatLockout;
+      Sfx.play('overheat_lock', volume: 0.6);
+      HapticFeedback.heavyImpact();
+      return;
+    }
 
     Sfx.play('laser.wav', volume: 0.25);
 
@@ -300,8 +312,8 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
     add(MoveEffect.by(Vector2(0, 8), EffectController(duration: 0.05, alternate: true)));
 
     if (activeWeapon == PowerUpType.flutter) {
-      // Dual lasers with spread based on level
-      int count = weaponLevel + 1; // 2 to 6 lasers
+      // Dual lasers with spread based on level (2..6 streams, damage scales).
+      int count = (2 + weaponLevel ~/ 2).clamp(2, 6);
       double spread = 18.0;
       double startX = -((count - 1) * spread) / 2;
 
@@ -311,12 +323,13 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
             startPosition: position.clone()
               ..translate(startX + (i * spread), -size.y / 2),
             direction: Vector2(0, -1),
+            damage: 25.0 + weaponLevel * 2,
           )..basePaint = (Paint()..color = Colors.blueAccent),
         );
       }
     } else if (activeWeapon == PowerUpType.backend) {
-      // Heavy slow AoE projectile (Rockets)
-      int count = weaponLevel; // 1 to 5 rockets
+      // Heavy slow AoE projectile (Rockets), 1..4 tubes.
+      int count = (1 + weaponLevel ~/ 3).clamp(1, 4);
       double spread = 25.0;
       double startX = -((count - 1) * spread) / 2;
 

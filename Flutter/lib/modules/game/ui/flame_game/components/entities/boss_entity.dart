@@ -1,5 +1,4 @@
 import 'package:flame/components.dart';
-import 'package:flame/particles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
@@ -9,6 +8,7 @@ import '../base/base_sprite_entity.dart';
 import '../base/behaviors.dart';
 import 'player_entity.dart';
 import '../projectiles/projectile.dart';
+import '../particles/fx.dart';
 import '../../../../logic/bloc/game_bloc.dart';
 
 class BossEntity extends BaseSpriteEntity
@@ -141,23 +141,9 @@ class BossEntity extends BaseSpriteEntity
     game.gameBloc.add(const GameEvent.bossDefeated());
     game.bossActive = false; // Notify game boss is dead
 
-    final particleComponent = ParticleSystemComponent(
-      particle: Particle.generate(
-        count: 100,
-        lifespan: 1.5,
-        generator: (i) => AcceleratedParticle(
-          speed: Vector2(
-            (Random().nextDouble() - 0.5) * 800,
-            (Random().nextDouble() - 0.5) * 800,
-          ),
-          position: position.clone(),
-          child: CircleParticle(
-            radius: 4.0,
-            paint: Paint()..color = Colors.redAccent,
-          ),
-        ),
-      ),
-    );
-    game.add(particleComponent);
+    // Big cartoon finale: shockwave ring + feathers + smoke.
+    Fx.ring(game, position.clone(), Colors.redAccent, maxRadius: 200);
+    Fx.feathers(game, position.clone(), Colors.redAccent, count: 24);
+    Fx.smoke(game, position.clone(), Colors.grey, count: 12, size: 10);
   }
 }

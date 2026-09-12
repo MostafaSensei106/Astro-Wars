@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import '../../../../../../core/utils/theme/astro_design.dart';
 import 'dart:math';
 import '../base/behaviors.dart';
+import '../particles/fx.dart';
 import 'player_entity.dart';
 import 'enemy_entity.dart';
 import '../../astro_game.dart';
 import '../../../../logic/bloc/game_bloc.dart';
 
-enum PowerUpType { flutter, backend, cybersecurity, uiux, hr, logistics }
+enum PowerUpType { flutter, backend, cybersecurity, uiux, hr, logistics, coolant }
 
 class PowerUpEntity extends PositionComponent
     with MovementBehavior, CollisionCallbacks, HasGameReference<AstroGame> {
@@ -56,6 +57,9 @@ class PowerUpEntity extends PositionComponent
     } else if (type == PowerUpType.logistics) {
       label = 'WIPE';
       auraColor = Colors.redAccent;
+    } else if (type == PowerUpType.coolant) {
+      label = 'COOLANT';
+      auraColor = Colors.lightBlueAccent;
     }
 
     // Add glowing magical aura behind the sprite
@@ -121,7 +125,15 @@ class PowerUpEntity extends PositionComponent
     if (other is PlayerEntity) {
       HapticFeedback.mediumImpact();
       applyPowerUp(other);
-      Sfx.play('powerup.wav', volume: 0.6);
+      if (type != PowerUpType.coolant) {
+        // Coolant plays its own shimmer inside applyPowerUp.
+        final isGift = type == PowerUpType.flutter ||
+            type == PowerUpType.backend ||
+            type == PowerUpType.uiux;
+        Sfx.play(isGift ? 'gift_pickup' : 'powerup.wav', volume: 0.6);
+      }
+      Fx.sparkle(game, position.clone(), Colors.white);
+      Fx.ring(game, position.clone(), Colors.white, maxRadius: 60);
       removeFromParent();
     }
   }
@@ -156,10 +168,14 @@ class PowerUpEntity extends PositionComponent
         game.gameBloc.add(const GameEvent.playerDamaged(-1));
         break;
       case PowerUpType.logistics:
-        // Screen wipe
-        for (final enemy in game.children.whereType<EnemyEntity>().toList()) {
-          enemy.takeDamage(100);
-        }
+        // Logistics crate: loads one missile instead of a free screen wipe.
+        // Missiles are fired from the HUD button (limited resource).
+        game.addMissile(1);
+        break;
+      case PowerUpType.coolant:
+        // Instantly vent weapon heat + clear overheat lockout.
+        player.ventHeat();
+        Sfx.play('coolant', volume: 0.6);
         break;
     }
   }

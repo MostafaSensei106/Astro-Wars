@@ -1,0 +1,52 @@
+{
+  "sector": 2,
+  "boss": true,
+  "waves": [
+    {
+      "type": "formation",
+      "rows": 3,
+      "cols": 6,
+      "speedMult": 1.2
+    },
+    {
+      "type": "formation",
+      "rows": 3,
+      "cols": 6,
+      "speedMult": 1.2
+    },
+    {
+      "type": "swoop",
+      "rows": 3,
+      "cols": 5,
+      "speedMult": 1.2
+    },
+    {
+      "type": "meteor",
+      "speedMult": 1.2
+    },
+    {
+      "type": "bonus",
+      "rows": 2,
+      "cols": 4,
+      "giftShower": 3
+    },
+    {
+      "type": "formation",
+      "rows": 3,
+      "cols": 6,
+      "speedMult": 1.2
+    },
+    {
+      "type": "formation",
+      "rows": 3,
+      "cols": 6,
+      "speedMult": 1.2
+    },
+    {
+      "type": "swoop",
+      "rows": 3,
+      "cols": 5,
+      "speedMult": 1.2
+    }
+  ]
+}

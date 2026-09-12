@@ -152,6 +152,10 @@ class _GameViewState extends State<GameView> {
                             _Pill(
                                 text: 'LV ${_game.currentLevel}',
                                 color: Colors.deepPurpleAccent),
+                            const SizedBox(width: 8),
+                            _Pill(
+                                text: _game.waveProgressText,
+                                color: Colors.cyanAccent),
                             const Spacer(),
                             if (_game.comboMultiplier > 1)
                               _Pill(
@@ -185,6 +189,49 @@ class _GameViewState extends State<GameView> {
                               ),
                             ),
                           ),
+                        // Overheat bar (CI-style heat management).
+                        if (_game.player.isMounted) ...[
+                          const SizedBox(height: 6),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                _game.player.overheated
+                                    ? Icons.thermostat_rounded
+                                    : Icons.whatshot_rounded,
+                                size: 14,
+                                color: _game.player.overheated
+                                    ? Colors.redAccent
+                                    : _game.player.heat01 > 0.8
+                                        ? Colors.orangeAccent
+                                        : Colors.white38,
+                              ),
+                              const SizedBox(width: 6),
+                              SizedBox(
+                                width: 140,
+                                child: LinearProgressIndicator(
+                                  value: _game.player.heat01,
+                                  minHeight: 6,
+                                  backgroundColor: Colors.white12,
+                                  color: _game.player.overheated
+                                      ? Colors.redAccent
+                                      : _game.player.heat01 > 0.8
+                                          ? Colors.orangeAccent
+                                          : Colors.cyanAccent,
+                                ),
+                              ),
+                              if (_game.player.overheated) ...[
+                                const SizedBox(width: 6),
+                                const Text('OVERHEATED',
+                                    style: TextStyle(
+                                        color: Colors.redAccent,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w900,
+                                        letterSpacing: 1.5)),
+                              ],
+                            ],
+                          ),
+                        ],
                         if (bosses.isNotEmpty) ...[
                           const SizedBox(height: 8),
                           const Text('⚠ BOSS ⚠',
@@ -224,6 +271,57 @@ class _GameViewState extends State<GameView> {
                               }),
                             ),
                             const Spacer(),
+                            // Missile launcher (commit economy).
+                            GestureDetector(
+                              onTap: _game.fireMissile,
+                              child: Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Container(
+                                    width: 52,
+                                    height: 52,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: _game.missiles > 0
+                                          ? Colors.orangeAccent
+                                              .withValues(alpha: 0.9)
+                                          : Colors.white10,
+                                      border: Border.all(
+                                          color: Colors.white
+                                              .withValues(alpha: 0.5),
+                                          width: 2),
+                                    ),
+                                    child: Icon(
+                                        Icons.rocket_launch_rounded,
+                                        color: _game.missiles > 0
+                                            ? Colors.black87
+                                            : Colors.white38,
+                                        size: 26),
+                                  ),
+                                  Positioned(
+                                    top: -6,
+                                    right: -6,
+                                    child: Container(
+                                      padding:
+                                          const EdgeInsets.all(5),
+                                      decoration:
+                                          const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.redAccent,
+                                      ),
+                                      child: Text(
+                                          '${_game.missiles}',
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 11,
+                                              fontWeight:
+                                                  FontWeight.w900)),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 12),
                             if (_bestLoaded && _best > 0)
                               Text('BEST $_best',
                                   style: const TextStyle(
@@ -238,6 +336,43 @@ class _GameViewState extends State<GameView> {
               ),
             ),
           ),
+          // Wave / boss / sector banner.
+          if (_game.bannerVisible)
+            Positioned(
+              top: MediaQuery.of(context).size.height * 0.3,
+              left: 0,
+              right: 0,
+              child: IgnorePointer(
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.black54,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                          color: Colors.cyanAccent
+                              .withValues(alpha: 0.6)),
+                    ),
+                    child: Text(
+                      _game.bannerText ?? '',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 2,
+                        shadows: [
+                          Shadow(
+                              blurRadius: 12,
+                              color: Colors.cyanAccent)
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           // Game Over overlay
           BlocBuilder<GameBloc, GameState>(
             builder: (context, state) {

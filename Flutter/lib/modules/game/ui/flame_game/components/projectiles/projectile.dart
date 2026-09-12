@@ -3,6 +3,7 @@ import 'package:flame/collisions.dart';
 import 'package:flutter/material.dart';
 import '../base/behaviors.dart';
 import '../../astro_game.dart';
+import '../particles/fx.dart';
 
 class Projectile extends PositionComponent
     with MovementBehavior, CollisionCallbacks, HasGameReference<AstroGame> {
@@ -29,23 +30,26 @@ class Projectile extends PositionComponent
   @override
   void render(Canvas canvas) {
     if (isEnemyProjectile) {
-      // Scary glowing red orbs for enemies
+      // Cartoon egg: white shell, soft outline, glossy highlight.
       final center = Offset(size.x / 2, size.y / 2);
-      final radius = size.x / 1.5;
-      
-      final outerGlow = Paint()
-        ..color = Colors.redAccent.withValues(alpha: 0.5)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12);
-      canvas.drawCircle(center, radius + 4, outerGlow);
-
-      final innerGlow = Paint()
-        ..color = Colors.red.withValues(alpha: 0.9)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
-      canvas.drawCircle(center, radius, innerGlow);
-
-      final core = Paint()..color = Colors.yellowAccent;
-      canvas.drawCircle(center, radius / 2, core);
-      
+      final shell = Paint()..color = const Color(0xFFFFF6E8);
+      final outline = Paint()
+        ..color = const Color(0xFFD8C9A8)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5;
+      final glow = Paint()
+        ..color = Colors.redAccent.withValues(alpha: 0.25)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+      final eggRect =
+          Rect.fromCenter(center: center, width: size.x, height: size.y * 1.6);
+      canvas.drawOval(eggRect, glow);
+      canvas.drawOval(eggRect, shell);
+      canvas.drawOval(eggRect, outline);
+      canvas.drawCircle(
+        center + const Offset(-2, -4),
+        2,
+        Paint()..color = Colors.white,
+      );
     } else {
       // Draw glowing neon effect for player capsules
       final rect = RRect.fromRectAndRadius(
@@ -79,8 +83,13 @@ class Projectile extends PositionComponent
   @override
   void update(double dt) {
     super.update(dt);
+    if (isEnemyProjectile) {
+      // Eggs fall with gravity: slight arc instead of a laser-straight line.
+      velocity.y += 1.4 * dt;
+      angle = (velocity.x * 0.4).clamp(-0.5, 0.5);
+    }
     // Remove if it goes off-screen
-    if (position.y < -50 || position.y > game.size.y + 50 || 
+    if (position.y < -50 || position.y > game.size.y + 50 ||
         position.x < -50 || position.x > game.size.x + 50) {
       removeFromParent();
     }
@@ -98,8 +107,9 @@ class Projectile extends PositionComponent
       // Team check via game player identity — no fragile runtimeType strings.
       final bool isPlayer = identical(other, game.player);
       if (isEnemyProjectile) {
-        // Enemy bullets only hit the Player
+        // Enemy eggs only hit the Player — with a yolky splat.
         if (isPlayer) {
+          Fx.splat(game, position.clone());
           damageable.takeDamage(damage.toInt());
           removeFromParent();
         }

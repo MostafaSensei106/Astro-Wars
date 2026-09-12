@@ -3,6 +3,7 @@ import 'package:flame/game.dart';
 import 'package:flame/events.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flutter/material.dart';
 import '../../logic/entities/level_config.dart';
 import 'components/background/starfield.dart';
 import 'components/entities/player_entity.dart';
@@ -10,7 +11,9 @@ import 'components/entities/enemy_entity.dart';
 import 'components/entities/boss_entity.dart';
 import 'components/entities/meteor_entity.dart';
 import 'components/entities/powerup_entity.dart';
+import 'components/particles/fx.dart';
 import '../../logic/bloc/game_bloc.dart';
+import '../../logic/entities/mission.dart';
 import '../../../../core/utils/theme/astro_design.dart';
 
 class ShootDetector extends PositionComponent with TapCallbacks {
@@ -43,6 +46,15 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
   static const double comboWindow = 2.5;
   static const int maxComboMultiplier = 5;
 
+  void _playTrack(String file) {
+    if (!Sfx.bgmEnabled) return;
+    FlameAudio.bgm.stop();
+    FlameAudio.bgm.play(file, volume: 0.3);
+  }
+
+  void _playMissionMusic() => _playTrack('bgm_mission.wav');
+  void _playBossMusic() => _playTrack('bgm_boss.wav');
+
   int get comboMultiplier => (1 + comboCount ~/ 8).clamp(1, maxComboMultiplier);
   double get comboProgress => (comboTimer / comboWindow).clamp(0.0, 1.0);
 
@@ -55,11 +67,17 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     await Sfx.loadFromPrefs();
     await FlameAudio.audioCache.loadAll([
       'laser.wav', 'explosion.wav', 'laser_enemy.wav',
-      'powerup.wav', 'hit.wav', 'gameover.wav', 'levelup.wav', 'bgm.wav'
+      'powerup.wav', 'hit.wav', 'gameover.wav', 'levelup.wav', 'bgm.wav',
+      'bgm_mission.wav', 'bgm_boss.wav',
+      'cluck.wav', 'egg_splat.wav', 'feather_pop.wav', 'gift_pickup.wav',
+      'coolant.wav', 'overheat_warn.wav', 'overheat_lock.wav',
+      'missile_launch.wav', 'wave_clear.wav', 'boss_roar.wav',
     ]);
 
     FlameAudio.bgm.initialize();
-    if (Sfx.bgmEnabled) FlameAudio.bgm.play('bgm.wav', volume: 0.3);
+    _mission = await SectorMission.load(startLevel);
+    _playMissionMusic();
+    showBanner('SECTOR $startLevel', seconds: 2.5);
 
     // Parallax background (generated layers + legacy space art fallback)
     add(StarfieldComponent());
@@ -83,8 +101,66 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
   }
 
   int currentLevel = 1;
-  int wavesCleared = 0;
   double _meteorTimer = 0;
+
+  // --- Commit / missile economy (CI drumsticks): 10 commits = 1 missile.
+  int commits = 0;
+  int missiles = 1;
+  static const int commitsPerMissile = 10;
+  static const int maxMissiles = 3;
+
+  void registerCommit() {
+    if (gameBloc.state.entity.isGameOver) return;
+    commits++;
+    gameBloc.add(const GameEvent.scoreIncreased(5));
+    if (commits >= commitsPerMissile) {
+      commits = 0;
+      addMissile(1);
+    }
+  }
+
+  void addMissile(int count) {
+    missiles = (missiles + count).clamp(0, maxMissiles);
+    showBanner('MISSILE LOADED ($missiles/$maxMissiles)', seconds: 1.5);
+    Sfx.play('gift_pickup', volume: 0.5);
+  }
+
+  /// Fire a loaded missile: heavy damage to everything on screen.
+  void fireMissile() {
+    if (missiles <= 0 || gameBloc.state.entity.isGameOver || isPaused) return;
+    if (!player.isMounted) return;
+    missiles--;
+    Sfx.play('missile_launch', volume: 0.7);
+    Fx.ring(this, player.position.clone(), const Color(0xFF22E6FF),
+        maxRadius: 300, lifespan: 0.7);
+    for (final enemy in children.whereType<EnemyEntity>().toList()) {
+      enemy.takeDamage(150);
+    }
+    for (final boss in children.whereType<BossEntity>().toList()) {
+      boss.takeDamage(150);
+    }
+    for (final meteor in children.whereType<MeteorEntity>().toList()) {
+      meteor.takeDamage(150);
+    }
+  }
+  SectorMission _mission = SectorMission.fallback(1);
+  int waveIndex = 0;
+
+  // --- Center-screen banner (wave / boss / sector announcements).
+  String? bannerText;
+  double _bannerTimer = 0;
+
+  void showBanner(String text, {double seconds = 2.2}) {
+    bannerText = text;
+    _bannerTimer = seconds;
+  }
+
+  bool get bannerVisible => bannerText != null && _bannerTimer > 0;
+
+  String get waveProgressText {
+    final done = waveIndex.clamp(0, _mission.totalWaves);
+    return 'WAVE $done/${_mission.totalWaves}';
+  }
 
   LevelConfig get currentConfig => LevelConfig.getLevel(currentLevel);
 
@@ -125,7 +201,10 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     bossActive = false;
     isPaused = false;
     currentLevel = startLevel;
-    wavesCleared = 0;
+    _mission = await SectorMission.load(startLevel);
+    waveIndex = 0;
+    commits = 0;
+    missiles = 1;
     _meteorTimer = 0;
     resetCombo();
     gameBloc.add(const GameEvent.gameRestarted());
@@ -134,12 +213,15 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     add(ShootDetector(player));
     powerupSpawner.start();
     await FlameAudio.bgm.stop();
-    if (Sfx.bgmEnabled) FlameAudio.bgm.play('bgm.wav', volume: 0.3);
+    _playMissionMusic();
+    showBanner('SECTOR $startLevel', seconds: 2.5);
   }
 
-  void spawnEnemyWave() {
-    int rows = currentConfig.rows;
-    int cols = currentConfig.cols;
+  /// Per-wave speed multiplier from the mission (combined with the
+  /// sector config multiplier inside EnemyEntity).
+  double waveSpeedMult = 1.0;
+
+  void _spawnGrid(int rows, int cols) {
 
     double paddingX = size.x / (cols + 1);
     double paddingY = 50.0;
@@ -163,9 +245,60 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     }
   }
 
+  /// Spawn one typed mission wave.
+  void spawnMissionWave(MissionWave wave) {
+    waveSpeedMult = wave.speedMult;
+    switch (wave.type) {
+      case WaveType.formation:
+      case WaveType.bonus:
+        _spawnGrid(wave.rows, wave.cols);
+        for (int i = 0; i < wave.giftShower; i++) {
+          add(PowerUpEntity());
+        }
+      case WaveType.swoop:
+        // Chickens dive straight in, no formation entry.
+        for (int i = 0; i < wave.rows * wave.cols; i++) {
+          final x = Random().nextDouble() * size.x;
+          final enemy = EnemyEntity(
+            formationPosition: Vector2(x, 80 + (i % wave.rows) * 50),
+            startPosition: Vector2(x, -50 - i * 30),
+            assetName: currentConfig.enemySprite,
+          )..state = EnemyState.swooping;
+          add(enemy);
+        }
+      case WaveType.meteor:
+        // Rocky storm: instant meteors + thin escort grid.
+        for (int i = 0; i < 6; i++) {
+          final meteor = MeteorEntity()
+            ..position = Vector2(Random().nextDouble() * size.x, -50 - i * 60)
+            ..velocity =
+                Vector2((Random().nextDouble() - 0.5) * 0.5, 1.0).normalized();
+          add(meteor);
+        }
+        _spawnGrid(1, wave.cols);
+    }
+    showBanner('$waveProgressText — ${wave.label}');
+    if (wave.type == WaveType.bonus) {
+      Sfx.play('wave_clear', volume: 0.5);
+    }
+  }
+
   void spawnBoss() {
     bossActive = true;
     add(BossEntity());
+    showBanner('⚠ WARNING: BOSS ⚠', seconds: 3.0);
+    Sfx.play('boss_roar', volume: 0.8);
+    _playBossMusic();
+  }
+
+  Future<void> _advanceSector() async {
+    currentLevel++;
+    _mission = await SectorMission.load(currentLevel);
+    waveIndex = 0;
+    waveSpeedMult = 1.0;
+    gameBloc.add(const GameEvent.scoreIncreased(1000)); // Sector clear bonus
+    showBanner('SECTOR $currentLevel', seconds: 2.5);
+    _playMissionMusic();
   }
 
   @override
@@ -173,6 +306,12 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     super.update(dt);
 
     if (gameBloc.state.entity.isGameOver || isPaused) return;
+
+    // Banner decay
+    if (_bannerTimer > 0) {
+      _bannerTimer -= dt;
+      if (_bannerTimer <= 0) bannerText = null;
+    }
 
     // Combo decay
     if (comboCount > 0) {
@@ -208,21 +347,19 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     final bosses = children.whereType<BossEntity>().toList();
 
     if (bossActive && bosses.isEmpty) {
-      // Boss defeated! Level Up!
+      // Boss defeated! Sector clear.
       Sfx.play('levelup.wav', volume: 0.7);
       bossActive = false;
-      currentLevel++;
-      wavesCleared = 0;
-      gameBloc.add(const GameEvent.scoreIncreased(1000)); // Level clear bonus
+      _advanceSector();
     }
 
     if (enemies.isEmpty && !bossActive) {
-      if (wavesCleared >= currentConfig.wavesBeforeBoss) {
+      if (waveIndex >= _mission.totalWaves) {
         spawnBoss();
-        wavesCleared = 0;
       } else {
-        spawnEnemyWave();
-        wavesCleared++;
+        final wave = _mission.waveAt(waveIndex);
+        waveIndex++;
+        spawnMissionWave(wave);
       }
     }
 
