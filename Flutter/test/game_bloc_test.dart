@@ -1,5 +1,4 @@
 import 'package:astro/core/constants/types/type_def.dart';
-import 'package:astro/core/utils/result/result.dart';
 import 'package:astro/modules/game/data/models/run_request_body.dart';
 import 'package:astro/modules/game/logic/bloc/game_bloc.dart';
 import 'package:astro/modules/game/logic/repositories/game_repository.dart';
