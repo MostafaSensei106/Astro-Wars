@@ -83,5 +83,6 @@ final class OtpFieldComponent extends HookWidget {
         ),
       ),
     ),
-  );
+    );
+  }
 }

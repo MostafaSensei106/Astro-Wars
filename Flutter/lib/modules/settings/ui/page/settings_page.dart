@@ -1,34 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/utils/theme/astro_design.dart';
 
 /// Settings with real persistence: SFX/BGM gates + danger-zone reset.
-class SettingsPage extends StatefulWidget {
+class SettingsPage extends HookWidget {
   const SettingsPage({super.key});
 
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-  bool _sfx = true;
-  bool _bgm = true;
-
-  @override
-  void initState() {
-    super.initState();
-    Sfx.loadFromPrefs().then((_) {
-      if (!mounted) return;
-      setState(() {
-        _sfx = Sfx.enabled;
-        _bgm = Sfx.bgmEnabled;
-      });
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final sfx = useState(true);
+    final bgm = useState(true);
+
+    useEffect(() {
+      var alive = true;
+      Sfx.loadFromPrefs().then((_) {
+        if (!alive) return;
+        sfx.value = Sfx.enabled;
+        bgm.value = Sfx.bgmEnabled;
+      });
+      return () => alive = false;
+    }, const []);
     return Scaffold(
       appBar: AppBar(title: const Text('SETTINGS')),
       body: ListView(
@@ -39,10 +32,10 @@ class _SettingsPageState extends State<SettingsPage> {
             title: 'Sound effects',
             subtitle: 'Lasers, explosions, pickups',
             trailing: Switch(
-              value: _sfx,
+              value: sfx.value,
               onChanged: (v) async {
                 await Sfx.setEnabled(v);
-                setState(() => _sfx = v);
+                sfx.value = v;
               },
             ),
           ),
@@ -52,10 +45,10 @@ class _SettingsPageState extends State<SettingsPage> {
             title: 'Background music',
             subtitle: 'Synthwave loop during missions',
             trailing: Switch(
-              value: _bgm,
+              value: bgm.value,
               onChanged: (v) async {
                 await Sfx.setBgmEnabled(v);
-                setState(() => _bgm = v);
+                bgm.value = v;
               },
             ),
           ),

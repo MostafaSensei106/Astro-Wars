@@ -1,53 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/utils/theme/astro_design.dart';
 
 /// Pilot profile with real stats from local persistence.
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends HookWidget {
   const ProfilePage({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends State<ProfilePage> {
-  int _best = 0;
-  int _levels = 1;
-  int _runs = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
-    final best = await AstroDesign.bestScore();
-    final levels = await AstroDesign.maxLevel();
-    final runs = await AstroDesign.runsPlayed();
-    if (!mounted) return;
-    setState(() {
-      _best = best;
-      _levels = levels;
-      _runs = runs;
-    });
-  }
-
-  String _rank() {
-    if (_best >= 10000) return 'Space Fleet Admiral';
-    if (_best >= 5000) return 'Wing Commander';
-    if (_best >= 2000) return 'Squadron Leader';
-    if (_best >= 500) return 'Cadet Pilot';
-    return 'Rookie';
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final best = useState(0);
+    final levels = useState(1);
+    final runs = useState(0);
+
+    Future<void> load() async {
+      best.value = await AstroDesign.bestScore();
+      levels.value = await AstroDesign.maxLevel();
+      runs.value = await AstroDesign.runsPlayed();
+    }
+
+    useEffect(() {
+      load();
+      return null;
+    }, const []);
+
+    String rank() {
+      if (best.value >= 10000) return 'Space Fleet Admiral';
+      if (best.value >= 5000) return 'Wing Commander';
+      if (best.value >= 2000) return 'Squadron Leader';
+      if (best.value >= 500) return 'Cadet Pilot';
+      return 'Rookie';
+    }
+
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(title: const Text('PILOT')),
       body: RefreshIndicator(
-        onRefresh: _load,
+        onRefresh: load,
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
@@ -82,7 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         fontWeight: FontWeight.w900,
                         letterSpacing: 3)),
             Gap(4),
-            Text(_rank(),
+            Text(rank(),
                 textAlign: TextAlign.center,
                 style: TextStyle(color: scheme.onSurfaceVariant)),
             const Gap(24),
@@ -96,19 +85,19 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 _StatTile(
                     label: 'HIGH SCORE',
-                    value: '$_best',
+                    value: '${best.value}',
                     color: AstroDesign.neonAmber),
                 _StatTile(
                     label: 'SECTORS OPEN',
-                    value: '$_levels',
+                    value: '${levels.value}',
                     color: AstroDesign.neonCyan),
                 _StatTile(
                     label: 'MISSIONS FLOWN',
-                    value: '$_runs',
+                    value: '${runs.value}',
                     color: AstroDesign.neonMagenta),
                 _StatTile(
                     label: 'RANK',
-                    value: _rank().split(' ').first,
+                    value: rank().split(' ').first,
                     color: AstroDesign.neonGreen),
               ],
             ),
