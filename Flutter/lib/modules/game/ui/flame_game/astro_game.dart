@@ -359,6 +359,12 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
   }
 
   Future<void> _advanceSector() async {
+    // Campaign finale: beating the final sector boss wins the story.
+    if (currentLevel >= GameBloc.finalSector) {
+      gameBloc.add(GameEvent.victory(currentLevel));
+      showBanner('SYNDICATE DEFEATED', seconds: 3.0);
+      return;
+    }
     currentLevel++;
     _mission = await SectorMission.load(currentLevel);
     waveIndex = 0;

@@ -12,9 +12,12 @@ part 'game_bloc.freezed.dart';
 
 /// Single source of truth for HP: clamped 0..[maxHealth].
 /// Negative [damage] heals (clamped to max — no more god-mode).
+/// Story: sectors 1..[finalSector] form the campaign; beating the final
+/// boss emits [GameState.victory] and unlocks endless mode.
 @injectable
 class GameBloc extends Bloc<GameEvent, GameState> {
   static const int maxHealth = 5;
+  static const int finalSector = 3;
   final SubmitRunUseCase _submitRunUseCase;
   DateTime _runStartedAt = DateTime.now();
   int _bossesDefeated = 0;
@@ -68,6 +71,40 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
     on<_BossDefeated>((event, emit) {
       _bossesDefeated++;
+    });
+
+    on<_Victory>((event, emit) async {
+      final currentState = state.entity;
+      if (currentState.isGameOver || currentState.isVictory) return;
+      final finalState = currentState.copyWith(
+        isVictory: true,
+        endlessUnlocked: true,
+      );
+      emit(GameState.victory(finalState));
+
+      final duration = DateTime.now()
+          .difference(_runStartedAt)
+          .inSeconds
+          .clamp(1, 1 << 31);
+      await _submitRunUseCase(
+        RunRequestBody(
+          score: finalState.score,
+          duration: duration,
+          causeOfDeath: 'Victory — Syndicate CEO defeated',
+          stageReached: 'Production (Sector ${event.sector})',
+          bugsSquashed: finalState.score ~/ 10,
+          bossesDefeated: _bossesDefeated,
+          maxFlowState: 5,
+          accuracy: 85.5,
+          coffeeCups: 3,
+        ),
+      );
+    });
+
+    on<_ContinueEndless>((event, emit) {
+      final currentState = state.entity;
+      if (!currentState.isVictory) return;
+      emit(GameState.playing(currentState.copyWith(isVictory: false)));
     });
 
     on<_GameRestarted>((event, emit) {

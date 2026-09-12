@@ -8,5 +8,7 @@ abstract class GameStateEntity with _$GameStateEntity {
     @Default(0) int score,
     @Default(3) int health,
     @Default(false) bool isGameOver,
+    @Default(false) bool isVictory,
+    @Default(false) bool endlessUnlocked,
   }) = _GameStateEntity;
 }
