@@ -94,24 +94,27 @@ class Projectile extends PositionComponent
     super.onCollisionStart(intersectionPoints, other);
 
     if (other is IDamageable) {
+      final damageable = other as IDamageable;
+      // Team check via game player identity — no fragile runtimeType strings.
+      final bool isPlayer = identical(other, game.player);
       if (isEnemyProjectile) {
         // Enemy bullets only hit the Player
-        if (other.runtimeType.toString() == 'PlayerEntity') {
-          (other as IDamageable).takeDamage(damage.toInt());
+        if (isPlayer) {
+          damageable.takeDamage(damage.toInt());
           removeFromParent();
         }
       } else {
-        // Player bullets hit enemies
-        if (other.runtimeType.toString() == 'EnemyEntity' ||
-            other.runtimeType.toString() == 'BossEntity') {
-          (other as IDamageable).takeDamage(damage.toInt());
+        // Player bullets hit anything damageable except the player itself
+        // (enemies, bosses AND meteors).
+        if (!isPlayer) {
+          damageable.takeDamage(damage.toInt());
 
           if (isAoE) {
             // Apply damage to all nearby enemies (radius 150)
             for (final enemy in game.children.whereType<PositionComponent>()) {
               if (enemy is IDamageable &&
                   enemy != other &&
-                  enemy.runtimeType.toString() != 'PlayerEntity') {
+                  !identical(enemy, game.player)) {
                 if (enemy.position.distanceTo(position) < 150) {
                   (enemy as IDamageable).takeDamage(damage.toInt());
                 }

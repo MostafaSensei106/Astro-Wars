@@ -163,9 +163,10 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
     super.onCollisionStart(intersectionPoints, other);
 
     if (other is PlayerEntity) {
-      // Enemy hits player
-      other.takeDamage(20);
-      game.gameBloc.add(const GameEvent.playerDamaged(20));
+      // Ramming: single point of damage. PlayerEntity.takeDamage already
+      // forwards one GameEvent.playerDamaged(1) to the bloc — do NOT emit
+      // a second event here (that caused instant-death double damage).
+      other.takeDamage(1);
       removeFromParent(); // Destroy enemy
     }
   }
@@ -175,7 +176,7 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
     super.onDeath();
     HapticFeedback.lightImpact();
     FlameAudio.play('explosion.wav', volume: 0.5);
-    game.gameBloc.add(const GameEvent.scoreIncreased(10));
+    game.registerKill(10);
 
     // Add simple particle explosion
     final particleComponent = ParticleSystemComponent(

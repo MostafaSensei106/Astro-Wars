@@ -10,9 +10,14 @@ part 'game_event.dart';
 part 'game_state.dart';
 part 'game_bloc.freezed.dart';
 
+/// Single source of truth for HP: clamped 0..[maxHealth].
+/// Negative [damage] heals (clamped to max — no more god-mode).
 @injectable
 class GameBloc extends Bloc<GameEvent, GameState> {
+  static const int maxHealth = 5;
   final SubmitRunUseCase _submitRunUseCase;
+  DateTime _runStartedAt = DateTime.now();
+  int _bossesDefeated = 0;
 
   GameBloc(this._submitRunUseCase)
     : super(const GameState.initial(GameStateEntity())) {
@@ -30,20 +35,23 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final currentState = state.entity;
       if (currentState.isGameOver) return;
 
-      final newHealth = currentState.health - event.damage;
+      final newHealth =
+          (currentState.health - event.damage).clamp(0, maxHealth);
       if (newHealth <= 0) {
         final finalState = currentState.copyWith(health: 0, isGameOver: true);
         emit(GameState.gameOver(finalState));
 
-        // Submit the result to backend
+        // Submit the result to backend with real run stats.
+        final duration =
+            DateTime.now().difference(_runStartedAt).inSeconds.clamp(1, 1 << 31);
         await _submitRunUseCase(
           RunRequestBody(
             score: finalState.score,
-            duration: 60, // Ideally track session time
-            causeOfDeath: 'Bug Swarm',
-            stageReached: 'Staging Environment',
+            duration: duration,
+            causeOfDeath: 'Run ended',
+            stageReached: 'Deep Space',
             bugsSquashed: finalState.score ~/ 10,
-            bossesDefeated: 0,
+            bossesDefeated: _bossesDefeated,
             maxFlowState: 5,
             accuracy: 85.5,
             coffeeCups: 3,
@@ -54,7 +62,13 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       }
     });
 
+    on<_BossDefeated>((event, emit) {
+      _bossesDefeated++;
+    });
+
     on<_GameRestarted>((event, emit) {
+      _runStartedAt = DateTime.now();
+      _bossesDefeated = 0;
       emit(const GameState.initial(GameStateEntity()));
     });
   }

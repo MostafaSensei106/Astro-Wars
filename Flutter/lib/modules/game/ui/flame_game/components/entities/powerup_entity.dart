@@ -151,9 +151,9 @@ class PowerUpEntity extends PositionComponent
         }
         break;
       case PowerUpType.hr:
-        // Care package - Health Regen
-        player.health = (player.health + 40).clamp(0, 100).toInt();
-        game.gameBloc.add(const GameEvent.playerDamaged(-40));
+        // Care package - heal exactly 1 HP (clamped to max inside bloc).
+        player.heal(1);
+        game.gameBloc.add(const GameEvent.playerDamaged(-1));
         break;
       case PowerUpType.logistics:
         // Screen wipe

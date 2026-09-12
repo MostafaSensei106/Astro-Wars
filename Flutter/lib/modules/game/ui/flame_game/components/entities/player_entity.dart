@@ -55,12 +55,16 @@ class ShieldForcefield extends PositionComponent {
 }
 
 class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
+  static const int maxHealth = 5;
   PowerUpType? activeWeapon;
   int weaponLevel = 1;
   bool hasShield = false;
   ShieldForcefield? shieldComponent;
   bool _canShoot = true;
   int _fireRateMs = 250;
+
+  /// Hold-to-fire: the game loop calls [tickAutofire] every frame.
+  bool autofireEnabled = true;
 
   double _particleTimer = 0;
 
@@ -100,6 +104,18 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
     if (health <= 1 && Random().nextDouble() < 0.1) {
       _spawnSmokeParticles();
     }
+
+    // Autofire: tap-to-shoot still works via ShootDetector, but holding
+    // is no longer required — the ship fires at its fire-rate automatically.
+    if (autofireEnabled) {
+      shoot();
+    }
+  }
+
+  /// Heal clamped to [maxHealth]. The matching bloc event
+  /// `playerDamaged(-amount)` is clamped there too.
+  void heal(int amount) {
+    health = (health + amount).clamp(0, maxHealth);
   }
 
   void _spawnEngineParticles() {
@@ -210,6 +226,7 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
 
     health -= 1; // 1 Heart
     game.gameBloc.add(const GameEvent.playerDamaged(1));
+    game.resetCombo(); // getting hit breaks the combo
     HapticFeedback.vibrate();
 
     if (health <= 0) {

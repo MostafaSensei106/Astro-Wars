@@ -127,8 +127,8 @@ class BossEntity extends BaseSpriteEntity
     super.onCollisionStart(intersectionPoints, other);
 
     if (other is PlayerEntity) {
-      other.takeDamage(50);
-      game.gameBloc.add(const GameEvent.playerDamaged(50));
+      // Single point of damage (see EnemyEntity note about double damage).
+      other.takeDamage(1);
     }
   }
 
@@ -138,6 +138,7 @@ class BossEntity extends BaseSpriteEntity
     HapticFeedback.heavyImpact();
     FlameAudio.play('explosion.wav', volume: 0.8);
     game.gameBloc.add(const GameEvent.scoreIncreased(200));
+    game.gameBloc.add(const GameEvent.bossDefeated());
     game.bossActive = false; // Notify game boss is dead
 
     final particleComponent = ParticleSystemComponent(

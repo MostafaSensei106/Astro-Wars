@@ -1,18 +1,48 @@
 import 'package:flame/components.dart';
+import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
 import '../../astro_game.dart';
 
-class StarfieldComponent extends Component with HasGameReference<AstroGame> {
-  late Sprite bgSprite;
-
+/// Deep-space backdrop: level-tinted gradient + 3 scrolling parallax
+/// star layers (generated in `Python/` via uv).
+class _GradientBackground extends PositionComponent
+    with HasGameReference<AstroGame> {
   @override
-  Future<void> onLoad() async {
-    super.onLoad();
-    bgSprite = await Sprite.load('space_bg.jpg');
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    this.size = size;
   }
 
   @override
   void render(Canvas canvas) {
-    bgSprite.render(canvas, size: game.size);
+    final colors = game.currentConfig.bgGradient;
+    final paint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: colors,
+      ).createShader(Offset.zero & Size(size.x, size.y));
+    canvas.drawRect(Offset.zero & Size(size.x, size.y), paint);
+  }
+}
+
+class StarfieldComponent extends Component with HasGameReference<AstroGame> {
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+    add(_GradientBackground());
+    add(
+      await game.loadParallaxComponent(
+        [
+          ParallaxImageData('parallax_far.png'),
+          ParallaxImageData('parallax_mid.png'),
+          ParallaxImageData('parallax_near.png'),
+        ],
+        baseVelocity: Vector2(0, 25),
+        velocityMultiplierDelta: Vector2(0, 1.8),
+        alignment: Alignment.bottomCenter,
+        fill: LayerFill.width,
+      ),
+    );
   }
 }

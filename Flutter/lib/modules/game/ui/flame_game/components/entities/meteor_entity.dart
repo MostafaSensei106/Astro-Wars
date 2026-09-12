@@ -27,8 +27,10 @@ class MeteorEntity extends PositionComponent
     ); // Random size between 30 and 80
     health = (size.x).toInt(); // Health based on size
 
-    speed = 20.0 + random.nextDouble() * 30;
-    velocity = Vector2((random.nextDouble() - 0.5) * 30, speed);
+    // NOTE: MovementBehavior moves by velocity * speed * dt, so velocity
+    // must be a unit-ish direction — never pre-scaled by speed.
+    speed = 40.0 + random.nextDouble() * 50;
+    velocity = Vector2((random.nextDouble() - 0.5) * 0.6, 1.0).normalized();
     rotSpeed = (random.nextDouble() - 0.5) * 2;
 
     // Randomize color slightly
@@ -66,9 +68,8 @@ class MeteorEntity extends PositionComponent
 
   @override
   void update(double dt) {
-    super.update(dt);
+    super.update(dt); // MovementBehavior already advances position
     angle += rotSpeed * dt;
-    position.add(velocity * dt);
 
     if (position.y > game.size.y + 100 ||
         position.x < -100 ||
@@ -132,7 +133,7 @@ class MeteorEntity extends PositionComponent
     super.onDeath();
     HapticFeedback.mediumImpact();
     FlameAudio.play('explosion.wav', volume: 0.6);
-    game.gameBloc.add(GameEvent.scoreIncreased((size.x).toInt()));
+    game.registerKill((size.x).toInt());
 
     // Particle explosion
     final random = Random();
