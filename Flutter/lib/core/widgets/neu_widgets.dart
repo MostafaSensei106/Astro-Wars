@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 class NeuTheme {
   static Color bgColor(BuildContext context) =>
@@ -78,7 +79,7 @@ class NeuContainer extends StatelessWidget {
   }
 }
 
-class NeuButton extends StatefulWidget {
+class NeuButton extends HookWidget {
   final Widget child;
   final VoidCallback? onPressed;
   final EdgeInsetsGeometry padding;
@@ -97,36 +98,30 @@ class NeuButton extends StatefulWidget {
   });
 
   @override
-  State<NeuButton> createState() => _NeuButtonState();
-}
-
-class _NeuButtonState extends State<NeuButton> {
-  bool _isPressed = false;
-
-  @override
   Widget build(BuildContext context) {
+    final isPressed = useState(false);
     return GestureDetector(
-      onTapDown: widget.onPressed != null
-          ? (_) => setState(() => _isPressed = true)
+      onTapDown: onPressed != null
+          ? (_) => isPressed.value = true
           : null,
-      onTapUp: widget.onPressed != null
+      onTapUp: onPressed != null
           ? (_) {
-              setState(() => _isPressed = false);
-              widget.onPressed!();
+              isPressed.value = false;
+              onPressed!();
             }
           : null,
-      onTapCancel: widget.onPressed != null
-          ? () => setState(() => _isPressed = false)
+      onTapCancel: onPressed != null
+          ? () => isPressed.value = false
           : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 100),
-        width: widget.width,
-        height: widget.height,
-        padding: widget.padding,
+        width: width,
+        height: height,
+        padding: padding,
         decoration: BoxDecoration(
           color: NeuTheme.bgColor(context),
-          borderRadius: BorderRadius.circular(widget.borderRadius),
-          boxShadow: _isPressed || widget.onPressed == null
+          borderRadius: BorderRadius.circular(borderRadius),
+          boxShadow: isPressed.value || onPressed == null
               ? [] // Flat when pressed or disabled
               : [
                   BoxShadow(
@@ -140,14 +135,14 @@ class _NeuButtonState extends State<NeuButton> {
                     blurRadius: 10,
                   ),
                 ],
-          border: _isPressed
+          border: isPressed.value
               ? Border.all(
                   color: NeuTheme.darkShadow(context),
                   width: 2,
                 ) // Simulating inner depth
               : null,
         ),
-        child: Center(child: widget.child),
+        child: Center(child: child),
       ),
     );
   }

@@ -36,7 +36,11 @@ class ShootDetector extends PositionComponent with TapCallbacks {
 class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
   final GameBloc gameBloc;
   final int startLevel;
-  late PlayerEntity player;
+  // Lazily initialized: the HUD reads `player` (isMounted/heat) on the
+  // very first frame, before async onLoad() assigns the real ship.
+  // The placeholder is replaced in onLoad()/reset(); guards check
+  // isMounted so it is never treated as the live ship.
+  late PlayerEntity player = PlayerEntity();
   late Timer powerupSpawner;
   bool bossActive = false;
   bool isPaused = false;

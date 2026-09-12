@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import '../../../constants/app_config.dart';
 
-final class OtpFieldComponent extends StatefulWidget {
+final class OtpFieldComponent extends HookWidget {
   const OtpFieldComponent({
     required this.onCompleted,
     super.key,
@@ -14,52 +15,44 @@ final class OtpFieldComponent extends StatefulWidget {
   final void Function(String)? onChanged;
 
   @override
-  State<OtpFieldComponent> createState() => _OtpFieldComponentState();
-}
-
-class _OtpFieldComponentState extends State<OtpFieldComponent> {
-  late List<TextEditingController> _controllers;
-  late List<FocusNode> _focusNodes;
-
-  @override
-  void initState() {
-    super.initState();
-    _controllers = List.generate(
-      widget.length,
-      (final index) => TextEditingController(),
+  Widget build(final BuildContext context) {
+    final controllers = useMemoized(
+      () => List.generate(length, (final index) => TextEditingController()),
+      [length],
     );
-    _focusNodes = List.generate(widget.length, (final index) => FocusNode());
-  }
+    final focusNodes = useMemoized(
+      () => List.generate(length, (final index) => FocusNode()),
+      [length],
+    );
+    useEffect(
+      () => () {
+        for (var controller in controllers) {
+          controller.dispose();
+        }
+        for (var node in focusNodes) {
+          node.dispose();
+        }
+      },
+      [controllers, focusNodes],
+    );
 
-  @override
-  void dispose() {
-    for (var controller in _controllers) {
-      controller.dispose();
-    }
-    for (var node in _focusNodes) {
-      node.dispose();
-    }
-    super.dispose();
-  }
+    void handleChanged(final String value, final int index) {
+      if (value.length == 1 && index < length - 1) {
+        focusNodes[index + 1].requestFocus();
+      }
 
-  void _handleChanged(final String value, final int index) {
-    if (value.length == 1 && index < widget.length - 1) {
-      _focusNodes[index + 1].requestFocus();
+      final otp = controllers.map((final e) => e.text).join();
+      onChanged?.call(otp);
+      if (otp.length == length) {
+        onCompleted(otp);
+      }
     }
 
-    final otp = _controllers.map((final e) => e.text).join();
-    widget.onChanged?.call(otp);
-    if (otp.length == widget.length) {
-      widget.onCompleted(otp);
-    }
-  }
-
-  @override
-  Widget build(final BuildContext context) => Row(
+    return Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     spacing: AppConfig.paddingHalf,
     children: List.generate(
-      widget.length,
+      length,
       (final index) => SizedBox(
         width: AppConfig.otpFieldSize,
         height: AppConfig.otpFieldSize,
@@ -68,14 +61,14 @@ class _OtpFieldComponentState extends State<OtpFieldComponent> {
           onKeyEvent: (final event) {
             if (event is KeyDownEvent &&
                 event.logicalKey == LogicalKeyboardKey.backspace &&
-                _controllers[index].text.isEmpty &&
+                controllers[index].text.isEmpty &&
                 index > 0) {
-              _focusNodes[index - 1].requestFocus();
+              focusNodes[index - 1].requestFocus();
             }
           },
           child: TextFormField(
-            controller: _controllers[index],
-            focusNode: _focusNodes[index],
+            controller: controllers[index],
+            focusNode: focusNodes[index],
             textAlign: TextAlign.center,
             keyboardType: TextInputType.number,
             maxLength: 1,
@@ -85,7 +78,7 @@ class _OtpFieldComponentState extends State<OtpFieldComponent> {
                 borderRadius: BorderRadius.circular(AppConfig.outBorderRadius),
               ),
             ),
-            onChanged: (final value) => _handleChanged(value, index),
+            onChanged: (final value) => handleChanged(value, index),
           ),
         ),
       ),
