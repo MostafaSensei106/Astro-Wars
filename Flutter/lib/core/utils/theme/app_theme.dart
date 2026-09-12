@@ -31,13 +31,21 @@ class AppTheme {
       ),
       textTheme: const TextTheme(
         displayLarge: TextStyle(
-            fontFamily: AstroDesign.displayFont, fontWeight: FontWeight.w900),
+          fontFamily: AstroDesign.displayFont,
+          fontWeight: FontWeight.w900,
+        ),
         displayMedium: TextStyle(
-            fontFamily: AstroDesign.displayFont, fontWeight: FontWeight.bold),
+          fontFamily: AstroDesign.displayFont,
+          fontWeight: FontWeight.bold,
+        ),
         displaySmall: TextStyle(
-            fontFamily: AstroDesign.displayFont, fontWeight: FontWeight.bold),
+          fontFamily: AstroDesign.displayFont,
+          fontWeight: FontWeight.bold,
+        ),
         headlineMedium: TextStyle(
-            fontFamily: AstroDesign.displayFont, fontWeight: FontWeight.bold),
+          fontFamily: AstroDesign.displayFont,
+          fontWeight: FontWeight.bold,
+        ),
         titleLarge: TextStyle(fontWeight: FontWeight.bold),
       ),
       navigationBarTheme: NavigationBarThemeData(
@@ -80,13 +88,21 @@ class AppTheme {
       ),
       textTheme: const TextTheme(
         displayLarge: TextStyle(
-            fontFamily: AstroDesign.displayFont, fontWeight: FontWeight.w900),
+          fontFamily: AstroDesign.displayFont,
+          fontWeight: FontWeight.w900,
+        ),
         displayMedium: TextStyle(
-            fontFamily: AstroDesign.displayFont, fontWeight: FontWeight.bold),
+          fontFamily: AstroDesign.displayFont,
+          fontWeight: FontWeight.bold,
+        ),
         displaySmall: TextStyle(
-            fontFamily: AstroDesign.displayFont, fontWeight: FontWeight.bold),
+          fontFamily: AstroDesign.displayFont,
+          fontWeight: FontWeight.bold,
+        ),
         headlineMedium: TextStyle(
-            fontFamily: AstroDesign.displayFont, fontWeight: FontWeight.bold),
+          fontFamily: AstroDesign.displayFont,
+          fontWeight: FontWeight.bold,
+        ),
         titleLarge: TextStyle(fontWeight: FontWeight.bold),
       ),
       useMaterial3: true,

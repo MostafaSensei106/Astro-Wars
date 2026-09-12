@@ -33,7 +33,11 @@ class LevelConfig {
       case 1:
         return LevelConfig(
           level: 1,
-          bgGradient: const [Color(0xFF03011A), Color(0xFF0B0D17), Color(0xFF000000)],
+          bgGradient: const [
+            Color(0xFF03011A),
+            Color(0xFF0B0D17),
+            Color(0xFF000000),
+          ],
           enemySprite: enemy,
           bossSprite: boss,
           enemySpeedMultiplier: 1.0,
@@ -44,7 +48,11 @@ class LevelConfig {
       case 2:
         return LevelConfig(
           level: 2,
-          bgGradient: const [Color(0xFF1A0105), Color(0xFF170B0B), Color(0xFF000000)], // Reddish
+          bgGradient: const [
+            Color(0xFF1A0105),
+            Color(0xFF170B0B),
+            Color(0xFF000000),
+          ], // Reddish
           enemySprite: enemy,
           bossSprite: boss,
           enemySpeedMultiplier: 1.2,
@@ -55,7 +63,11 @@ class LevelConfig {
       case 3:
         return LevelConfig(
           level: 3,
-          bgGradient: const [Color(0xFF011A0E), Color(0xFF0B1710), Color(0xFF000000)], // Greenish
+          bgGradient: const [
+            Color(0xFF011A0E),
+            Color(0xFF0B1710),
+            Color(0xFF000000),
+          ], // Greenish
           enemySprite: enemy,
           bossSprite: boss,
           enemySpeedMultiplier: 1.5,
@@ -70,7 +82,7 @@ class LevelConfig {
           bgGradient: [
             Color.fromARGB(255, level * 10 % 50, 10, level * 20 % 50),
             const Color(0xFF0B0D17),
-            const Color(0xFF000000)
+            const Color(0xFF000000),
           ],
           enemySprite: enemy,
           bossSprite: boss,

@@ -129,8 +129,13 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     if (!player.isMounted) return;
     missiles--;
     Sfx.play(AssetsAudio.missileLaunch, volume: 0.7);
-    Fx.ring(this, player.position.clone(), const Color(0xFF22E6FF),
-        maxRadius: 300, lifespan: 0.7);
+    Fx.ring(
+      this,
+      player.position.clone(),
+      const Color(0xFF22E6FF),
+      maxRadius: 300,
+      lifespan: 0.7,
+    );
     for (final enemy in children.whereType<EnemyEntity>().toList()) {
       enemy.takeDamage(150);
     }
@@ -141,6 +146,7 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
       meteor.takeDamage(150);
     }
   }
+
   SectorMission _mission = SectorMission.fallback(1);
   int waveIndex = 0;
 
@@ -190,9 +196,9 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
   /// Full run reset — fixes the old soft-lock where restart only reset
   /// the bloc while the dead player / leftover enemies stayed behind.
   Future<void> reset() async {
-    for (final c in children
-        .whereType<PositionComponent>()
-        .toList(growable: false)) {
+    for (final c in children.whereType<PositionComponent>().toList(
+      growable: false,
+    )) {
       // Keep the background; drop everything else.
       if (c is! StarfieldComponent) c.removeFromParent();
     }
@@ -220,7 +226,6 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
   double waveSpeedMult = 1.0;
 
   void _spawnGrid(int rows, int cols) {
-
     double paddingX = size.x / (cols + 1);
     double paddingY = 50.0;
 
@@ -230,13 +235,13 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
 
         final startPos = Vector2(
           c % 2 == 0 ? -100 : size.x + 100,
-          -100 - (r * 150) - (c * 60)
+          -100 - (r * 150) - (c * 60),
         );
 
         final enemy = EnemyEntity(
           formationPosition: formationPos,
           startPosition: startPos,
-          assetName: currentConfig.enemySprite
+          assetName: currentConfig.enemySprite,
         );
         add(enemy);
       }
@@ -269,8 +274,10 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
         for (int i = 0; i < 6; i++) {
           final meteor = MeteorEntity()
             ..position = Vector2(Random().nextDouble() * size.x, -50 - i * 60)
-            ..velocity =
-                Vector2((Random().nextDouble() - 0.5) * 0.5, 1.0).normalized();
+            ..velocity = Vector2(
+              (Random().nextDouble() - 0.5) * 0.5,
+              1.0,
+            ).normalized();
           add(meteor);
         }
         _spawnGrid(1, wave.cols);
@@ -327,14 +334,17 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
 
         if (fromSide) {
           bool fromLeft = Random().nextBool();
-          meteor.position = Vector2(fromLeft ? -50 : size.x + 50,
-              Random().nextDouble() * (size.y / 2));
-          meteor.velocity =
-              Vector2(fromLeft ? 0.9 : -0.9, 0.45).normalized();
+          meteor.position = Vector2(
+            fromLeft ? -50 : size.x + 50,
+            Random().nextDouble() * (size.y / 2),
+          );
+          meteor.velocity = Vector2(fromLeft ? 0.9 : -0.9, 0.45).normalized();
         } else {
           meteor.position = Vector2(Random().nextDouble() * size.x, -50);
-          meteor.velocity =
-              Vector2((Random().nextDouble() - 0.5) * 0.5, 1.0).normalized();
+          meteor.velocity = Vector2(
+            (Random().nextDouble() - 0.5) * 0.5,
+            1.0,
+          ).normalized();
         }
 
         add(meteor);

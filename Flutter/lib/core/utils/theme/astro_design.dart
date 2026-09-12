@@ -88,7 +88,8 @@ abstract final class AstroDesign {
   ];
 
   // --- Prefs helpers ---
-  static Future<SharedPreferences> get _prefs => SharedPreferences.getInstance();
+  static Future<SharedPreferences> get _prefs =>
+      SharedPreferences.getInstance();
 
   static Future<String> selectedShip() async =>
       (await _prefs).getString(kSelectedShip) ?? kDefaultShip;
@@ -99,14 +100,15 @@ abstract final class AstroDesign {
   static Future<int> bestScore() async =>
       (await _prefs).getInt(kBestScore) ?? 0;
 
-  static Future<int> maxLevel() async =>
-      (await _prefs).getInt(kMaxLevel) ?? 1;
+  static Future<int> maxLevel() async => (await _prefs).getInt(kMaxLevel) ?? 1;
 
   static Future<int> runsPlayed() async =>
       (await _prefs).getInt(kRunsPlayed) ?? 0;
 
-  static Future<void> recordRun(
-      {required int score, required int levelReached}) async {
+  static Future<void> recordRun({
+    required int score,
+    required int levelReached,
+  }) async {
     final p = await _prefs;
     if (score > (p.getInt(kBestScore) ?? 0)) {
       await p.setInt(kBestScore, score);
@@ -156,14 +158,18 @@ abstract final class Sfx {
 
   static Future<void> setEnabled(bool value) async {
     enabled = value;
-    (await SharedPreferences.getInstance())
-        .setBool(AstroDesign.kSfxEnabled, value);
+    (await SharedPreferences.getInstance()).setBool(
+      AstroDesign.kSfxEnabled,
+      value,
+    );
   }
 
   static Future<void> setBgmEnabled(bool value) async {
     bgmEnabled = value;
-    (await SharedPreferences.getInstance())
-        .setBool(AstroDesign.kBgmEnabled, value);
+    (await SharedPreferences.getInstance()).setBool(
+      AstroDesign.kBgmEnabled,
+      value,
+    );
     if (!value) {
       await FlameAudio.bgm.stop();
     }

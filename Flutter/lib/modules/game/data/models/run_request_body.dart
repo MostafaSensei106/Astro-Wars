@@ -26,6 +26,7 @@ class RunRequestBody {
     required this.coffeeCups,
   });
 
-  factory RunRequestBody.fromJson(Map<String, dynamic> json) => _$RunRequestBodyFromJson(json);
+  factory RunRequestBody.fromJson(Map<String, dynamic> json) =>
+      _$RunRequestBodyFromJson(json);
   Map<String, dynamic> toJson() => _$RunRequestBodyToJson(this);
 }

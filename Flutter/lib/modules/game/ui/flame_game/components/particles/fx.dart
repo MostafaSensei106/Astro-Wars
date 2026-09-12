@@ -13,17 +13,23 @@ abstract final class Fx {
   static final _rnd = Random();
 
   /// Metal debris burst for kills + dull clang.
-  static void debris(AstroGame game, Vector2 pos, Color color,
-      {int count = 12}) {
+  static void debris(
+    AstroGame game,
+    Vector2 pos,
+    Color color, {
+    int count = 12,
+  }) {
     for (int i = 0; i < count; i++) {
-      game.add(_Shard(
-        position: pos.clone(),
-        color: color,
-        velocity: Vector2(
-          (_rnd.nextDouble() - 0.5) * 380,
-          (_rnd.nextDouble() - 0.7) * 380,
+      game.add(
+        _Shard(
+          position: pos.clone(),
+          color: color,
+          velocity: Vector2(
+            (_rnd.nextDouble() - 0.5) * 380,
+            (_rnd.nextDouble() - 0.7) * 380,
+          ),
         ),
-      ));
+      );
     }
     Sfx.play(AssetsAudio.hit, volume: 0.45);
   }
@@ -35,61 +41,85 @@ abstract final class Fx {
   }
 
   /// Expanding shockwave ring (boss kills, gift pickups, missiles).
-  static void ring(AstroGame game, Vector2 pos, Color color,
-      {double maxRadius = 120, double lifespan = 0.5}) {
-    game.add(_Ring(
-      position: pos.clone(),
-      color: color,
-      maxRadius: maxRadius,
-      lifespan: lifespan,
-    ));
+  static void ring(
+    AstroGame game,
+    Vector2 pos,
+    Color color, {
+    double maxRadius = 120,
+    double lifespan = 0.5,
+  }) {
+    game.add(
+      _Ring(
+        position: pos.clone(),
+        color: color,
+        maxRadius: maxRadius,
+        lifespan: lifespan,
+      ),
+    );
   }
 
   /// Soft smoke puff (meteors, damage, exhaust).
-  static void smoke(AstroGame game, Vector2 pos, Color color,
-      {int count = 8, double size = 6}) {
+  static void smoke(
+    AstroGame game,
+    Vector2 pos,
+    Color color, {
+    int count = 8,
+    double size = 6,
+  }) {
     for (int i = 0; i < count; i++) {
-      game.add(_Puff(
-        position: pos.clone()
-          ..add(Vector2(
-            (_rnd.nextDouble() - 0.5) * 20,
-            (_rnd.nextDouble() - 0.5) * 20,
-          )),
-        color: color,
-        size: size * (0.6 + _rnd.nextDouble() * 0.8),
-        velocity: Vector2(
-          (_rnd.nextDouble() - 0.5) * 120,
-          -40 - _rnd.nextDouble() * 80,
+      game.add(
+        _Puff(
+          position: pos.clone()
+            ..add(
+              Vector2(
+                (_rnd.nextDouble() - 0.5) * 20,
+                (_rnd.nextDouble() - 0.5) * 20,
+              ),
+            ),
+          color: color,
+          size: size * (0.6 + _rnd.nextDouble() * 0.8),
+          velocity: Vector2(
+            (_rnd.nextDouble() - 0.5) * 120,
+            -40 - _rnd.nextDouble() * 80,
+          ),
         ),
-      ));
+      );
     }
   }
 
   /// Sparkle for pickups.
-  static void sparkle(AstroGame game, Vector2 pos, Color color,
-      {int count = 10}) {
+  static void sparkle(
+    AstroGame game,
+    Vector2 pos,
+    Color color, {
+    int count = 10,
+  }) {
     for (int i = 0; i < count; i++) {
       final a = _rnd.nextDouble() * 2 * pi;
-      game.add(_Spark(
-        position: pos.clone(),
-        color: color,
-        velocity: Vector2(cos(a), sin(a)) * (60 + _rnd.nextDouble() * 140),
-      ));
+      game.add(
+        _Spark(
+          position: pos.clone(),
+          color: color,
+          velocity: Vector2(cos(a), sin(a)) * (60 + _rnd.nextDouble() * 140),
+        ),
+      );
     }
   }
 
   /// Engine trail tick (call throttled, ~12/s).
   static void trail(AstroGame game, Vector2 pos, Color color) {
-    game.add(_Puff(
-      position: pos.clone(),
-      color: color,
-      size: 4,
-      velocity: Vector2(
-        (_rnd.nextDouble() - 0.5) * 30,
-        90 + _rnd.nextDouble() * 40,
+    game.add(
+      _Puff(
+        position: pos.clone(),
+        color: color,
+        size: 4,
+        velocity: Vector2(
+          (_rnd.nextDouble() - 0.5) * 30,
+          90 + _rnd.nextDouble() * 40,
+        ),
+        lifespan: 0.35,
       ),
-      lifespan: 0.35,
-    ));
+    );
   }
 }
 
@@ -102,13 +132,10 @@ class _Shard extends PositionComponent with HasGameReference<AstroGame> {
   final double spin;
   final double shardSize;
 
-  _Shard({
-    required super.position,
-    required this.color,
-    required this.velocity,
-  })  : spin = (Random().nextDouble() - 0.5) * 14,
-        shardSize = 4 + Random().nextDouble() * 6,
-        super(anchor: Anchor.center);
+  _Shard({required super.position, required this.color, required this.velocity})
+    : spin = (Random().nextDouble() - 0.5) * 14,
+      shardSize = 4 + Random().nextDouble() * 6,
+      super(anchor: Anchor.center);
 
   @override
   void update(double dt) {
@@ -155,7 +182,7 @@ class _Splat extends PositionComponent with HasGameReference<AstroGame> {
   late final List<Vector2> _blob;
 
   _Splat({required super.position})
-      : super(size: Vector2(36, 36), anchor: Anchor.center) {
+    : super(size: Vector2(36, 36), anchor: Anchor.center) {
     final rnd = Random();
     _blob = List.generate(8, (i) {
       final a = (i / 8) * 2 * pi;
@@ -182,13 +209,19 @@ class _Splat extends PositionComponent with HasGameReference<AstroGame> {
     }
     path.close();
     canvas.drawPath(
-        path, Paint()..color = Colors.white.withValues(alpha: 0.85 * alpha));
+      path,
+      Paint()..color = Colors.white.withValues(alpha: 0.85 * alpha),
+    );
     canvas.drawCircle(
-        c, 6, Paint()..color = const Color(0xFFFFC233).withValues(alpha: alpha));
+      c,
+      6,
+      Paint()..color = const Color(0xFFFFC233).withValues(alpha: alpha),
+    );
     canvas.drawCircle(
-        c + const Offset(-2, -2),
-        2,
-        Paint()..color = Colors.white.withValues(alpha: alpha));
+      c + const Offset(-2, -2),
+      2,
+      Paint()..color = Colors.white.withValues(alpha: alpha),
+    );
   }
 }
 
@@ -243,8 +276,8 @@ class _Puff extends PositionComponent with HasGameReference<AstroGame> {
     required double size,
     required this.velocity,
     this.lifespan = 0.6,
-  })  : startSize = size,
-        super(size: Vector2.all(size * 2), anchor: Anchor.center);
+  }) : startSize = size,
+       super(size: Vector2.all(size * 2), anchor: Anchor.center);
 
   @override
   void update(double dt) {
@@ -276,11 +309,8 @@ class _Spark extends PositionComponent with HasGameReference<AstroGame> {
   double age = 0;
   final double lifespan = 0.4;
 
-  _Spark({
-    required super.position,
-    required this.color,
-    required this.velocity,
-  }) : super(size: Vector2.all(6), anchor: Anchor.center);
+  _Spark({required super.position, required this.color, required this.velocity})
+    : super(size: Vector2.all(6), anchor: Anchor.center);
 
   @override
   void update(double dt) {

@@ -36,6 +36,9 @@ class ThemeCubit extends HydratedCubit<ThemeState> {
 
   @override
   Map<String, dynamic>? toJson(ThemeState state) {
-    return {'themeMode': state.themeMode.index, 'accentValue': state.accentValue};
+    return {
+      'themeMode': state.themeMode.index,
+      'accentValue': state.accentValue,
+    };
   }
 }

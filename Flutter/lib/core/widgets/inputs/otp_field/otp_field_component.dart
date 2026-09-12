@@ -49,40 +49,42 @@ final class OtpFieldComponent extends HookWidget {
     }
 
     return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    spacing: AppConfig.paddingHalf,
-    children: List.generate(
-      length,
-      (final index) => SizedBox(
-        width: AppConfig.otpFieldSize,
-        height: AppConfig.otpFieldSize,
-        child: KeyboardListener(
-          focusNode: FocusNode(),
-          onKeyEvent: (final event) {
-            if (event is KeyDownEvent &&
-                event.logicalKey == LogicalKeyboardKey.backspace &&
-                controllers[index].text.isEmpty &&
-                index > 0) {
-              focusNodes[index - 1].requestFocus();
-            }
-          },
-          child: TextFormField(
-            controller: controllers[index],
-            focusNode: focusNodes[index],
-            textAlign: TextAlign.center,
-            keyboardType: TextInputType.number,
-            maxLength: 1,
-            decoration: InputDecoration(
-              counterText: '',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppConfig.outBorderRadius),
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      spacing: AppConfig.paddingHalf,
+      children: List.generate(
+        length,
+        (final index) => SizedBox(
+          width: AppConfig.otpFieldSize,
+          height: AppConfig.otpFieldSize,
+          child: KeyboardListener(
+            focusNode: FocusNode(),
+            onKeyEvent: (final event) {
+              if (event is KeyDownEvent &&
+                  event.logicalKey == LogicalKeyboardKey.backspace &&
+                  controllers[index].text.isEmpty &&
+                  index > 0) {
+                focusNodes[index - 1].requestFocus();
+              }
+            },
+            child: TextFormField(
+              controller: controllers[index],
+              focusNode: focusNodes[index],
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.number,
+              maxLength: 1,
+              decoration: InputDecoration(
+                counterText: '',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(
+                    AppConfig.outBorderRadius,
+                  ),
+                ),
               ),
+              onChanged: (final value) => handleChanged(value, index),
             ),
-            onChanged: (final value) => handleChanged(value, index),
           ),
         ),
       ),
-    ),
     );
   }
 }

@@ -83,10 +83,10 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
   double get heat01 => (heat / 100).clamp(0.0, 1.0);
 
   double get _heatPerShot => switch (activeWeapon) {
-        PowerUpType.backend => 9.0,
-        PowerUpType.flutter => 4.0,
-        _ => 5.5,
-      };
+    PowerUpType.backend => 9.0,
+    PowerUpType.flutter => 4.0,
+    _ => 5.5,
+  };
 
   double _particleTimer = 0;
 
@@ -214,10 +214,9 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
     // Lose ONE weapon level per hit (CI-style), never the whole weapon.
     if (weaponLevel > 1) {
       weaponLevel--;
-      double baseRate =
-          activeWeapon == PowerUpType.backend ? 0.6 : 0.1;
-      _fireRateMs =
-          (max(0.05, baseRate - ((weaponLevel - 1) * 0.015)) * 1000).toInt();
+      double baseRate = activeWeapon == PowerUpType.backend ? 0.6 : 0.1;
+      _fireRateMs = (max(0.05, baseRate - ((weaponLevel - 1) * 0.015)) * 1000)
+          .toInt();
     }
 
     Sfx.play(AssetsAudio.hit, volume: 0.5);
@@ -310,7 +309,12 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
     HapticFeedback.lightImpact();
 
     // Shoot recoil (knockback with return effect)
-    add(MoveEffect.by(Vector2(0, 8), EffectController(duration: 0.05, alternate: true)));
+    add(
+      MoveEffect.by(
+        Vector2(0, 8),
+        EffectController(duration: 0.05, alternate: true),
+      ),
+    );
 
     if (activeWeapon == PowerUpType.flutter) {
       // Dual lasers with spread based on level (2..6 streams, damage scales).

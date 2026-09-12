@@ -35,15 +35,19 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final currentState = state.entity;
       if (currentState.isGameOver) return;
 
-      final newHealth =
-          (currentState.health - event.damage).clamp(0, maxHealth);
+      final newHealth = (currentState.health - event.damage).clamp(
+        0,
+        maxHealth,
+      );
       if (newHealth <= 0) {
         final finalState = currentState.copyWith(health: 0, isGameOver: true);
         emit(GameState.gameOver(finalState));
 
         // Submit the result to backend with real run stats.
-        final duration =
-            DateTime.now().difference(_runStartedAt).inSeconds.clamp(1, 1 << 31);
+        final duration = DateTime.now()
+            .difference(_runStartedAt)
+            .inSeconds
+            .clamp(1, 1 << 31);
         await _submitRunUseCase(
           RunRequestBody(
             score: finalState.score,

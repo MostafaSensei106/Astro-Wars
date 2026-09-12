@@ -75,12 +75,23 @@ class BossEntity extends BaseSpriteEntity
     // Background (Red)
     final bgPaint = Paint()..color = Colors.redAccent.withValues(alpha: 0.6);
     final bgRect = Rect.fromLTWH(0, offsetY, barWidth, barHeight);
-    canvas.drawRRect(RRect.fromRectAndRadius(bgRect, const Radius.circular(6)), bgPaint);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(bgRect, const Radius.circular(6)),
+      bgPaint,
+    );
 
     // Foreground (Green)
     final fgPaint = Paint()..color = Colors.greenAccent;
-    final fgRect = Rect.fromLTWH(0, offsetY, barWidth * healthPercent, barHeight);
-    canvas.drawRRect(RRect.fromRectAndRadius(fgRect, const Radius.circular(6)), fgPaint);
+    final fgRect = Rect.fromLTWH(
+      0,
+      offsetY,
+      barWidth * healthPercent,
+      barHeight,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(fgRect, const Radius.circular(6)),
+      fgPaint,
+    );
 
     // Percentage Text
     final textPainter = TextPainter(
@@ -98,14 +109,17 @@ class BossEntity extends BaseSpriteEntity
     textPainter.layout();
     textPainter.paint(
       canvas,
-      Offset(barWidth / 2 - textPainter.width / 2, offsetY + barHeight / 2 - textPainter.height / 2),
+      Offset(
+        barWidth / 2 - textPainter.width / 2,
+        offsetY + barHeight / 2 - textPainter.height / 2,
+      ),
     );
   }
 
   @override
   void takeDamage(int amount) {
     super.takeDamage(amount);
-    
+
     // Slight knockback
     position.y -= 5;
 

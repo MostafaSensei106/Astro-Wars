@@ -33,8 +33,7 @@ void main() {
       bloc.add(const GameEvent.scoreIncreased(200));
       await expectLater(
         bloc.stream,
-        emitsThrough(
-            predicate<GameState>((s) => s.entity.score == 210)),
+        emitsThrough(predicate<GameState>((s) => s.entity.score == 210)),
       );
       await bloc.close();
     });
@@ -47,8 +46,11 @@ void main() {
       bloc.add(const GameEvent.playerDamaged(1));
       await expectLater(
         bloc.stream,
-        emitsThrough(predicate<GameState>((s) =>
-            s.entity.isGameOver && s.entity.health == 0)),
+        emitsThrough(
+          predicate<GameState>(
+            (s) => s.entity.isGameOver && s.entity.health == 0,
+          ),
+        ),
       );
       expect(repo.lastBody, isNotNull);
       await bloc.close();
@@ -61,8 +63,9 @@ void main() {
       bloc.add(const GameEvent.playerDamaged(-5)); // overheal -> 5 max
       await expectLater(
         bloc.stream,
-        emitsThrough(predicate<GameState>(
-            (s) => s.entity.health == GameBloc.maxHealth)),
+        emitsThrough(
+          predicate<GameState>((s) => s.entity.health == GameBloc.maxHealth),
+        ),
       );
       await bloc.close();
     });
@@ -74,8 +77,7 @@ void main() {
       bloc.add(const GameEvent.playerDamaged(99));
       await expectLater(
         bloc.stream,
-        emitsThrough(
-            predicate<GameState>((s) => s.entity.isGameOver)),
+        emitsThrough(predicate<GameState>((s) => s.entity.isGameOver)),
       );
       expect(repo.lastBody?.bossesDefeated, 1);
       await bloc.close();
@@ -87,10 +89,14 @@ void main() {
       bloc.add(const GameEvent.gameRestarted());
       await expectLater(
         bloc.stream,
-        emitsThrough(predicate<GameState>((s) =>
-            s.entity.score == 0 &&
-            s.entity.health == 3 &&
-            !s.entity.isGameOver)),
+        emitsThrough(
+          predicate<GameState>(
+            (s) =>
+                s.entity.score == 0 &&
+                s.entity.health == 3 &&
+                !s.entity.isGameOver,
+          ),
+        ),
       );
       await bloc.close();
     });

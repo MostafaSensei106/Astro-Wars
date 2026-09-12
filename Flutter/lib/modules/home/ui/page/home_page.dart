@@ -58,61 +58,64 @@ class HomePage extends HookWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       _IconBtn(
-                          icon: Icons.palette_outlined,
-                          onTap: () => context.push(RoutesNames.theme)),
+                        icon: Icons.palette_outlined,
+                        onTap: () => context.push(RoutesNames.theme),
+                      ),
                       const Gap(8),
                       _IconBtn(
-                          icon: Icons.settings_outlined,
-                          onTap: () => context.push(RoutesNames.settings)),
+                        icon: Icons.settings_outlined,
+                        onTap: () => context.push(RoutesNames.settings),
+                      ),
                     ],
                   ),
                   const Gap(8),
                   // Title
-                  Text('ASTRO WARS',
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayMedium
-                              ?.copyWith(
-                                color: Colors.white,
-                                letterSpacing: 5,
-                                shadows: [
-                                  Shadow(
-                                      color: scheme.primary,
-                                      blurRadius: 24),
-                                ],
-                              ),
-                          textAlign: TextAlign.center)
+                  Text(
+                        'ASTRO WARS',
+                        style: Theme.of(context).textTheme.displayMedium
+                            ?.copyWith(
+                              color: Colors.white,
+                              letterSpacing: 5,
+                              shadows: [
+                                Shadow(color: scheme.primary, blurRadius: 24),
+                              ],
+                            ),
+                        textAlign: TextAlign.center,
+                      )
                       .animate()
                       .fadeIn(duration: 500.ms)
                       .slideY(begin: -0.3, end: 0),
                   const Gap(4),
-                  Text('DEFEND THE GALAXY',
-                          style: TextStyle(
-                              color: AstroDesign.neonCyan,
-                              letterSpacing: 6,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center)
-                      .animate()
-                      .fadeIn(delay: 150.ms, duration: 500.ms),
+                  Text(
+                    'DEFEND THE GALAXY',
+                    style: TextStyle(
+                      color: AstroDesign.neonCyan,
+                      letterSpacing: 6,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ).animate().fadeIn(delay: 150.ms, duration: 500.ms),
                   const Gap(20),
                   // Ship + best strip
                   Row(
                     children: [
                       Expanded(
                         child: _StatCard(
-                            label: 'BEST SCORE',
-                            value: '${best.value}',
-                            icon: Icons.emoji_events_rounded,
-                            color: AstroDesign.neonAmber),
+                          label: 'BEST SCORE',
+                          value: '${best.value}',
+                          icon: Icons.emoji_events_rounded,
+                          color: AstroDesign.neonAmber,
+                        ),
                       ),
                       const Gap(12),
                       Expanded(
                         child: _StatCard(
-                            label: 'SECTORS OPEN',
-                            value: '${unlocked.value}/10',
-                            icon: Icons.grid_view_rounded,
-                            color: AstroDesign.neonCyan),
+                          label: 'SECTORS OPEN',
+                          value: '${unlocked.value}/10',
+                          icon: Icons.grid_view_rounded,
+                          color: AstroDesign.neonCyan,
+                        ),
                       ),
                     ],
                   ).animate().fadeIn(delay: 250.ms, duration: 400.ms),
@@ -125,41 +128,54 @@ class HomePage extends HookWidget {
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.06),
                         borderRadius: BorderRadius.circular(
-                            AstroDesign.radiusLg),
+                          AstroDesign.radiusLg,
+                        ),
                         border: Border.all(
-                            color:
-                                Colors.white.withValues(alpha: 0.15)),
+                          color: Colors.white.withValues(alpha: 0.15),
+                        ),
                       ),
                       child: Row(
                         children: [
-                          Image.asset(AssetsImages.path(ship.value),
-                              width: 64, height: 64, fit: BoxFit.contain,
-                              errorBuilder: (_, _, _) => const Icon(
-                                  Icons.rocket_launch_rounded,
-                                  size: 56,
-                                  color: Colors.white70)),
+                          Image.asset(
+                            AssetsImages.path(ship.value),
+                            width: 64,
+                            height: 64,
+                            fit: BoxFit.contain,
+                            errorBuilder: (_, _, _) => const Icon(
+                              Icons.rocket_launch_rounded,
+                              size: 56,
+                              color: Colors.white70,
+                            ),
+                          ),
                           const Gap(16),
                           const Expanded(
                             child: Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('ACTIVE INTERCEPTOR',
-                                    style: TextStyle(
-                                        color: Colors.white54,
-                                        fontSize: 11,
-                                        letterSpacing: 2)),
+                                Text(
+                                  'ACTIVE INTERCEPTOR',
+                                  style: TextStyle(
+                                    color: Colors.white54,
+                                    fontSize: 11,
+                                    letterSpacing: 2,
+                                  ),
+                                ),
                                 Gap(4),
-                                Text('Hangar → swap ship',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16)),
+                                Text(
+                                  'Hangar → swap ship',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                          const Icon(Icons.chevron_right_rounded,
-                              color: Colors.white54),
+                          const Icon(
+                            Icons.chevron_right_rounded,
+                            color: Colors.white54,
+                          ),
                         ],
                       ),
                     ),
@@ -167,44 +183,52 @@ class HomePage extends HookWidget {
                   const Gap(20),
                   // LAUNCH
                   SizedBox(
-                    height: 64,
-                    child: FilledButton.icon(
-                      onPressed: () =>
-                          context.push('${RoutesNames.game}?level=1'),
-                      icon: const Icon(
-                          Icons.play_arrow_rounded,
-                          size: 32),
-                      label: const Text('LAUNCH MISSION',
-                          style: TextStyle(
+                        height: 64,
+                        child: FilledButton.icon(
+                          onPressed: () =>
+                              context.push('${RoutesNames.game}?level=1'),
+                          icon: const Icon(Icons.play_arrow_rounded, size: 32),
+                          label: const Text(
+                            'LAUNCH MISSION',
+                            style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w900,
-                              letterSpacing: 2)),
-                      style: FilledButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                AstroDesign.radiusMd)),
-                        shadowColor: scheme.primary,
-                        elevation: 8,
-                      ),
-                    ),
-                  ).animate().fadeIn(delay: 400.ms).scaleXY(
-                      begin: 0.95, end: 1.0, duration: 300.ms),
+                              letterSpacing: 2,
+                            ),
+                          ),
+                          style: FilledButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                AstroDesign.radiusMd,
+                              ),
+                            ),
+                            shadowColor: scheme.primary,
+                            elevation: 8,
+                          ),
+                        ),
+                      )
+                      .animate()
+                      .fadeIn(delay: 400.ms)
+                      .scaleXY(begin: 0.95, end: 1.0, duration: 300.ms),
                   const Gap(24),
-                  const Text('SELECT SECTOR',
-                      style: TextStyle(
-                          color: Colors.white70,
-                          letterSpacing: 3,
-                          fontWeight: FontWeight.bold)),
+                  const Text(
+                    'SELECT SECTOR',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      letterSpacing: 3,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   const Gap(12),
                   GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 5,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                    ),
+                          crossAxisCount: 5,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                        ),
                     itemCount: 10,
                     itemBuilder: (context, i) {
                       final level = i + 1;
@@ -219,16 +243,23 @@ class HomePage extends HookWidget {
                           onTap: locked
                               ? null
                               : () => context.push(
-                                  '${RoutesNames.game}?level=$level'),
+                                  '${RoutesNames.game}?level=$level',
+                                ),
                           child: Center(
                             child: locked
-                                ? const Icon(Icons.lock_rounded,
-                                    color: Colors.white24, size: 20)
-                                : Text('$level',
+                                ? const Icon(
+                                    Icons.lock_rounded,
+                                    color: Colors.white24,
+                                    size: 20,
+                                  )
+                                : Text(
+                                    '$level',
                                     style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w900,
-                                        fontSize: 20)),
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 20,
+                                    ),
+                                  ),
                           ),
                         ),
                       );
@@ -271,11 +302,12 @@ class _StatCard extends StatelessWidget {
   final String value;
   final IconData icon;
   final Color color;
-  const _StatCard(
-      {required this.label,
-      required this.value,
-      required this.icon,
-      required this.color});
+  const _StatCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -283,29 +315,35 @@ class _StatCard extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.06),
-        borderRadius:
-            BorderRadius.circular(AstroDesign.radiusMd),
-        border:
-            Border.all(color: color.withValues(alpha: 0.4)),
+        borderRadius: BorderRadius.circular(AstroDesign.radiusMd),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(children: [
-            Icon(icon, color: color, size: 16),
-            const Gap(6),
-            Text(label,
+          Row(
+            children: [
+              Icon(icon, color: color, size: 16),
+              const Gap(6),
+              Text(
+                label,
                 style: const TextStyle(
-                    color: Colors.white54,
-                    fontSize: 10,
-                    letterSpacing: 1.5)),
-          ]),
+                  color: Colors.white54,
+                  fontSize: 10,
+                  letterSpacing: 1.5,
+                ),
+              ),
+            ],
+          ),
           const Gap(6),
-          Text(value,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900)),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
         ],
       ),
     );

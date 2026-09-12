@@ -8,8 +8,8 @@ import '../../../../core/di/di.dart';
 import '../../../../core/widgets/buttons/elevated_button/elevated_button_component.dart';
 import '../../../../core/widgets/display/card/card_component.dart';
 import '../../logic/bloc/game_bloc.dart';
-import '../flamegame/astrogame.dart';
-import '../flamegame/components/entities/boss_entity.dart';
+import '../flame_game/astro_game.dart';
+import '../flame_game/components/entities/boss_entity.dart';
 import '../../../../core/utils/theme/astro_design.dart';
 
 class GamePage extends StatelessWidget {
@@ -76,34 +76,41 @@ class GameView extends HookWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('PAUSED',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 4)),
+                const Text(
+                  'PAUSED',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 4,
+                  ),
+                ),
                 const SizedBox(height: 8),
                 Text(
-                    'LEVEL ${game.currentLevel}  •  SCORE ${bloc.state.entity.score}',
-                    style: const TextStyle(color: Colors.white70)),
+                  'LEVEL ${game.currentLevel}  •  SCORE ${bloc.state.entity.score}',
+                  style: const TextStyle(color: Colors.white70),
+                ),
                 const SizedBox(height: 24),
                 ElevatedButtonComponent(
-                    label: 'Resume',
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                      game.resume();
-                    }),
+                  label: 'Resume',
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    game.resume();
+                  },
+                ),
                 const SizedBox(height: 12),
                 ElevatedButtonComponent(
-                    label: 'Restart',
-                    onPressed: () async {
-                      Navigator.of(ctx).pop();
-                      await game.reset();
-                    }),
+                  label: 'Restart',
+                  onPressed: () async {
+                    Navigator.of(ctx).pop();
+                    await game.reset();
+                  },
+                ),
                 const SizedBox(height: 12),
                 ElevatedButtonComponent(
-                    label: 'Quit to Base',
-                    onPressed: () => context.pop()),
+                  label: 'Quit to Base',
+                  onPressed: () => context.pop(),
+                ),
               ],
             ),
           ),
@@ -124,45 +131,55 @@ class GameView extends HookWidget {
                 padding: const EdgeInsets.all(12.0),
                 child: BlocBuilder<GameBloc, GameState>(
                   builder: (context, state) {
-                    final bosses =
-                        game.children.whereType<BossEntity>().toList();
+                    final bosses = game.children
+                        .whereType<BossEntity>()
+                        .toList();
                     final bossHp = bosses.isEmpty
                         ? 0.0
-                        : (bosses.first.health / bosses.first.maxHealth)
-                            .clamp(0.0, 1.0);
+                        : (bosses.first.health / bosses.first.maxHealth).clamp(
+                            0.0,
+                            1.0,
+                          );
                     return Column(
                       children: [
                         Row(
                           children: [
                             _HudButton(
-                                icon: Icons.pause_rounded,
-                                onTap: showPauseMenu),
+                              icon: Icons.pause_rounded,
+                              onTap: showPauseMenu,
+                            ),
                             const SizedBox(width: 8),
                             _Pill(
-                                text: 'LV ${game.currentLevel}',
-                                color: Colors.deepPurpleAccent),
+                              text: 'LV ${game.currentLevel}',
+                              color: Colors.deepPurpleAccent,
+                            ),
                             const SizedBox(width: 8),
                             _Pill(
-                                text: game.waveProgressText,
-                                color: Colors.cyanAccent),
+                              text: game.waveProgressText,
+                              color: Colors.cyanAccent,
+                            ),
                             const Spacer(),
                             if (game.comboMultiplier > 1)
                               _Pill(
-                                  text:
-                                      'x${game.comboMultiplier} COMBO',
-                                  color: Colors.orangeAccent),
+                                text: 'x${game.comboMultiplier} COMBO',
+                                color: Colors.orangeAccent,
+                              ),
                             if (game.comboMultiplier > 1)
                               const SizedBox(width: 8),
-                            Text('${state.entity.score}',
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.w900,
-                                    shadows: [
-                                      Shadow(
-                                          blurRadius: 12,
-                                          color: Colors.cyanAccent)
-                                    ])),
+                            Text(
+                              '${state.entity.score}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 28,
+                                fontWeight: FontWeight.w900,
+                                shadows: [
+                                  Shadow(
+                                    blurRadius: 12,
+                                    color: Colors.cyanAccent,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                         if (game.comboCount > 0)
@@ -192,8 +209,8 @@ class GameView extends HookWidget {
                                 color: game.player.overheated
                                     ? Colors.redAccent
                                     : game.player.heat01 > 0.8
-                                        ? Colors.orangeAccent
-                                        : Colors.white38,
+                                    ? Colors.orangeAccent
+                                    : Colors.white38,
                               ),
                               const SizedBox(width: 6),
                               SizedBox(
@@ -205,29 +222,35 @@ class GameView extends HookWidget {
                                   color: game.player.overheated
                                       ? Colors.redAccent
                                       : game.player.heat01 > 0.8
-                                          ? Colors.orangeAccent
-                                          : Colors.cyanAccent,
+                                      ? Colors.orangeAccent
+                                      : Colors.cyanAccent,
                                 ),
                               ),
                               if (game.player.overheated) ...[
                                 const SizedBox(width: 6),
-                                const Text('OVERHEATED',
-                                    style: TextStyle(
-                                        color: Colors.redAccent,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w900,
-                                        letterSpacing: 1.5)),
+                                const Text(
+                                  'OVERHEATED',
+                                  style: TextStyle(
+                                    color: Colors.redAccent,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 1.5,
+                                  ),
+                                ),
                               ],
                             ],
                           ),
                         ],
                         if (bosses.isNotEmpty) ...[
                           const SizedBox(height: 8),
-                          const Text('⚠ BOSS ⚠',
-                              style: TextStyle(
-                                  color: Colors.redAccent,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 3)),
+                          const Text(
+                            '⚠ BOSS ⚠',
+                            style: TextStyle(
+                              color: Colors.redAccent,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 3,
+                            ),
+                          ),
                           const SizedBox(height: 4),
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
@@ -245,18 +268,17 @@ class GameView extends HookWidget {
                             // Hearts (max 5, starts at 3)
                             Row(
                               mainAxisSize: MainAxisSize.min,
-                              children: List.generate(
-                                  GameBloc.maxHealth, (i) {
-                                final filled =
-                                    i < state.entity.health;
+                              children: List.generate(GameBloc.maxHealth, (i) {
+                                final filled = i < state.entity.health;
                                 return Icon(
-                                    filled
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
-                                    color: filled
-                                        ? Colors.redAccent
-                                        : Colors.white30,
-                                    size: 26);
+                                  filled
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: filled
+                                      ? Colors.redAccent
+                                      : Colors.white30,
+                                  size: 26,
+                                );
                               }),
                             ),
                             const Spacer(),
@@ -272,39 +294,42 @@ class GameView extends HookWidget {
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       color: game.missiles > 0
-                                          ? Colors.orangeAccent
-                                              .withValues(alpha: 0.9)
+                                          ? Colors.orangeAccent.withValues(
+                                              alpha: 0.9,
+                                            )
                                           : Colors.white10,
                                       border: Border.all(
-                                          color: Colors.white
-                                              .withValues(alpha: 0.5),
-                                          width: 2),
+                                        color: Colors.white.withValues(
+                                          alpha: 0.5,
+                                        ),
+                                        width: 2,
+                                      ),
                                     ),
                                     child: Icon(
-                                        Icons.rocket_launch_rounded,
-                                        color: game.missiles > 0
-                                            ? Colors.black87
-                                            : Colors.white38,
-                                        size: 26),
+                                      Icons.rocket_launch_rounded,
+                                      color: game.missiles > 0
+                                          ? Colors.black87
+                                          : Colors.white38,
+                                      size: 26,
+                                    ),
                                   ),
                                   Positioned(
                                     top: -6,
                                     right: -6,
                                     child: Container(
-                                      padding:
-                                          const EdgeInsets.all(5),
-                                      decoration:
-                                          const BoxDecoration(
+                                      padding: const EdgeInsets.all(5),
+                                      decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: Colors.redAccent,
                                       ),
                                       child: Text(
-                                          '${game.missiles}',
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 11,
-                                              fontWeight:
-                                                  FontWeight.w900)),
+                                        '${game.missiles}',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w900,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -312,10 +337,13 @@ class GameView extends HookWidget {
                             ),
                             const SizedBox(width: 12),
                             if (bestLoaded.value && best.value > 0)
-                              Text('BEST $best.value',
-                                  style: const TextStyle(
-                                      color: Colors.white54,
-                                      fontWeight: FontWeight.bold)),
+                              Text(
+                                'BEST $best.value',
+                                style: const TextStyle(
+                                  color: Colors.white54,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                           ],
                         ),
                       ],
@@ -335,13 +363,15 @@ class GameView extends HookWidget {
                 child: Center(
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.black54,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                          color: Colors.cyanAccent
-                              .withValues(alpha: 0.6)),
+                        color: Colors.cyanAccent.withValues(alpha: 0.6),
+                      ),
                     ),
                     child: Text(
                       game.bannerText ?? '',
@@ -351,9 +381,7 @@ class GameView extends HookWidget {
                         fontWeight: FontWeight.w900,
                         letterSpacing: 2,
                         shadows: [
-                          Shadow(
-                              blurRadius: 12,
-                              color: Colors.cyanAccent)
+                          Shadow(blurRadius: 12, color: Colors.cyanAccent),
                         ],
                       ),
                       textAlign: TextAlign.center,
@@ -367,7 +395,9 @@ class GameView extends HookWidget {
             builder: (context, state) {
               if (!state.entity.isGameOver) return const SizedBox.shrink();
               final isRecord =
-                  bestLoaded.value && state.entity.score >= best.value && state.entity.score > 0;
+                  bestLoaded.value &&
+                  state.entity.score >= best.value &&
+                  state.entity.score > 0;
               return Container(
                 color: Colors.black54,
                 child: Center(
@@ -377,40 +407,55 @@ class GameView extends HookWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text('GAME OVER',
-                            style: TextStyle(
-                                color: Colors.redAccent,
-                                fontSize: 34,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 3)),
+                        const Text(
+                          'GAME OVER',
+                          style: TextStyle(
+                            color: Colors.redAccent,
+                            fontSize: 34,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 3,
+                          ),
+                        ),
                         if (isRecord)
                           const Padding(
                             padding: EdgeInsets.only(top: 8),
-                            child: Text('★ NEW RECORD ★',
-                                style: TextStyle(
-                                    color: Colors.amber,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 2)),
+                            child: Text(
+                              '★ NEW RECORD ★',
+                              style: TextStyle(
+                                color: Colors.amber,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 2,
+                              ),
+                            ),
                           ),
                         const SizedBox(height: 16),
-                        Text('${state.entity.score}',
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 48,
-                                fontWeight: FontWeight.w900)),
-                        Text('BEST  •  ${best.value > state.entity.score ? best.value : state.entity.score}',
-                            style: const TextStyle(color: Colors.white54)),
+                        Text(
+                          '${state.entity.score}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 48,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        Text(
+                          'BEST  •  ${best.value > state.entity.score ? best.value : state.entity.score}',
+                          style: const TextStyle(color: Colors.white54),
+                        ),
                         const SizedBox(height: 8),
-                        Text('REACHED LEVEL ${game.currentLevel}',
-                            style: const TextStyle(color: Colors.white70)),
+                        Text(
+                          'REACHED LEVEL ${game.currentLevel}',
+                          style: const TextStyle(color: Colors.white70),
+                        ),
                         const SizedBox(height: 24),
                         ElevatedButtonComponent(
-                            label: 'Retry',
-                            onPressed: () => game.reset()),
+                          label: 'Retry',
+                          onPressed: () => game.reset(),
+                        ),
                         const SizedBox(height: 12),
                         ElevatedButtonComponent(
-                            label: 'Back to Base',
-                            onPressed: () => context.pop()),
+                          label: 'Back to Base',
+                          onPressed: () => context.pop(),
+                        ),
                       ],
                     ),
                   ),
@@ -460,9 +505,14 @@ class _Pill extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color.withValues(alpha: 0.6)),
       ),
-      child: Text(text,
-          style: TextStyle(
-              color: color, fontWeight: FontWeight.bold, fontSize: 12)),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.bold,
+          fontSize: 12,
+        ),
+      ),
     );
   }
 }

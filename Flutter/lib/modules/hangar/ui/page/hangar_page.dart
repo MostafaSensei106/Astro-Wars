@@ -50,13 +50,15 @@ class HangarPage extends HookWidget {
                   duration: const Duration(milliseconds: 250),
                   child: Container(
                     margin: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 12),
+                      horizontal: 8,
+                      vertical: 12,
+                    ),
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: scheme.surfaceContainerHighest
-                          .withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(
-                          AstroDesign.radiusLg),
+                      color: scheme.surfaceContainerHighest.withValues(
+                        alpha: 0.5,
+                      ),
+                      borderRadius: BorderRadius.circular(AstroDesign.radiusLg),
                       border: Border.all(
                         color: isSelected
                             ? scheme.primary
@@ -66,9 +68,9 @@ class HangarPage extends HookWidget {
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
-                                  color: scheme.primary
-                                      .withValues(alpha: 0.35),
-                                  blurRadius: 32)
+                                color: scheme.primary.withValues(alpha: 0.35),
+                                blurRadius: 32,
+                              ),
                             ]
                           : null,
                     ),
@@ -78,16 +80,21 @@ class HangarPage extends HookWidget {
                         if (isSelected)
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 4),
+                              horizontal: 12,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: scheme.primary,
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: const Text('ACTIVE',
-                                style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w900,
-                                    letterSpacing: 2)),
+                            child: const Text(
+                              'ACTIVE',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 2,
+                              ),
+                            ),
                           ),
                         const Gap(12),
                         Expanded(
@@ -95,35 +102,40 @@ class HangarPage extends HookWidget {
                             AssetsImages.path(ship.asset),
                             fit: BoxFit.contain,
                             errorBuilder: (_, _, _) => Icon(
-                                Icons.rocket_launch_rounded,
-                                size: 120,
-                                color: scheme.primary),
+                              Icons.rocket_launch_rounded,
+                              size: 120,
+                              color: scheme.primary,
+                            ),
                           ),
                         ),
                         const Gap(12),
-                        Text(ship.name,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(fontWeight: FontWeight.w900)),
-                        Text(ship.role,
-                            style: TextStyle(
-                                color: scheme.onSurfaceVariant)),
+                        Text(
+                          ship.name,
+                          style: Theme.of(context).textTheme.headlineSmall
+                              ?.copyWith(fontWeight: FontWeight.w900),
+                        ),
+                        Text(
+                          ship.role,
+                          style: TextStyle(color: scheme.onSurfaceVariant),
+                        ),
                         const Gap(16),
                         _StatBar(
-                            label: 'FIREPOWER',
-                            value: ship.firepower,
-                            color: AstroDesign.danger),
+                          label: 'FIREPOWER',
+                          value: ship.firepower,
+                          color: AstroDesign.danger,
+                        ),
                         const Gap(8),
                         _StatBar(
-                            label: 'SPEED',
-                            value: ship.speed,
-                            color: AstroDesign.neonCyan),
+                          label: 'SPEED',
+                          value: ship.speed,
+                          color: AstroDesign.neonCyan,
+                        ),
                         const Gap(8),
                         _StatBar(
-                            label: 'ARMOR',
-                            value: ship.armor,
-                            color: AstroDesign.neonGreen),
+                          label: 'ARMOR',
+                          value: ship.armor,
+                          color: AstroDesign.neonGreen,
+                        ),
                       ],
                     ),
                   ),
@@ -135,18 +147,19 @@ class HangarPage extends HookWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
-                ships.length,
-                (i) => Container(
-                      margin: const EdgeInsets.all(4),
-                      width: i == page.value ? 24 : 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: i == page.value
-                            ? scheme.primary
-                            : Colors.grey.withValues(alpha: 0.4),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    )),
+              ships.length,
+              (i) => Container(
+                margin: const EdgeInsets.all(4),
+                width: i == page.value ? 24 : 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: i == page.value
+                      ? scheme.primary
+                      : Colors.grey.withValues(alpha: 0.4),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
           ),
           const Gap(12),
           Padding(
@@ -156,25 +169,30 @@ class HangarPage extends HookWidget {
               height: 56,
               child: ships[page.value].asset == selected.value
                   ? FilledButton.tonalIcon(
-                      onPressed: () => context.go(
-                          '${RoutesNames.game}?level=1'),
+                      onPressed: () =>
+                          context.go('${RoutesNames.game}?level=1'),
                       icon: const Icon(Icons.play_arrow_rounded),
-                      label: const Text('FLY THIS SHIP',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 1.5)),
+                      label: const Text(
+                        'FLY THIS SHIP',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.5,
+                        ),
+                      ),
                     )
                   : FilledButton.icon(
                       onPressed: () async {
-                        await AstroDesign.selectShip(
-                            ships[page.value].asset);
+                        await AstroDesign.selectShip(ships[page.value].asset);
                         selected.value = ships[page.value].asset;
                       },
                       icon: const Icon(Icons.check_rounded),
-                      label: const Text('SELECT SHIP',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 1.5)),
+                      label: const Text(
+                        'SELECT SHIP',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.5,
+                        ),
+                      ),
                     ),
             ),
           ),
@@ -188,8 +206,11 @@ class _StatBar extends StatelessWidget {
   final String label;
   final int value; // 1..5
   final Color color;
-  const _StatBar(
-      {required this.label, required this.value, required this.color});
+  const _StatBar({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -197,36 +218,40 @@ class _StatBar extends StatelessWidget {
       children: [
         SizedBox(
           width: 90,
-          child: Text(label,
-              style: const TextStyle(
-                  fontSize: 11,
-                  letterSpacing: 1.5,
-                  fontWeight: FontWeight.bold)),
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              letterSpacing: 1.5,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         Expanded(
           child: Row(
             children: List.generate(
-                5,
-                (i) => Expanded(
-                      child: Container(
-                        height: 8,
-                        margin: const EdgeInsets.symmetric(horizontal: 2),
-                        decoration: BoxDecoration(
-                          color: i < value
-                              ? color
-                              : Colors.grey.withValues(alpha: 0.25),
-                          borderRadius: BorderRadius.circular(4),
-                          boxShadow: i < value
-                              ? [
-                                  BoxShadow(
-                                      color: color.withValues(
-                                          alpha: 0.6),
-                                      blurRadius: 6)
-                                ]
-                              : null,
-                        ),
-                      ),
-                    )),
+              5,
+              (i) => Expanded(
+                child: Container(
+                  height: 8,
+                  margin: const EdgeInsets.symmetric(horizontal: 2),
+                  decoration: BoxDecoration(
+                    color: i < value
+                        ? color
+                        : Colors.grey.withValues(alpha: 0.25),
+                    borderRadius: BorderRadius.circular(4),
+                    boxShadow: i < value
+                        ? [
+                            BoxShadow(
+                              color: color.withValues(alpha: 0.6),
+                              blurRadius: 6,
+                            ),
+                          ]
+                        : null,
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ],

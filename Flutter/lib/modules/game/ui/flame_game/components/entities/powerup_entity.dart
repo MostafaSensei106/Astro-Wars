@@ -12,7 +12,15 @@ import 'enemy_entity.dart';
 import '../../astro_game.dart';
 import '../../../../logic/bloc/game_bloc.dart';
 
-enum PowerUpType { flutter, backend, cybersecurity, uiux, hr, logistics, coolant }
+enum PowerUpType {
+  flutter,
+  backend,
+  cybersecurity,
+  uiux,
+  hr,
+  logistics,
+  coolant,
+}
 
 class PowerUpEntity extends PositionComponent
     with MovementBehavior, CollisionCallbacks, HasGameReference<AstroGame> {
@@ -132,11 +140,14 @@ class PowerUpEntity extends PositionComponent
       applyPowerUp(other);
       if (type != PowerUpType.coolant) {
         // Coolant plays its own shimmer inside applyPowerUp.
-        final isGift = type == PowerUpType.flutter ||
+        final isGift =
+            type == PowerUpType.flutter ||
             type == PowerUpType.backend ||
             type == PowerUpType.uiux;
-        Sfx.play(isGift ? AssetsAudio.giftPickup : AssetsAudio.powerup,
-            volume: 0.6);
+        Sfx.play(
+          isGift ? AssetsAudio.giftPickup : AssetsAudio.powerup,
+          volume: 0.6,
+        );
       }
       Fx.sparkle(game, position.clone(), Colors.white);
       Fx.ring(game, position.clone(), Colors.white, maxRadius: 60);

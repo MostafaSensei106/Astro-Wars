@@ -101,18 +101,14 @@ class NeuButton extends HookWidget {
   Widget build(BuildContext context) {
     final isPressed = useState(false);
     return GestureDetector(
-      onTapDown: onPressed != null
-          ? (_) => isPressed.value = true
-          : null,
+      onTapDown: onPressed != null ? (_) => isPressed.value = true : null,
       onTapUp: onPressed != null
           ? (_) {
               isPressed.value = false;
               onPressed!();
             }
           : null,
-      onTapCancel: onPressed != null
-          ? () => isPressed.value = false
-          : null,
+      onTapCancel: onPressed != null ? () => isPressed.value = false : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 100),
         width: width,

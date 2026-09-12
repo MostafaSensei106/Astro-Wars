@@ -61,11 +61,14 @@ class SettingsPage extends HookWidget {
             onTap: () => context.push('/theme'),
           ),
           const Gap(32),
-          const Text('DANGER ZONE',
-              style: TextStyle(
-                  color: AstroDesign.danger,
-                  letterSpacing: 2,
-                  fontWeight: FontWeight.bold)),
+          const Text(
+            'DANGER ZONE',
+            style: TextStyle(
+              color: AstroDesign.danger,
+              letterSpacing: 2,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const Gap(12),
           OutlinedButton.icon(
             onPressed: () => _confirmReset(context),
@@ -88,15 +91,16 @@ class SettingsPage extends HookWidget {
       builder: (ctx) => AlertDialog(
         title: const Text('Reset all progress?'),
         content: const Text(
-            'Best score, unlocked sectors and mission count will be erased.'),
+          'Best score, unlocked sectors and mission count will be erased.',
+        ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.of(ctx).pop(false),
-              child: const Text('Cancel')),
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
           FilledButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            style: FilledButton.styleFrom(
-                backgroundColor: AstroDesign.danger),
+            style: FilledButton.styleFrom(backgroundColor: AstroDesign.danger),
             child: const Text('Reset'),
           ),
         ],
@@ -118,23 +122,22 @@ class _Tile extends StatelessWidget {
   final String subtitle;
   final Widget trailing;
   final VoidCallback? onTap;
-  const _Tile(
-      {required this.icon,
-      required this.title,
-      required this.subtitle,
-      required this.trailing,
-      this.onTap});
+  const _Tile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.trailing,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Material(
       color: scheme.surfaceContainerHighest.withValues(alpha: 0.5),
-      borderRadius:
-          BorderRadius.circular(AstroDesign.radiusMd),
+      borderRadius: BorderRadius.circular(AstroDesign.radiusMd),
       child: InkWell(
-        borderRadius:
-            BorderRadius.circular(AstroDesign.radiusMd),
+        borderRadius: BorderRadius.circular(AstroDesign.radiusMd),
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -146,14 +149,20 @@ class _Tile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16)),
-                    Text(subtitle,
-                        style: TextStyle(
-                            color: scheme.onSurfaceVariant,
-                            fontSize: 13)),
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        color: scheme.onSurfaceVariant,
+                        fontSize: 13,
+                      ),
+                    ),
                   ],
                 ),
               ),

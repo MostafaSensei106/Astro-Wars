@@ -24,22 +24,22 @@ class MissionWave {
   });
 
   factory MissionWave.fromJson(Map<String, dynamic> json) => MissionWave(
-        type: WaveType.values.firstWhere(
-          (t) => t.name == json['type'],
-          orElse: () => WaveType.formation,
-        ),
-        rows: (json['rows'] as num?)?.toInt() ?? 2,
-        cols: (json['cols'] as num?)?.toInt() ?? 5,
-        speedMult: (json['speedMult'] as num?)?.toDouble() ?? 1.0,
-        giftShower: (json['giftShower'] as num?)?.toInt() ?? 0,
-      );
+    type: WaveType.values.firstWhere(
+      (t) => t.name == json['type'],
+      orElse: () => WaveType.formation,
+    ),
+    rows: (json['rows'] as num?)?.toInt() ?? 2,
+    cols: (json['cols'] as num?)?.toInt() ?? 5,
+    speedMult: (json['speedMult'] as num?)?.toDouble() ?? 1.0,
+    giftShower: (json['giftShower'] as num?)?.toInt() ?? 0,
+  );
 
   String get label => switch (type) {
-        WaveType.formation => 'CHICKEN FORMATION',
-        WaveType.swoop => 'SWOOP STORM',
-        WaveType.meteor => 'METEOR STORM',
-        WaveType.bonus => 'BONUS HARVEST',
-      };
+    WaveType.formation => 'CHICKEN FORMATION',
+    WaveType.swoop => 'SWOOP STORM',
+    WaveType.meteor => 'METEOR STORM',
+    WaveType.bonus => 'BONUS HARVEST',
+  };
 }
 
 class SectorMission {
@@ -55,8 +55,7 @@ class SectorMission {
 
   static Future<SectorMission> load(int sector) async {
     try {
-      final raw =
-          await rootBundle.loadString(AssetsMissions.sector(sector));
+      final raw = await rootBundle.loadString(AssetsMissions.sector(sector));
       final json = jsonDecode(raw) as Map<String, dynamic>;
       final waves = (json['waves'] as List)
           .map((w) => MissionWave.fromJson(w as Map<String, dynamic>))
@@ -75,24 +74,36 @@ class SectorMission {
     for (int i = 0; i < count; i++) {
       final roll = i % 5;
       if (roll == 3) {
-        waves.add(MissionWave(
-            type: WaveType.meteor, speedMult: 1.0 + sector * 0.1));
+        waves.add(
+          MissionWave(type: WaveType.meteor, speedMult: 1.0 + sector * 0.1),
+        );
       } else if (roll == 4) {
-        waves.add(const MissionWave(
-            type: WaveType.bonus, rows: 2, cols: 4, giftShower: 3));
+        waves.add(
+          const MissionWave(
+            type: WaveType.bonus,
+            rows: 2,
+            cols: 4,
+            giftShower: 3,
+          ),
+        );
       } else if (roll == 2) {
-        waves.add(MissionWave(
+        waves.add(
+          MissionWave(
             type: WaveType.swoop,
             rows: 2 + sector ~/ 2,
             cols: 5,
-            speedMult: 1.0 + sector * 0.1));
+            speedMult: 1.0 + sector * 0.1,
+          ),
+        );
       } else {
-        waves.add(MissionWave(
-          type: WaveType.formation,
-          rows: (2 + sector ~/ 2).clamp(2, 4),
-          cols: (5 + sector ~/ 2).clamp(5, 8),
-          speedMult: 1.0 + sector * 0.1,
-        ));
+        waves.add(
+          MissionWave(
+            type: WaveType.formation,
+            rows: (2 + sector ~/ 2).clamp(2, 4),
+            cols: (5 + sector ~/ 2).clamp(5, 8),
+            speedMult: 1.0 + sector * 0.1,
+          ),
+        );
       }
     }
     return SectorMission(sector: sector, waves: waves);

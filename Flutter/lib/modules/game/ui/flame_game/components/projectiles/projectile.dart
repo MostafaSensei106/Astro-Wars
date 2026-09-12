@@ -40,8 +40,11 @@ class Projectile extends PositionComponent
       final glow = Paint()
         ..color = Colors.redAccent.withValues(alpha: 0.25)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
-      final eggRect =
-          Rect.fromCenter(center: center, width: size.x, height: size.y * 1.6);
+      final eggRect = Rect.fromCenter(
+        center: center,
+        width: size.x,
+        height: size.y * 1.6,
+      );
       canvas.drawOval(eggRect, glow);
       canvas.drawOval(eggRect, shell);
       canvas.drawOval(eggRect, outline);
@@ -89,8 +92,10 @@ class Projectile extends PositionComponent
       angle = (velocity.x * 0.4).clamp(-0.5, 0.5);
     }
     // Remove if it goes off-screen
-    if (position.y < -50 || position.y > game.size.y + 50 ||
-        position.x < -50 || position.x > game.size.x + 50) {
+    if (position.y < -50 ||
+        position.y > game.size.y + 50 ||
+        position.x < -50 ||
+        position.x > game.size.x + 50) {
       removeFromParent();
     }
   }

@@ -32,12 +32,15 @@ class AppShell extends StatelessWidget {
           }
         },
         destinations: const [
+          NavigationDestination(icon: Icon(Icons.home_rounded), label: 'Base'),
           NavigationDestination(
-              icon: Icon(Icons.home_rounded), label: 'Base'),
+            icon: Icon(Icons.rocket_launch_rounded),
+            label: 'Hangar',
+          ),
           NavigationDestination(
-              icon: Icon(Icons.rocket_launch_rounded), label: 'Hangar'),
-          NavigationDestination(
-              icon: Icon(Icons.person_rounded), label: 'Pilot'),
+            icon: Icon(Icons.person_rounded),
+            label: 'Pilot',
+          ),
         ],
       ),
     );

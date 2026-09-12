@@ -46,34 +46,38 @@ class ProfilePage extends HookWidget {
                 height: 110,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: LinearGradient(colors: [
-                    scheme.primary,
-                    AstroDesign.neonCyan,
-                  ]),
+                  gradient: LinearGradient(
+                    colors: [scheme.primary, AstroDesign.neonCyan],
+                  ),
                   boxShadow: [
                     BoxShadow(
-                        color:
-                            scheme.primary.withValues(alpha: 0.5),
-                        blurRadius: 28)
+                      color: scheme.primary.withValues(alpha: 0.5),
+                      blurRadius: 28,
+                    ),
                   ],
                 ),
-                child: const Icon(Icons.person_rounded,
-                    size: 56, color: Colors.white),
+                child: const Icon(
+                  Icons.person_rounded,
+                  size: 56,
+                  color: Colors.white,
+                ),
               ),
             ),
             const Gap(16),
-            Text('COMMANDER',
-                textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall
-                    ?.copyWith(
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 3)),
+            Text(
+              'COMMANDER',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w900,
+                letterSpacing: 3,
+              ),
+            ),
             Gap(4),
-            Text(rank(),
-                textAlign: TextAlign.center,
-                style: TextStyle(color: scheme.onSurfaceVariant)),
+            Text(
+              rank(),
+              textAlign: TextAlign.center,
+              style: TextStyle(color: scheme.onSurfaceVariant),
+            ),
             const Gap(24),
             GridView.count(
               crossAxisCount: 2,
@@ -84,21 +88,25 @@ class ProfilePage extends HookWidget {
               childAspectRatio: 1.4,
               children: [
                 _StatTile(
-                    label: 'HIGH SCORE',
-                    value: '${best.value}',
-                    color: AstroDesign.neonAmber),
+                  label: 'HIGH SCORE',
+                  value: '${best.value}',
+                  color: AstroDesign.neonAmber,
+                ),
                 _StatTile(
-                    label: 'SECTORS OPEN',
-                    value: '${levels.value}',
-                    color: AstroDesign.neonCyan),
+                  label: 'SECTORS OPEN',
+                  value: '${levels.value}',
+                  color: AstroDesign.neonCyan,
+                ),
                 _StatTile(
-                    label: 'MISSIONS FLOWN',
-                    value: '${runs.value}',
-                    color: AstroDesign.neonMagenta),
+                  label: 'MISSIONS FLOWN',
+                  value: '${runs.value}',
+                  color: AstroDesign.neonMagenta,
+                ),
                 _StatTile(
-                    label: 'RANK',
-                    value: rank().split(' ').first,
-                    color: AstroDesign.neonGreen),
+                  label: 'RANK',
+                  value: rank().split(' ').first,
+                  color: AstroDesign.neonGreen,
+                ),
               ],
             ),
           ],
@@ -112,37 +120,43 @@ class _StatTile extends StatelessWidget {
   final String label;
   final String value;
   final Color color;
-  const _StatTile(
-      {required this.label, required this.value, required this.color});
+  const _StatTile({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context)
-            .colorScheme
-            .surfaceContainerHighest
-            .withValues(alpha: 0.5),
-        borderRadius:
-            BorderRadius.circular(AstroDesign.radiusMd),
-        border:
-            Border.all(color: color.withValues(alpha: 0.35)),
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(AstroDesign.radiusMd),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(label,
-              style: const TextStyle(
-                  fontSize: 10,
-                  letterSpacing: 1.5,
-                  fontWeight: FontWeight.bold)),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 10,
+              letterSpacing: 1.5,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const Gap(8),
-          Text(value,
-              style: TextStyle(
-                  color: color,
-                  fontSize: 26,
-                  fontWeight: FontWeight.w900)),
+          Text(
+            value,
+            style: TextStyle(
+              color: color,
+              fontSize: 26,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
         ],
       ),
     );

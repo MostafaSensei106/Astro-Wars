@@ -12,11 +12,11 @@ import '../particles/fx.dart';
 class CommitEntity extends PositionComponent
     with CollisionCallbacks, HasGameReference<AstroGame> {
   CommitEntity({required Vector2 startPosition})
-      : super(
-          position: startPosition,
-          size: Vector2(22, 22),
-          anchor: Anchor.center,
-        ) {
+    : super(
+        position: startPosition,
+        size: Vector2(22, 22),
+        anchor: Anchor.center,
+      ) {
     add(RectangleHitbox());
   }
 
@@ -75,13 +75,13 @@ class CommitEntity extends PositionComponent
       }
     }
     hex.close();
+    canvas.drawPath(hex, Paint()..color = AstroDesign.neonAmber);
     canvas.drawPath(
-        hex, Paint()..color = AstroDesign.neonAmber);
-    canvas.drawPath(
-        hex,
-        Paint()
-          ..color = Colors.white
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.5);
+      hex,
+      Paint()
+        ..color = Colors.white
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5,
+    );
   }
 }

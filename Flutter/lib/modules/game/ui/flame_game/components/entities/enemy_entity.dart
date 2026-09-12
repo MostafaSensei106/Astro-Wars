@@ -61,8 +61,11 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
     _swoopChance = s.$5;
 
     final random = Random();
-    shootTimer = Timer(s.$3 + random.nextDouble() * (s.$4 - s.$3),
-        onTick: shoot, repeat: true);
+    shootTimer = Timer(
+      s.$3 + random.nextDouble() * (s.$4 - s.$3),
+      onTick: shoot,
+      repeat: true,
+    );
   }
 
   @override
@@ -98,12 +101,12 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
           position = formationPosition.clone();
           state = EnemyState.formation;
         } else {
-           dir.normalize();
-           _velocity = dir * 250.0;
-           // Add dramatic swooping loop effect during spawn
-           _velocity.x += sin(_time * 6) * 200;
-           position.add(_velocity * dt);
-           _updateRotation();
+          dir.normalize();
+          _velocity = dir * 250.0;
+          // Add dramatic swooping loop effect during spawn
+          _velocity.x += sin(_time * 6) * 200;
+          position.add(_velocity * dt);
+          _updateRotation();
         }
         break;
 
@@ -112,11 +115,11 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
         position.x = formationPosition.x + sin(_time * 2) * 20;
         position.y = formationPosition.y + cos(_time * 3) * 10;
         angle = pi; // Point straight down when in formation
-        
+
         // Randomly break formation and swoop (per-type appetite)!
-        if (Random().nextDouble() < _swoopChance) { 
-           state = EnemyState.swooping;
-           _velocity = Vector2(0, -150); // slight jump back before diving
+        if (Random().nextDouble() < _swoopChance) {
+          state = EnemyState.swooping;
+          _velocity = Vector2(0, -150); // slight jump back before diving
         }
         break;
 
@@ -135,8 +138,8 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
 
         // If off screen bottom, wrap to top and return
         if (position.y > game.size.y + 50) {
-           position.y = -50;
-           state = EnemyState.returning;
+          position.y = -50;
+          state = EnemyState.returning;
         }
         break;
 
@@ -146,10 +149,10 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
           position = formationPosition.clone();
           state = EnemyState.formation;
         } else {
-           dir.normalize();
-           _velocity = dir * 300.0;
-           position.add(_velocity * dt);
-           _updateRotation();
+          dir.normalize();
+          _velocity = dir * 300.0;
+          position.add(_velocity * dt);
+          _updateRotation();
         }
         break;
     }
@@ -160,12 +163,12 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
   }
 
   void _updateRotation() {
-    angle = atan2(_velocity.y, _velocity.x) + pi/2;
+    angle = atan2(_velocity.y, _velocity.x) + pi / 2;
   }
 
   void shoot() {
     if (state == EnemyState.flyingIn) return; // Don't shoot while spawning
-    
+
     final bullet = Projectile(
       startPosition: position.clone()..y += size.y / 2,
       direction: Vector2(0, 1),
@@ -202,8 +205,8 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
     final debrisColor = assetName.contains('noodle')
         ? const Color(0xFFFFAA28)
         : assetName.contains('ghost') || assetName.contains('ufo')
-            ? const Color(0xFF3CE6FF)
-            : const Color(0xFF9AA2B5);
+        ? const Color(0xFF3CE6FF)
+        : const Color(0xFF9AA2B5);
     Fx.debris(game, position.clone(), debrisColor);
     // Drumstick economy: 60% chance to drop a commit pickup.
     if (Random().nextDouble() < 0.6) {
