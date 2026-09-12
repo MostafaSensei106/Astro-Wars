@@ -22,18 +22,56 @@ enum PowerUpType {
   coolant,
 }
 
+/// Rarity drives the outer ring color + spawn weight.
+enum PowerUpRarity { common, rare, epic }
+
 class PowerUpEntity extends PositionComponent
     with MovementBehavior, CollisionCallbacks, HasGameReference<AstroGame> {
+  /// Spawn weights (sum = 100): commons drop often, epic rarely.
+  static const Map<PowerUpType, int> weights = {
+    PowerUpType.coolant: 18,
+    PowerUpType.hr: 14,
+    PowerUpType.flutter: 20,
+    PowerUpType.backend: 16,
+    PowerUpType.cybersecurity: 12,
+    PowerUpType.uiux: 12,
+    PowerUpType.logistics: 8,
+  };
+
+  static const Map<PowerUpType, PowerUpRarity> rarities = {
+    PowerUpType.coolant: PowerUpRarity.common,
+    PowerUpType.hr: PowerUpRarity.common,
+    PowerUpType.flutter: PowerUpRarity.rare,
+    PowerUpType.backend: PowerUpRarity.rare,
+    PowerUpType.cybersecurity: PowerUpRarity.rare,
+    PowerUpType.uiux: PowerUpRarity.rare,
+    PowerUpType.logistics: PowerUpRarity.epic,
+  };
+
+  static PowerUpType rollType() {
+    final total = weights.values.reduce((a, b) => a + b);
+    var roll = Random().nextInt(total);
+    for (final entry in weights.entries) {
+      roll -= entry.value;
+      if (roll < 0) return entry.key;
+    }
+    return PowerUpType.flutter;
+  }
+
   late PowerUpType type;
   late double _time;
+  double _age = 0;
+  static const double maxLifetime = 11.0;
+  static const double magnetRadius = 140.0;
   late SpriteComponent sprite;
   late CircleComponent aura;
+  late CircleComponent rarityRing;
   late TextComponent labelText;
 
   PowerUpEntity() : super(size: Vector2(40, 40), anchor: Anchor.center) {
     speed = 100.0;
     velocity = Vector2(0, 1); // Move downwards
-    type = PowerUpType.values[Random().nextInt(PowerUpType.values.length)];
+    type = rollType();
     _time = Random().nextDouble() * 10;
     add(RectangleHitbox());
   }
@@ -75,16 +113,31 @@ class PowerUpEntity extends PositionComponent
       auraColor = Colors.lightBlueAccent;
     }
 
-    // Add glowing magical aura behind the sprite
+    // Soft halo behind the sprite (plain alpha disc — no blur filter).
     aura = CircleComponent(
       radius: 30,
-      paint: Paint()
-        ..color = auraColor.withValues(alpha: 0.5)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10),
+      paint: Paint()..color = auraColor.withValues(alpha: 0.28),
       anchor: Anchor.center,
       position: size / 2,
     );
     add(aura);
+
+    // Rarity ring: common green / rare cyan / epic amber.
+    final rarityColor = switch (rarities[type]!) {
+      PowerUpRarity.common => Colors.greenAccent,
+      PowerUpRarity.rare => Colors.cyanAccent,
+      PowerUpRarity.epic => AstroDesign.neonAmber,
+    };
+    rarityRing = CircleComponent(
+      radius: 24,
+      paint: Paint()
+        ..color = rarityColor.withValues(alpha: 0.9)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.5,
+      anchor: Anchor.center,
+      position: size / 2,
+    );
+    add(rarityRing);
 
     sprite = SpriteComponent()
       ..sprite = await game.loadSprite(spriteName)
@@ -116,12 +169,28 @@ class PowerUpEntity extends PositionComponent
   void update(double dt) {
     super.update(dt);
     _time += dt;
+    _age += dt;
+
+    // Expire stale gifts so the field never clutters.
+    if (_age > maxLifetime) {
+      removeFromParent();
+      return;
+    }
 
     // Pulsate the aura
     aura.scale = Vector2.all(1.0 + 0.2 * sin(_time * 4));
 
     // Smoothly rotate the inner sprite
     sprite.angle += 2.0 * dt;
+
+    // Magnet: drift toward the player when close (feels generous).
+    final player = game.player;
+    if (player.isMounted) {
+      final toPlayer = player.position - position;
+      if (toPlayer.length < magnetRadius) {
+        position.add(toPlayer.normalized() * (220 * dt));
+      }
+    }
 
     if (position.y > game.size.y + 50) {
       removeFromParent();
@@ -158,10 +227,16 @@ class PowerUpEntity extends PositionComponent
   void applyPowerUp(PlayerEntity player) {
     switch (type) {
       case PowerUpType.flutter:
-        player.activateWeapon(type, fireRate: 0.1);
-        break;
       case PowerUpType.backend:
-        player.activateWeapon(type, fireRate: 0.6);
+        // Maxed weapon? Convert the gift into score instead of wasting it.
+        if (player.activeWeapon == type &&
+            player.weaponLevel >= PlayerEntity.maxWeaponLevel) {
+          game.gameBloc.add(const GameEvent.scoreIncreased(500));
+          game.showBanner('WEAPON MAXED +500');
+          break;
+        }
+        player.activateWeapon(type,
+            fireRate: type == PowerUpType.backend ? 0.6 : 0.1);
         break;
       case PowerUpType.cybersecurity:
         player.activateShield();

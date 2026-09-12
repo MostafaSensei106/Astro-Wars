@@ -43,10 +43,9 @@ class ShieldForcefield extends PositionComponent {
     canvas.drawCircle(center, radius + pulse, paint1);
 
     final paint2 = Paint()
-      ..color = Colors.cyan.withValues(alpha: 0.8)
+      ..color = Colors.cyan.withValues(alpha: 0.7)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
+      ..strokeWidth = 3;
     canvas.drawCircle(center, radius + pulse + 2, paint2);
 
     final paint3 = Paint()
@@ -115,9 +114,9 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
       return;
     }
 
-    // Engine exhaust particles
+    // Engine exhaust trail (throttled — each tick is a live component).
     _particleTimer += dt;
-    if (_particleTimer > 0.05) {
+    if (_particleTimer > 0.09) {
       _particleTimer = 0;
       _spawnEngineParticles();
     }
@@ -304,7 +303,7 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
       return;
     }
 
-    Sfx.play(AssetsAudio.laser, volume: 0.25);
+    Sfx.play(AssetsAudio.laser, volume: 0.25, cooldownMs: 90);
 
     HapticFeedback.lightImpact();
 

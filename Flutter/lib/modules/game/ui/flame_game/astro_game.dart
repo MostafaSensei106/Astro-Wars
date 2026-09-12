@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flame/game.dart';
 import 'package:flame/events.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import '../../logic/entities/level_config.dart';
 import 'components/background/starfield.dart';
 import 'components/entities/player_entity.dart';
@@ -29,7 +31,10 @@ class ShootDetector extends PositionComponent with TapCallbacks {
 
   @override
   void onTapDown(TapDownEvent event) {
-    player.shoot();
+    // Manual mode only: taps fire the weapon. Auto/gyro fire by themselves.
+    if (player.game.fireMode == ControlMode.manual) {
+      player.shoot();
+    }
   }
 }
 
@@ -45,11 +50,62 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
   bool bossActive = false;
   bool isPaused = false;
 
+  // --- Control scheme (Settings → Controls): manual / auto / gyro.
+  ControlMode fireMode = ControlMode.auto;
+  StreamSubscription<AccelerometerEvent>? _gyroSub;
+  double _tiltX = 0;
+  double _tiltY = 0;
+  static const double _gyroSpeed = 260.0;
+  static const double _gyroDeadzone = 0.6;
+
   // Kill-combo: consecutive kills within [comboWindow] raise the multiplier.
   int comboCount = 0;
   double comboTimer = 0;
   static const double comboWindow = 2.5;
   static const int maxComboMultiplier = 5;
+
+  /// Apply the selected scheme: manual taps, auto/gyro self-fire,
+  /// gyro also steers by tilt.
+  void _applyControlMode() {
+    player.autofireEnabled = fireMode != ControlMode.manual;
+    _stopGyro();
+    if (fireMode == ControlMode.gyro) _startGyro();
+  }
+
+  void _startGyro() {
+    _tiltX = 0;
+    _tiltY = 0;
+    _gyroSub = accelerometerEventStream().listen((event) {
+      // Low-pass the tilt so the ship glides instead of jittering.
+      _tiltX += (event.x - _tiltX) * 0.25;
+      _tiltY += (event.y - _tiltY) * 0.25;
+    });
+  }
+
+  void _stopGyro() {
+    _gyroSub?.cancel();
+    _gyroSub = null;
+  }
+
+  void _steerGyro(double dt) {
+    if (!player.isMounted) return;
+    var dx = -_tiltX; // tilt right → move right
+    var dy = _tiltY; // tilt forward → move up handled by sign below
+    if (dx.abs() < _gyroDeadzone) dx = 0;
+    if (dy.abs() < _gyroDeadzone) dy = 0;
+    player.position.add(Vector2(dx, -dy) * _gyroSpeed * dt * 0.35);
+    // Clamp inside the screen.
+    player.position.x =
+        player.position.x.clamp(player.size.x / 2, size.x - player.size.x / 2);
+    player.position.y =
+        player.position.y.clamp(player.size.y / 2, size.y - player.size.y / 2);
+  }
+
+  @override
+  void onRemove() {
+    _stopGyro();
+    super.onRemove();
+  }
 
   void _playTrack(String file) {
     if (!Sfx.bgmEnabled) return;
@@ -77,13 +133,17 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     _playMissionMusic();
     showBanner('SECTOR $startLevel', seconds: 2.5);
 
-    // Parallax background (generated layers + legacy space art fallback)
+    // Control scheme from Settings.
+    fireMode = await AstroDesign.controlMode();
+
+    // Coded starfield backdrop (lightweight, scrolls downward).
     add(StarfieldComponent());
 
     // Player
     player = PlayerEntity();
     add(player);
     add(ShootDetector(player));
+    _applyControlMode();
 
     // Power-up spawner (was never started — fixed; cadence 5s not 10s)
     powerupSpawner = Timer(
@@ -215,6 +275,8 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     player = PlayerEntity();
     add(player);
     add(ShootDetector(player));
+    fireMode = await AstroDesign.controlMode();
+    _applyControlMode();
     powerupSpawner.start();
     await FlameAudio.bgm.stop();
     _playMissionMusic();
@@ -311,6 +373,9 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     super.update(dt);
 
     if (gameBloc.state.entity.isGameOver || isPaused) return;
+
+    // Gyro steering (mode-selected).
+    if (fireMode == ControlMode.gyro) _steerGyro(dt);
 
     // Banner decay
     if (_bannerTimer > 0) {

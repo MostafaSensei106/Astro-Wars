@@ -91,12 +91,11 @@ class MeteorEntity extends PositionComponent
     final fillPaint = Paint()..color = meteorColor;
     canvas.drawPath(path, fillPaint);
 
-    // Glowing hot edges (Atmospheric entry friction)
+    // Hot edges (atmospheric entry friction) — plain double stroke.
     final strokePaint = Paint()
       ..color = Colors.deepOrangeAccent.withValues(alpha: 0.6)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+      ..strokeWidth = 2;
     canvas.drawPath(path, strokePaint);
   }
 

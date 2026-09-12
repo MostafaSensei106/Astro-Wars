@@ -12,6 +12,7 @@ class SettingsPage extends HookWidget {
   Widget build(BuildContext context) {
     final sfx = useState(true);
     final bgm = useState(true);
+    final control = useState(ControlMode.auto);
 
     useEffect(() {
       var alive = true;
@@ -19,6 +20,9 @@ class SettingsPage extends HookWidget {
         if (!alive) return;
         sfx.value = Sfx.enabled;
         bgm.value = Sfx.bgmEnabled;
+      });
+      AstroDesign.controlMode().then((m) {
+        if (alive) control.value = m;
       });
       return () => alive = false;
     }, const []);
@@ -59,6 +63,40 @@ class SettingsPage extends HookWidget {
             subtitle: 'Dark / light, neon accent',
             trailing: const Icon(Icons.chevron_right_rounded),
             onTap: () => context.push('/theme'),
+          ),
+          const Gap(12),
+          const Text(
+            'CONTROLS',
+            style: TextStyle(letterSpacing: 2, fontWeight: FontWeight.bold),
+          ),
+          const Gap(8),
+          SegmentedButton<ControlMode>(
+            segments: const [
+              ButtonSegment(
+                  value: ControlMode.manual,
+                  icon: Icon(Icons.touch_app_rounded),
+                  label: Text('Manual')),
+              ButtonSegment(
+                  value: ControlMode.auto,
+                  icon: Icon(Icons.autorenew_rounded),
+                  label: Text('Auto')),
+              ButtonSegment(
+                  value: ControlMode.gyro,
+                  icon: Icon(Icons.screen_rotation_rounded),
+                  label: Text('Gyro')),
+            ],
+            selected: {control.value},
+            onSelectionChanged: (s) async {
+              control.value = s.first;
+              await AstroDesign.setControlMode(s.first);
+            },
+          ),
+          Gap(4),
+          Text(
+            control.value.hint,
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontSize: 13),
           ),
           const Gap(32),
           const Text(

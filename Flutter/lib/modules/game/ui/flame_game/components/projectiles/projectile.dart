@@ -38,14 +38,18 @@ class Projectile extends PositionComponent
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.5;
       final glow = Paint()
-        ..color = Colors.redAccent.withValues(alpha: 0.25)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+        ..color = Colors.redAccent.withValues(alpha: 0.18);
       final eggRect = Rect.fromCenter(
         center: center,
         width: size.x,
         height: size.y * 1.6,
       );
-      canvas.drawOval(eggRect, glow);
+      final haloRect = Rect.fromCenter(
+        center: center,
+        width: size.x + 8,
+        height: size.y * 1.6 + 8,
+      );
+      canvas.drawOval(haloRect, glow);
       canvas.drawOval(eggRect, shell);
       canvas.drawOval(eggRect, outline);
       canvas.drawCircle(
@@ -54,22 +58,18 @@ class Projectile extends PositionComponent
         Paint()..color = Colors.white,
       );
     } else {
-      // Draw glowing neon effect for player capsules
+      // Neon capsule: layered alpha shells, no blur filters (hot path).
       final rect = RRect.fromRectAndRadius(
         Rect.fromLTWH(0, 0, size.x, size.y),
         Radius.circular(size.x / 2),
       );
-
       final baseColor = basePaint.color;
-
       final outerGlow = Paint()
-        ..color = baseColor.withValues(alpha: 0.4)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+        ..color = baseColor.withValues(alpha: 0.25);
       canvas.drawRRect(rect, outerGlow);
 
       final innerGlow = Paint()
-        ..color = baseColor.withValues(alpha: 0.8)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+        ..color = baseColor.withValues(alpha: 0.75);
       canvas.drawRRect(rect, innerGlow);
 
       final coreRect = RRect.fromRectAndRadius(

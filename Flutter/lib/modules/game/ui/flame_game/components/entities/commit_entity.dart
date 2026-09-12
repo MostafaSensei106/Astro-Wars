@@ -56,13 +56,11 @@ class CommitEntity extends PositionComponent
   void render(Canvas canvas) {
     final c = Offset(size.x / 2, size.y / 2);
     final bob = (_time * 4).toDouble();
-    // Golden hex coin with glow.
+    // Golden hex coin with halo (plain alpha, no blur).
     canvas.drawCircle(
       c,
       11,
-      Paint()
-        ..color = AstroDesign.neonAmber.withValues(alpha: 0.35)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
+      Paint()..color = AstroDesign.neonAmber.withValues(alpha: 0.25),
     );
     final hex = Path();
     for (int i = 0; i < 6; i++) {

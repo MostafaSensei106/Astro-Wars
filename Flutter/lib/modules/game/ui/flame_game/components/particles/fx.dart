@@ -256,8 +256,7 @@ class _Ring extends PositionComponent with HasGameReference<AstroGame> {
       Paint()
         ..color = color.withValues(alpha: (1 - t) * 0.9)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 4 * (1 - t) + 1
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
+        ..strokeWidth = 4 * (1 - t) + 1,
     );
   }
 }
@@ -330,9 +329,7 @@ class _Spark extends PositionComponent with HasGameReference<AstroGame> {
     canvas.drawCircle(
       Offset(size.x / 2, size.y / 2),
       3 * (1 - t) + 0.5,
-      Paint()
-        ..color = Colors.white.withValues(alpha: 1 - t)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2),
+      Paint()..color = Colors.white.withValues(alpha: 1 - t),
     );
     canvas.drawCircle(
       Offset(size.x / 2, size.y / 2),

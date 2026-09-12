@@ -49,6 +49,7 @@ abstract final class AstroDesign {
   static const String kRunsPlayed = 'runs_played';
   static const String kSfxEnabled = 'sfx_enabled';
   static const String kBgmEnabled = 'bgm_enabled';
+  static const String kControlMode = 'control_mode';
   static const String kDefaultShip = AssetsImages.shipSleek;
 
   // --- Ships catalog ---
@@ -125,6 +126,34 @@ abstract final class AstroDesign {
     await p.remove(kMaxLevel);
     await p.remove(kRunsPlayed);
   }
+
+  static Future<ControlMode> controlMode() async {
+    final p = await _prefs;
+    final idx = p.getInt(kControlMode) ?? ControlMode.auto.index;
+    if (idx < 0 || idx >= ControlMode.values.length) {
+      return ControlMode.auto;
+    }
+    return ControlMode.values[idx];
+  }
+
+  static Future<void> setControlMode(ControlMode mode) async =>
+      (await _prefs).setInt(kControlMode, mode.index);
+}
+
+/// Ship control schemes (switchable from Settings).
+enum ControlMode {
+  /// Tap to shoot, drag to steer.
+  manual('Manual', 'Tap to fire • drag to steer'),
+
+  /// Ship fires on its own, drag to steer.
+  auto('Auto', 'Always firing • drag to steer'),
+
+  /// Tilt to steer, ship fires on its own.
+  gyro('Gyro', 'Tilt to steer • auto fire');
+
+  final String label;
+  final String hint;
+  const ControlMode(this.label, this.hint);
 }
 
 class ShipSpec {
@@ -149,6 +178,7 @@ class ShipSpec {
 abstract final class Sfx {
   static bool enabled = true;
   static bool bgmEnabled = true;
+  static final Map<String, DateTime> _lastPlay = {};
 
   static Future<void> loadFromPrefs() async {
     final p = await SharedPreferences.getInstance();
@@ -175,10 +205,20 @@ abstract final class Sfx {
     }
   }
 
-  static void play(String file, {double volume = 1.0}) {
+  /// [cooldownMs] drops repeat plays inside the window — used for the
+  /// rapid autofire laser so phones don't drown in audio players.
+  static void play(String file, {double volume = 1.0, int cooldownMs = 0}) {
     if (!enabled) return;
     // FlameAudio needs the full filename — accept bare names too.
     final name = file.endsWith('.wav') ? file : '$file.wav';
+    if (cooldownMs > 0) {
+      final now = DateTime.now();
+      final last = _lastPlay[name];
+      if (last != null && now.difference(last).inMilliseconds < cooldownMs) {
+        return;
+      }
+      _lastPlay[name] = now;
+    }
     FlameAudio.play(name, volume: volume);
   }
 }
