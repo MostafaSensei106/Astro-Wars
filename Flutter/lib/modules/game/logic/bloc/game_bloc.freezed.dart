@@ -55,12 +55,13 @@ extension GameEventPatterns on GameEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _ScoreIncreased value)?  scoreIncreased,TResult Function( _PlayerDamaged value)?  playerDamaged,TResult Function( _GameRestarted value)?  gameRestarted,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _ScoreIncreased value)?  scoreIncreased,TResult Function( _PlayerDamaged value)?  playerDamaged,TResult Function( _BossDefeated value)?  bossDefeated,TResult Function( _GameRestarted value)?  gameRestarted,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _ScoreIncreased() when scoreIncreased != null:
 return scoreIncreased(_that);case _PlayerDamaged() when playerDamaged != null:
-return playerDamaged(_that);case _GameRestarted() when gameRestarted != null:
+return playerDamaged(_that);case _BossDefeated() when bossDefeated != null:
+return bossDefeated(_that);case _GameRestarted() when gameRestarted != null:
 return gameRestarted(_that);case _:
   return orElse();
 
@@ -79,12 +80,13 @@ return gameRestarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _ScoreIncreased value)  scoreIncreased,required TResult Function( _PlayerDamaged value)  playerDamaged,required TResult Function( _GameRestarted value)  gameRestarted,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _ScoreIncreased value)  scoreIncreased,required TResult Function( _PlayerDamaged value)  playerDamaged,required TResult Function( _BossDefeated value)  bossDefeated,required TResult Function( _GameRestarted value)  gameRestarted,}){
 final _that = this;
 switch (_that) {
 case _ScoreIncreased():
 return scoreIncreased(_that);case _PlayerDamaged():
-return playerDamaged(_that);case _GameRestarted():
+return playerDamaged(_that);case _BossDefeated():
+return bossDefeated(_that);case _GameRestarted():
 return gameRestarted(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -102,12 +104,13 @@ return gameRestarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _ScoreIncreased value)?  scoreIncreased,TResult? Function( _PlayerDamaged value)?  playerDamaged,TResult? Function( _GameRestarted value)?  gameRestarted,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _ScoreIncreased value)?  scoreIncreased,TResult? Function( _PlayerDamaged value)?  playerDamaged,TResult? Function( _BossDefeated value)?  bossDefeated,TResult? Function( _GameRestarted value)?  gameRestarted,}){
 final _that = this;
 switch (_that) {
 case _ScoreIncreased() when scoreIncreased != null:
 return scoreIncreased(_that);case _PlayerDamaged() when playerDamaged != null:
-return playerDamaged(_that);case _GameRestarted() when gameRestarted != null:
+return playerDamaged(_that);case _BossDefeated() when bossDefeated != null:
+return bossDefeated(_that);case _GameRestarted() when gameRestarted != null:
 return gameRestarted(_that);case _:
   return null;
 
@@ -125,11 +128,12 @@ return gameRestarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int amount)?  scoreIncreased,TResult Function( int damage)?  playerDamaged,TResult Function()?  gameRestarted,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int amount)?  scoreIncreased,TResult Function( int damage)?  playerDamaged,TResult Function()?  bossDefeated,TResult Function()?  gameRestarted,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ScoreIncreased() when scoreIncreased != null:
 return scoreIncreased(_that.amount);case _PlayerDamaged() when playerDamaged != null:
-return playerDamaged(_that.damage);case _GameRestarted() when gameRestarted != null:
+return playerDamaged(_that.damage);case _BossDefeated() when bossDefeated != null:
+return bossDefeated();case _GameRestarted() when gameRestarted != null:
 return gameRestarted();case _:
   return orElse();
 
@@ -148,11 +152,12 @@ return gameRestarted();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int amount)  scoreIncreased,required TResult Function( int damage)  playerDamaged,required TResult Function()  gameRestarted,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int amount)  scoreIncreased,required TResult Function( int damage)  playerDamaged,required TResult Function()  bossDefeated,required TResult Function()  gameRestarted,}) {final _that = this;
 switch (_that) {
 case _ScoreIncreased():
 return scoreIncreased(_that.amount);case _PlayerDamaged():
-return playerDamaged(_that.damage);case _GameRestarted():
+return playerDamaged(_that.damage);case _BossDefeated():
+return bossDefeated();case _GameRestarted():
 return gameRestarted();case _:
   throw StateError('Unexpected subclass');
 
@@ -170,11 +175,12 @@ return gameRestarted();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int amount)?  scoreIncreased,TResult? Function( int damage)?  playerDamaged,TResult? Function()?  gameRestarted,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int amount)?  scoreIncreased,TResult? Function( int damage)?  playerDamaged,TResult? Function()?  bossDefeated,TResult? Function()?  gameRestarted,}) {final _that = this;
 switch (_that) {
 case _ScoreIncreased() when scoreIncreased != null:
 return scoreIncreased(_that.amount);case _PlayerDamaged() when playerDamaged != null:
-return playerDamaged(_that.damage);case _GameRestarted() when gameRestarted != null:
+return playerDamaged(_that.damage);case _BossDefeated() when bossDefeated != null:
+return bossDefeated();case _GameRestarted() when gameRestarted != null:
 return gameRestarted();case _:
   return null;
 
@@ -314,6 +320,38 @@ as int,
 
 
 }
+
+/// @nodoc
+
+
+class _BossDefeated implements GameEvent {
+  const _BossDefeated();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BossDefeated);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'GameEvent.bossDefeated()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 

@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import '../base/behaviors.dart';
 import 'player_entity.dart';
 import '../../astro_game.dart';
-import '../../../../logic/bloc/game_bloc.dart';
 
 class MeteorEntity extends PositionComponent
     with

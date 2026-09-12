@@ -9,7 +9,6 @@ import '../base/base_sprite_entity.dart';
 import '../base/behaviors.dart';
 import 'player_entity.dart';
 import '../projectiles/projectile.dart';
-import '../../../../logic/bloc/game_bloc.dart';
 
 enum EnemyState { flyingIn, formation, swooping, returning }
 
