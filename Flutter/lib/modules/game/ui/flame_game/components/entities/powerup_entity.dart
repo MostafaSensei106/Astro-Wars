@@ -2,9 +2,11 @@ import 'package:flame/components.dart';
 import 'package:flame/collisions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import '../../../../../../core/constants/assets_images.dart';
 import '../../../../../../core/utils/theme/astro_design.dart';
 import 'dart:math';
 import '../base/behaviors.dart';
+import '../../../../../../core/constants/assets_images.dart';
 import '../particles/fx.dart';
 import 'player_entity.dart';
 import 'enemy_entity.dart';
@@ -33,7 +35,7 @@ class PowerUpEntity extends PositionComponent
   Future<void> onLoad() async {
     super.onLoad();
 
-    String spriteName = 'gift_flutter.png'; // generic gift
+    String spriteName = AssetsImages.giftFlutter; // generic gift
     String label = 'POWER';
     Color auraColor = Colors.yellowAccent;
 
@@ -41,27 +43,27 @@ class PowerUpEntity extends PositionComponent
       label = 'LASER';
       auraColor = Colors.blueAccent;
     } else if (type == PowerUpType.backend) {
-      spriteName = 'gift_backend.png';
+      spriteName = AssetsImages.giftBackend;
       label = 'BOMB';
       auraColor = Colors.orangeAccent;
     } else if (type == PowerUpType.uiux) {
-      spriteName = 'gift_stun.png';
+      spriteName = AssetsImages.giftStun;
       label = 'STUN';
       auraColor = Colors.purpleAccent;
     } else if (type == PowerUpType.cybersecurity) {
-      spriteName = 'gift_shield.png';
+      spriteName = AssetsImages.giftShield;
       label = 'SHIELD';
       auraColor = Colors.cyanAccent;
     } else if (type == PowerUpType.hr) {
-      spriteName = 'gift_heal.png';
+      spriteName = AssetsImages.giftHeal;
       label = 'HEAL';
       auraColor = Colors.greenAccent;
     } else if (type == PowerUpType.logistics) {
-      spriteName = 'gift_missile.png';
+      spriteName = AssetsImages.giftMissile;
       label = 'MISSILE';
       auraColor = Colors.redAccent;
     } else if (type == PowerUpType.coolant) {
-      spriteName = 'gift_coolant.png';
+      spriteName = AssetsImages.giftCoolant;
       label = 'COOLANT';
       auraColor = Colors.lightBlueAccent;
     }
@@ -134,7 +136,8 @@ class PowerUpEntity extends PositionComponent
         final isGift = type == PowerUpType.flutter ||
             type == PowerUpType.backend ||
             type == PowerUpType.uiux;
-        Sfx.play(isGift ? 'gift_pickup' : 'powerup.wav', volume: 0.6);
+        Sfx.play(isGift ? AssetsAudio.giftPickup : AssetsAudio.powerup,
+            volume: 0.6);
       }
       Fx.sparkle(game, position.clone(), Colors.white);
       Fx.ring(game, position.clone(), Colors.white, maxRadius: 60);
@@ -179,7 +182,7 @@ class PowerUpEntity extends PositionComponent
       case PowerUpType.coolant:
         // Instantly vent weapon heat + clear overheat lockout.
         player.ventHeat();
-        Sfx.play('coolant', volume: 0.6);
+        Sfx.play(AssetsAudio.coolant, volume: 0.6);
         break;
     }
   }

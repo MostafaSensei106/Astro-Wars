@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/constants/assets_images.dart';
 
 class LevelConfig {
   final int level;
@@ -21,23 +22,9 @@ class LevelConfig {
     required this.wavesBeforeBoss,
   });
 
-  static const List<String> enemyRotation = [
-    'enemy_bug.png',
-    'enemy_noodle.png',
-    'enemy_chick.png',
-    'enemy_ufo.png',
-    'enemy_crab.png',
-    'enemy_jelly.png',
-    'enemy_metal.png',
-    'enemy_ghost.png',
-  ];
+  static const List<String> enemyRotation = AssetsImages.enemies;
 
-  static const List<String> bossRotation = [
-    'boss_dreadnought.png',
-    'boss_mothership.png',
-    'boss_yolk.png',
-    'boss_worm.png',
-  ];
+  static const List<String> bossRotation = AssetsImages.bosses;
 
   static LevelConfig getLevel(int level) {
     final enemy = enemyRotation[(level - 1) % enemyRotation.length];

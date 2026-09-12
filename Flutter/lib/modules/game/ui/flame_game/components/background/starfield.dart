@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
 import '../../astro_game.dart';
+import '../../../../../../core/constants/assets_images.dart';
 
 /// Deep-space backdrop: level-tinted gradient + 3 scrolling parallax
 /// star layers (generated in `Python/` via uv).
@@ -34,9 +35,9 @@ class StarfieldComponent extends Component with HasGameReference<AstroGame> {
     add(
       await game.loadParallaxComponent(
         [
-          ParallaxImageData('parallax_far.png'),
-          ParallaxImageData('parallax_mid.png'),
-          ParallaxImageData('parallax_near.png'),
+          ParallaxImageData(AssetsImages.parallaxFar),
+          ParallaxImageData(AssetsImages.parallaxMid),
+          ParallaxImageData(AssetsImages.parallaxNear),
         ],
         baseVelocity: Vector2(0, 25),
         velocityMultiplierDelta: Vector2(0, 1.8),

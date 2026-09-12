@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/router/routes_names.dart';
 import '../../../../core/utils/theme/astro_design.dart';
+import '../../../../core/constants/assets_images.dart';
 
 /// Ship hangar: swipe carousel with real stats + persistent selection.
 class HangarPage extends StatefulWidget {
@@ -104,7 +105,7 @@ class _HangarPageState extends State<HangarPage> {
                         const Gap(12),
                         Expanded(
                           child: Image.asset(
-                            'assets/images/${ship.asset}',
+                            AssetsImages.path(ship.asset),
                             fit: BoxFit.contain,
                             errorBuilder: (_, _, _) => Icon(
                                 Icons.rocket_launch_rounded,

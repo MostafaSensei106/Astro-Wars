@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import '../../../../core/constants/assets_images.dart';
 
 /// CI-style mission structure: a sector is a fixed list of typed waves
 /// ending with a boss. Missions ship as JSON in `assets/missions/`
@@ -54,8 +55,8 @@ class SectorMission {
 
   static Future<SectorMission> load(int sector) async {
     try {
-      final raw = await rootBundle
-          .loadString('assets/missions/sector_$sector.json');
+      final raw =
+          await rootBundle.loadString(AssetsMissions.sector(sector));
       final json = jsonDecode(raw) as Map<String, dynamic>;
       final waves = (json['waves'] as List)
           .map((w) => MissionWave.fromJson(w as Map<String, dynamic>))

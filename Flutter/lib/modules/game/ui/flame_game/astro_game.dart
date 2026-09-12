@@ -15,6 +15,7 @@ import 'components/particles/fx.dart';
 import '../../logic/bloc/game_bloc.dart';
 import '../../logic/entities/mission.dart';
 import '../../../../core/utils/theme/astro_design.dart';
+import '../../../../core/constants/assets_images.dart';
 
 class ShootDetector extends PositionComponent with TapCallbacks {
   final PlayerEntity player;
@@ -52,8 +53,8 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     FlameAudio.bgm.play(file, volume: 0.3);
   }
 
-  void _playMissionMusic() => _playTrack('bgm_mission.wav');
-  void _playBossMusic() => _playTrack('bgm_boss.wav');
+  void _playMissionMusic() => _playTrack(AssetsAudio.bgmMission);
+  void _playBossMusic() => _playTrack(AssetsAudio.bgmBoss);
 
   int get comboMultiplier => (1 + comboCount ~/ 8).clamp(1, maxComboMultiplier);
   double get comboProgress => (comboTimer / comboWindow).clamp(0.0, 1.0);
@@ -65,14 +66,7 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     await super.onLoad();
     currentLevel = startLevel;
     await Sfx.loadFromPrefs();
-    await FlameAudio.audioCache.loadAll([
-      'laser.wav', 'explosion.wav', 'laser_enemy.wav',
-      'powerup.wav', 'hit.wav', 'gameover.wav', 'levelup.wav', 'bgm.wav',
-      'bgm_mission.wav', 'bgm_boss.wav',
-      'cluck.wav', 'egg_splat.wav', 'feather_pop.wav', 'gift_pickup.wav',
-      'coolant.wav', 'overheat_warn.wav', 'overheat_lock.wav',
-      'missile_launch.wav', 'wave_clear.wav', 'boss_roar.wav',
-    ]);
+    await FlameAudio.audioCache.loadAll(AssetsAudio.preload);
 
     FlameAudio.bgm.initialize();
     _mission = await SectorMission.load(startLevel);
@@ -122,7 +116,7 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
   void addMissile(int count) {
     missiles = (missiles + count).clamp(0, maxMissiles);
     showBanner('MISSILE LOADED ($missiles/$maxMissiles)', seconds: 1.5);
-    Sfx.play('gift_pickup', volume: 0.5);
+    Sfx.play(AssetsAudio.giftPickup, volume: 0.5);
   }
 
   /// Fire a loaded missile: heavy damage to everything on screen.
@@ -130,7 +124,7 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     if (missiles <= 0 || gameBloc.state.entity.isGameOver || isPaused) return;
     if (!player.isMounted) return;
     missiles--;
-    Sfx.play('missile_launch', volume: 0.7);
+    Sfx.play(AssetsAudio.missileLaunch, volume: 0.7);
     Fx.ring(this, player.position.clone(), const Color(0xFF22E6FF),
         maxRadius: 300, lifespan: 0.7);
     for (final enemy in children.whereType<EnemyEntity>().toList()) {
@@ -279,7 +273,7 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     }
     showBanner('$waveProgressText — ${wave.label}');
     if (wave.type == WaveType.bonus) {
-      Sfx.play('wave_clear', volume: 0.5);
+      Sfx.play(AssetsAudio.waveClear, volume: 0.5);
     }
   }
 
@@ -287,7 +281,7 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
     bossActive = true;
     add(BossEntity());
     showBanner('⚠ WARNING: BOSS ⚠', seconds: 3.0);
-    Sfx.play('boss_roar', volume: 0.8);
+    Sfx.play(AssetsAudio.bossRoar, volume: 0.8);
     _playBossMusic();
   }
 
@@ -348,7 +342,7 @@ class AstroGame extends FlameGame with PanDetector, HasCollisionDetection {
 
     if (bossActive && bosses.isEmpty) {
       // Boss defeated! Sector clear.
-      Sfx.play('levelup.wav', volume: 0.7);
+      Sfx.play(AssetsAudio.levelup, volume: 0.7);
       bossActive = false;
       _advanceSector();
     }

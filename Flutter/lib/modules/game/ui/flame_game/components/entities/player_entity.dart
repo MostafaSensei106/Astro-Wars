@@ -1,5 +1,6 @@
 import 'package:flame_audio/flame_audio.dart';
 import '../../../../../../core/utils/theme/astro_design.dart';
+import '../../../../../../core/constants/assets_images.dart';
 import 'dart:math';
 import 'package:flame/collisions.dart';
 import 'package:flutter/services.dart';
@@ -100,7 +101,7 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
     super.onLoad();
     final prefs = await SharedPreferences.getInstance();
     final shipAsset =
-        prefs.getString('selected_ship') ?? 'ship_sleek.png';
+        prefs.getString('selected_ship') ?? AssetsImages.shipSleek;
     await loadAsset(shipAsset);
     position = Vector2(game.size.x / 2, game.size.y - 100);
     add(RectangleHitbox());
@@ -219,7 +220,7 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
           (max(0.05, baseRate - ((weaponLevel - 1) * 0.015)) * 1000).toInt();
     }
 
-    Sfx.play('hit.wav', volume: 0.5);
+    Sfx.play(AssetsAudio.hit, volume: 0.5);
     // Knockback
     position.add(Vector2((Random().nextDouble() - 0.5) * 40, 30));
 
@@ -248,7 +249,7 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
   void onDeath() {
     HapticFeedback.heavyImpact();
     FlameAudio.bgm.stop();
-    Sfx.play('gameover.wav', volume: 0.8);
+    Sfx.play(AssetsAudio.gameover, volume: 0.8);
 
     // Death Explosion
     final random = Random();
@@ -294,17 +295,17 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
     heat = (heat + _heatPerShot).clamp(0.0, 100.0);
     if (heat >= 80 && !_warnPlayed) {
       _warnPlayed = true;
-      Sfx.play('overheat_warn', volume: 0.5);
+      Sfx.play(AssetsAudio.overheatWarn, volume: 0.5);
     }
     if (heat >= 100) {
       overheated = true;
       _overheatTimer = _overheatLockout;
-      Sfx.play('overheat_lock', volume: 0.6);
+      Sfx.play(AssetsAudio.overheatLock, volume: 0.6);
       HapticFeedback.heavyImpact();
       return;
     }
 
-    Sfx.play('laser.wav', volume: 0.25);
+    Sfx.play(AssetsAudio.laser, volume: 0.25);
 
     HapticFeedback.lightImpact();
 

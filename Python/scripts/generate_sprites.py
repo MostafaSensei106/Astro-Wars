@@ -115,7 +115,7 @@ def panel(d, x0, y0, x1, y1, r=3):
 
 
 # ------------------------------------------------------------------- ships
-def ship_sleek() -> Image.Image:
+def ship_sleek_legacy() -> Image.Image:
     px = 128
     img = canvas(px)
     d = ImageDraw.Draw(img)
@@ -142,7 +142,7 @@ def ship_sleek() -> Image.Image:
     return finish(Image.alpha_composite(gl, img), px)
 
 
-def ship_heavy() -> Image.Image:
+def ship_heavy_legacy() -> Image.Image:
     px = 128
     img = canvas(px)
     d = ImageDraw.Draw(img)
@@ -175,7 +175,7 @@ def ship_heavy() -> Image.Image:
     return finish(Image.alpha_composite(gl, img), px)
 
 
-def ship_pixel() -> Image.Image:
+def ship_pixel_legacy() -> Image.Image:
     # Recon scout: light frame, sensor green accents, sharp needle nose.
     px = 128
     img = canvas(px)
@@ -203,7 +203,7 @@ def ship_pixel() -> Image.Image:
     return finish(Image.alpha_composite(gl, img), px)
 
 
-def ship_cipher() -> Image.Image:
+def ship_cipher_legacy() -> Image.Image:
     # Black-ops: near-black faceted hull, magenta photon trim.
     px = 128
     img = canvas(px)
@@ -223,6 +223,201 @@ def ship_cipher() -> Image.Image:
     d.line([s(58), s(62), s(60), s(92)], fill=M, width=SS)
     d.line([s(70), s(62), s(68), s(92)], fill=M, width=SS)
     thruster(d, 64, 108, 5, M)
+    gl = glow_under(img, (160, 50, 255, 255))
+    return finish(Image.alpha_composite(gl, img), px)
+
+
+# ------------------------------------------- realistic starfighters
+def _nozzle(d, cx, cy, r, color):
+    """Engine nozzle: dark petals, glowing throat, exhaust plume below."""
+    for i in range(6):
+        a = math.radians(i * 60)
+        x0, y0 = cx + r * 0.9 * math.cos(a), cy + r * 0.9 * math.sin(a)
+        x1, y1 = cx + r * 1.25 * math.cos(a), cy + r * 1.25 * math.sin(a)
+        d.line([s(x0), s(y0), s(x1), s(y1)], fill=DARK, width=SS * 2)
+    d.ellipse([s(cx - r), s(cy - r), s(cx + r), s(cy + r)], fill=DARK)
+    d.ellipse([s(cx - r * 0.62), s(cy - r * 0.62),
+               s(cx + r * 0.62), s(cy + r * 0.62)], fill=color)
+    d.ellipse([s(cx - r * 0.3), s(cy - r * 0.3),
+               s(cx + r * 0.3), s(cy + r * 0.3)], fill=WHITE)
+    # plume: layered fading teardrop
+    for k, (rr, ll, al) in enumerate(((r * 1.1, r * 3.4, 90),
+                                      (r * 0.7, r * 2.4, 150),
+                                      (r * 0.38, r * 1.5, 230))):
+        d.ellipse([s(cx - rr), s(cy + r * 0.5), s(cx + rr),
+                   s(cy + r * 0.5 + ll)],
+                  fill=color[:3] + (al,))
+
+
+def _tip_rail(d, x, y0, y1, color):
+    """Underwing ordnance rail with missile tip."""
+    d.rectangle([s(x - 2), s(y0), s(x + 2), s(y1)], fill=GUN_D,
+                outline=DARK, width=SS)
+    d.polygon([s(x - 2), s(y0), s(x + 2), s(y0), s(x), s(y0 - 6)],
+              fill=color, outline=DARK)
+
+
+def _hull_shade(d, pts):
+    """Metal fuselage: gradient fill + dark outline + top highlight."""
+    xs = [p[0] for p in pts]
+    vgrad(d, s(min(xs)), s(min(p[1] for p in pts)),
+          s(max(xs)), s(max(p[1] for p in pts)), GUN_L, GUN_D)
+    poly(d, pts, None)
+    # sun highlight along port side
+    d.line([s(pts[0][0] - 2), s(pts[0][1] + 4),
+            s(pts[-2][0] - 2), s(pts[-2][1] - 4)],
+           fill=(200, 208, 230, 255), width=SS)
+
+
+def _vents(d, cx, y, n=3, color=(30, 32, 48, 255)):
+    for i in range(n):
+        yy = y + i * 5
+        d.line([s(cx - 6), s(yy), s(cx + 6), s(yy)], fill=color,
+               width=SS * 2)
+
+
+def ship_sleek() -> Image.Image:
+    # VIPER — single-engine air-superiority fighter, cyan squadron trim.
+    px = 128
+    img = canvas(px)
+    d = ImageDraw.Draw(img)
+    C = (34, 230, 255, 255)
+    # main wings (swept, with tip rails)
+    poly(d, [(58, 58), (20, 92), (28, 98), (60, 70)], GUN)
+    poly(d, [(70, 58), (108, 92), (100, 98), (68, 70)], GUN)
+    d.line([s(58), s(60), s(22), s(90)], fill=C, width=SS * 2)
+    d.line([s(70), s(60), s(106), s(90)], fill=C, width=SS * 2)
+    _tip_rail(d, 24, 84, 96, C)
+    _tip_rail(d, 104, 84, 96, C)
+    # tailplanes
+    poly(d, [(56, 92), (38, 108), (46, 110), (58, 100)], GUN_D)
+    poly(d, [(72, 92), (90, 108), (82, 110), (70, 100)], GUN_D)
+    # fuselage
+    _hull_shade(d, [(64, 8), (72, 44), (76, 96), (52, 96), (56, 44)])
+    # radome
+    poly(d, [(64, 8), (69, 24), (59, 24)], (36, 38, 58, 255))
+    d.line([s(64), s(8), s(64), s(20)], fill=C, width=SS)  # pitot
+    # canopy bubble
+    canopy(d, 64, 44, 15, 24)
+    # spine, vents, squadron stripes
+    d.line([s(64), s(58), s(64), s(94)], fill=(30, 32, 48, 255), width=SS * 2)
+    _vents(d, 64, 66, color=C)
+    d.rectangle([s(55), s(88), s(73), s(91)], fill=C)
+    # formation lights
+    for x, y in ((52, 70), (76, 70)):
+        d.ellipse([s(x - 1.5), s(y - 1.5), s(x + 1.5), s(y + 1.5)],
+                  fill=(255, 90, 90, 255))
+    _nozzle(d, 64, 100, 7, C)
+    gl = glow_under(img, (34, 150, 255, 255))
+    return finish(Image.alpha_composite(gl, img), px)
+
+
+def ship_heavy() -> Image.Image:
+    # BULWARK — twin-boom close-support gunship, orange markings.
+    px = 128
+    img = canvas(px)
+    d = ImageDraw.Draw(img)
+    O = (255, 150, 50, 255)
+    # twin booms
+    for cx in (46, 82):
+        _hull_shade(d, [(cx, 30), (cx + 7, 44), (cx + 7, 98), (cx - 7, 98),
+                        (cx - 7, 44)])
+        d.rectangle([s(cx - 7), s(56), s(cx + 7), s(60)], fill=O)
+        _vents(d, cx, 70)
+    # main wing + hardpoints
+    poly(d, [(40, 62), (10, 88), (18, 94), (46, 72)], GUN)
+    poly(d, [(88, 62), (118, 88), (110, 94), (82, 72)], GUN)
+    _tip_rail(d, 14, 80, 92, O)
+    _tip_rail(d, 114, 80, 92, O)
+    # rocket pods under wings
+    for x in (30, 98):
+        d.rounded_rectangle([s(x - 5), s(76), s(x + 5), s(94)], radius=s(4),
+                            fill=GUN_D, outline=DARK, width=SS * 2)
+        for yy in (80, 85, 90):
+            d.ellipse([s(x - 2), s(yy), s(x + 2), s(yy + 3)], fill=O)
+    # central nacelle + chin gun
+    _hull_shade(d, [(64, 14), (74, 50), (74, 96), (54, 96), (54, 50)])
+    poly(d, [(64, 14), (69, 30), (59, 30)], (36, 38, 58, 255))
+    canopy(d, 64, 46, 14, 20)
+    d.rounded_rectangle([s(60), s(84), s(68), s(112)], radius=s(4),
+                        fill=GUN_D, outline=DARK, width=SS * 2)
+    d.rectangle([s(62), s(108), s(66), s(120)], fill=(20, 20, 30, 255))
+    d.rectangle([s(55), s(66), s(73), s(70)], fill=O)
+    # twin tails
+    poly(d, [(42, 88), (30, 108), (38, 110), (48, 94)], GUN_D)
+    poly(d, [(86, 88), (98, 108), (90, 110), (80, 94)], GUN_D)
+    _nozzle(d, 46, 102, 6, O)
+    _nozzle(d, 82, 102, 6, O)
+    gl = glow_under(img, (255, 140, 40, 255))
+    return finish(Image.alpha_composite(gl, img), px)
+
+
+def ship_pixel() -> Image.Image:
+    # NEEDLE — long-range recon interceptor, forward-swept wings, probe.
+    px = 128
+    img = canvas(px)
+    d = ImageDraw.Draw(img)
+    G = (61, 255, 150, 255)
+    # sensor probe
+    d.line([s(64), s(2), s(64), s(22)], fill=STEEL, width=SS * 2)
+    d.ellipse([s(62), s(2), s(66), s(8)], fill=G, outline=DARK, width=SS)
+    # needle nose
+    _hull_shade(d, [(64, 10), (70, 46), (73, 100), (55, 100), (58, 46)])
+    poly(d, [(64, 10), (68, 26), (60, 26)], (36, 38, 58, 255))
+    # canopy + sensor blisters
+    canopy(d, 64, 48, 12, 20)
+    for x in (56, 72):
+        d.ellipse([s(x - 3), s(58), s(x + 3), s(64)], fill=G,
+                  outline=DARK, width=SS)
+    # forward-swept wings
+    poly(d, [(58, 66), (26, 52), (24, 60), (56, 76)], GUN)
+    poly(d, [(70, 66), (102, 52), (104, 60), (72, 76)], GUN)
+    d.line([s(58), s(68), s(26), s(54)], fill=G, width=SS * 2)
+    d.line([s(70), s(68), s(102), s(54)], fill=G, width=SS * 2)
+    # winglets + tip sensors
+    poly(d, [(26, 52), (20, 66), (26, 66)], GUN_D)
+    poly(d, [(102, 52), (108, 66), (102, 66)], GUN_D)
+    for x in (23, 105):
+        d.ellipse([s(x - 2.5), s(62), s(x + 2.5), s(67)], fill=G,
+                  outline=DARK, width=SS)
+    _vents(d, 64, 74, color=G)
+    d.rectangle([s(57), s(90), s(71), s(93)], fill=G)
+    _nozzle(d, 64, 102, 6, G)
+    gl = glow_under(img, (50, 220, 130, 255))
+    return finish(Image.alpha_composite(gl, img), px)
+
+
+def ship_cipher() -> Image.Image:
+    # WRAITH — flying-wing stealth strike craft, photon-magenta trim.
+    px = 128
+    img = canvas(px)
+    d = ImageDraw.Draw(img)
+    M = (255, 61, 220, 255)
+    HULL = (30, 28, 50, 255)
+    # bat delta wing with serrated trailing edge
+    pts = [(64, 22), (80, 50), (112, 66), (96, 70), (100, 82), (82, 78),
+           (84, 92), (70, 86), (68, 100), (60, 100), (58, 86), (44, 92),
+           (46, 78), (28, 82), (32, 70), (16, 66), (48, 50)]
+    vgrad(d, s(16), s(22), s(112), s(100), (52, 48, 84, 255), HULL)
+    poly(d, pts, None)
+    # facet seams
+    d.line([s(64), s(22), s(64), s(100)], fill=(58, 52, 92, 255),
+           width=SS * 2)
+    d.line([s(48), s(50), s(80), s(50)], fill=(58, 52, 92, 255),
+           width=SS * 2)
+    # photon leading edge
+    d.line([s(64), s(24), s(110), s(65)], fill=M, width=SS * 2)
+    d.line([s(64), s(24), s(18), s(65)], fill=M, width=SS * 2)
+    # cockpit hump + visor
+    d.ellipse([s(54), s(40), s(74), s(66)], fill=(38, 34, 64, 255),
+              outline=DARK, width=SS * 2)
+    visor(d, 64, 52, 18, 6, color=M)
+    # buried twin engines
+    for cx in (56, 72):
+        d.rounded_rectangle([s(cx - 6), s(84), s(cx + 6), s(98)],
+                            radius=s(3), fill=(18, 18, 32, 255),
+                            outline=DARK, width=SS * 2)
+        d.ellipse([s(cx - 3), s(88), s(cx + 3), s(94)], fill=M)
     gl = glow_under(img, (160, 50, 255, 255))
     return finish(Image.alpha_composite(gl, img), px)
 

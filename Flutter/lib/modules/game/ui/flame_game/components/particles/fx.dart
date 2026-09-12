@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import '../../astro_game.dart';
+import '../../../../../../core/constants/assets_images.dart';
 import '../../../../../../core/utils/theme/astro_design.dart';
 
 /// Cartoon particle kit (CI-inspired): feathers, splats, rings, puffs.
@@ -24,7 +25,7 @@ abstract final class Fx {
         ),
       ));
     }
-    Sfx.play('hit.wav', volume: 0.45);
+    Sfx.play(AssetsAudio.hit, volume: 0.45);
   }
 
   /// Egg splat: yolk + white blob that sticks briefly.

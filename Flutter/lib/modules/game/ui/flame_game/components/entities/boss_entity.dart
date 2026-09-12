@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../../../core/utils/theme/astro_design.dart';
+import '../../../../../../core/constants/assets_images.dart';
 import 'package:flame/effects.dart';
 import '../base/base_sprite_entity.dart';
 import '../base/behaviors.dart';
@@ -58,7 +59,7 @@ class BossEntity extends BaseSpriteEntity
       );
       game.add(bullet);
     }
-    Sfx.play('laser_enemy.wav', volume: 0.4);
+    Sfx.play(AssetsAudio.laserEnemy, volume: 0.4);
   }
 
   @override
@@ -135,7 +136,7 @@ class BossEntity extends BaseSpriteEntity
   void onDeath() {
     super.onDeath();
     HapticFeedback.heavyImpact();
-    Sfx.play('explosion.wav', volume: 0.8);
+    Sfx.play(AssetsAudio.explosion, volume: 0.8);
     game.gameBloc.add(const GameEvent.scoreIncreased(200));
     game.gameBloc.add(const GameEvent.bossDefeated());
     game.bossActive = false; // Notify game boss is dead

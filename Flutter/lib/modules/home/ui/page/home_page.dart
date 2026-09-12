@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/router/routes_names.dart';
 import '../../../../core/utils/theme/astro_design.dart';
+import '../../../../core/constants/assets_images.dart';
 
 /// Mission-control home: title, best score, big launch button, level grid.
 class HomePage extends StatefulWidget {
@@ -43,7 +44,7 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/space_bg.jpg'),
+            image: AssetImage(AssetsImages.spaceBgPath),
             fit: BoxFit.cover,
           ),
         ),
@@ -143,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       child: Row(
                         children: [
-                          Image.asset('assets/images/$_ship',
+                          Image.asset(AssetsImages.path(_ship),
                               width: 64, height: 64, fit: BoxFit.contain,
                               errorBuilder: (_, _, _) => const Icon(
                                   Icons.rocket_launch_rounded,

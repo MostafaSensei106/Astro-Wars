@@ -4,6 +4,7 @@ import 'package:flame/collisions.dart';
 import 'package:flutter/material.dart';
 import '../../astro_game.dart';
 import '../../../../../../core/utils/theme/astro_design.dart';
+import '../../../../../../core/constants/assets_images.dart';
 import '../particles/fx.dart';
 
 /// Commit pickup (CI drumstick equivalent): drifts down, magnets toward
@@ -47,7 +48,7 @@ class CommitEntity extends PositionComponent
   void collect() {
     game.registerCommit();
     Fx.sparkle(game, position.clone(), AstroDesign.neonAmber, count: 6);
-    Sfx.play('laser_enemy.wav', volume: 0.12);
+    Sfx.play(AssetsAudio.laserEnemy, volume: 0.12);
     removeFromParent();
   }
 

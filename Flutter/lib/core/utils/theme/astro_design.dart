@@ -1,6 +1,7 @@
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../constants/assets_images.dart';
 
 /// Astro Wars design system: Neon Space Opera.
 ///
@@ -48,12 +49,12 @@ abstract final class AstroDesign {
   static const String kRunsPlayed = 'runs_played';
   static const String kSfxEnabled = 'sfx_enabled';
   static const String kBgmEnabled = 'bgm_enabled';
-  static const String kDefaultShip = 'ship_sleek.png';
+  static const String kDefaultShip = AssetsImages.shipSleek;
 
   // --- Ships catalog ---
   static const List<ShipSpec> ships = [
     ShipSpec(
-      asset: 'ship_sleek.png',
+      asset: AssetsImages.shipSleek,
       name: 'Sleek Fighter',
       role: 'Balanced interceptor',
       firepower: 3,
@@ -61,7 +62,7 @@ abstract final class AstroDesign {
       armor: 2,
     ),
     ShipSpec(
-      asset: 'ship_heavy.png',
+      asset: AssetsImages.shipHeavy,
       name: 'Heavy Cruiser',
       role: 'Slow siege platform',
       firepower: 5,
@@ -69,7 +70,7 @@ abstract final class AstroDesign {
       armor: 4,
     ),
     ShipSpec(
-      asset: 'ship_pixel.png',
+      asset: AssetsImages.shipPixel,
       name: 'Pixel Glider',
       role: 'Fragile speedster',
       firepower: 2,
@@ -77,7 +78,7 @@ abstract final class AstroDesign {
       armor: 1,
     ),
     ShipSpec(
-      asset: 'ship_cipher.png',
+      asset: AssetsImages.shipCipher,
       name: 'Cipher Stealth',
       role: 'Tricky striker',
       firepower: 4,

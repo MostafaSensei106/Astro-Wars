@@ -1,3 +1,4 @@
+import '../../../../../../core/constants/assets_images.dart';
 import '../../../../../../core/utils/theme/astro_design.dart';
 import 'dart:math';
 import 'package:flame/components.dart';
@@ -131,7 +132,7 @@ class MeteorEntity extends PositionComponent
   void onDeath() {
     super.onDeath();
     HapticFeedback.mediumImpact();
-    Sfx.play('explosion.wav', volume: 0.6);
+    Sfx.play(AssetsAudio.explosion, volume: 0.6);
     game.registerKill((size.x).toInt());
 
     // Rocky breakup: smoke + tumbling debris.

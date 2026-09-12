@@ -1,4 +1,5 @@
 import '../../../../../../core/utils/theme/astro_design.dart';
+import '../../../../../../core/constants/assets_images.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
@@ -19,14 +20,14 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
   /// Per-type tuning: (hp, base speed, shoot min/max seconds, swoop chance).
   /// Tanks shoot often but crawl; chicks dive constantly; UFOs strafe-fire.
   static const Map<String, (int, double, double, double, double)> stats = {
-    'enemy_bug.png': (25, 60.0, 3.0, 7.0, 0.002),
-    'enemy_noodle.png': (25, 60.0, 3.0, 7.0, 0.002),
-    'enemy_chick.png': (15, 90.0, 5.0, 9.0, 0.008),
-    'enemy_ufo.png': (40, 48.0, 1.5, 3.0, 0.001),
-    'enemy_crab.png': (70, 38.0, 4.0, 8.0, 0.001),
-    'enemy_jelly.png': (20, 42.0, 4.0, 9.0, 0.002),
-    'enemy_metal.png': (100, 42.0, 2.0, 4.0, 0.001),
-    'enemy_ghost.png': (30, 72.0, 3.0, 6.0, 0.004),
+    AssetsImages.enemyBug: (25, 60.0, 3.0, 7.0, 0.002),
+    AssetsImages.enemyNoodle: (25, 60.0, 3.0, 7.0, 0.002),
+    AssetsImages.enemyChick: (15, 90.0, 5.0, 9.0, 0.008),
+    AssetsImages.enemyUfo: (40, 48.0, 1.5, 3.0, 0.001),
+    AssetsImages.enemyCrab: (70, 38.0, 4.0, 8.0, 0.001),
+    AssetsImages.enemyJelly: (20, 42.0, 4.0, 9.0, 0.002),
+    AssetsImages.enemyMetal: (100, 42.0, 2.0, 4.0, 0.001),
+    AssetsImages.enemyGhost: (30, 72.0, 3.0, 6.0, 0.004),
   };
 
   Vector2 formationPosition;
@@ -41,10 +42,10 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
   EnemyEntity({
     required this.formationPosition,
     required Vector2 startPosition,
-    this.assetName = 'enemy_bug.png',
+    this.assetName = AssetsImages.enemyBug,
   }) : super(size: Vector2(48, 48), anchor: Anchor.center) {
     position = startPosition;
-    final s = stats[assetName] ?? stats['enemy_bug.png']!;
+    final s = stats[assetName] ?? stats[AssetsImages.enemyBug]!;
     health = s.$1;
     speed = s.$2;
   }
@@ -55,7 +56,7 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
 
     // NOTE: load the per-wave sprite, not the sector default.
     await loadAsset(assetName);
-    final s = stats[assetName] ?? stats['enemy_bug.png']!;
+    final s = stats[assetName] ?? stats[AssetsImages.enemyBug]!;
     speed *= game.currentConfig.enemySpeedMultiplier * game.waveSpeedMult;
     _swoopChance = s.$5;
 
@@ -171,7 +172,7 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
       isEnemyProjectile: true,
       damage: 20.0,
     );
-    Sfx.play('laser_enemy.wav', volume: 0.3);
+    Sfx.play(AssetsAudio.laserEnemy, volume: 0.3);
     game.add(bullet);
   }
 
