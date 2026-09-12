@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'theme_cubit.dart';
@@ -9,12 +9,13 @@ part of 'theme_cubit.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ThemeState {
 
- ThemeMode get themeMode;
+ ThemeMode get themeMode; int get accentValue;
 /// Create a copy of ThemeState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +26,21 @@ $ThemeStateCopyWith<ThemeState> get copyWith => _$ThemeStateCopyWithImpl<ThemeSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ThemeState&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode));
+  final _this = this as ThemeState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ThemeState&&(identical(other.themeMode, _this.themeMode) || other.themeMode == _this.themeMode)&&(identical(other.accentValue, _this.accentValue) || other.accentValue == _this.accentValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,themeMode);
+int get hashCode {
+  final _this = this as ThemeState;
+  return Object.hash(runtimeType,_this.themeMode,_this.accentValue);
+}
 
 @override
 String toString() {
-  return 'ThemeState(themeMode: $themeMode)';
+  final _this = this as ThemeState;
+  return 'ThemeState(themeMode: ${_this.themeMode}, accentValue: ${_this.accentValue})';
 }
 
 
@@ -45,7 +51,7 @@ abstract mixin class $ThemeStateCopyWith<$Res>  {
   factory $ThemeStateCopyWith(ThemeState value, $Res Function(ThemeState) _then) = _$ThemeStateCopyWithImpl;
 @useResult
 $Res call({
- ThemeMode themeMode
+ ThemeMode themeMode, int accentValue
 });
 
 
@@ -62,10 +68,11 @@ class _$ThemeStateCopyWithImpl<$Res>
 
 /// Create a copy of ThemeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? themeMode = null,}) {
-  return _then(_self.copyWith(
+@pragma('vm:prefer-inline') @override $Res call({Object? themeMode = null,Object? accentValue = null,}) {
+  return _then(ThemeState(
 themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
-as ThemeMode,
+as ThemeMode,accentValue: null == accentValue ? _self.accentValue : accentValue // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -147,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ThemeMode themeMode)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ThemeMode themeMode,  int accentValue)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ThemeState() when $default != null:
-return $default(_that.themeMode);case _:
+return $default(_that.themeMode,_that.accentValue);case _:
   return orElse();
 
 }
@@ -168,10 +175,10 @@ return $default(_that.themeMode);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ThemeMode themeMode)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ThemeMode themeMode,  int accentValue)  $default,) {final _that = this;
 switch (_that) {
 case _ThemeState():
-return $default(_that.themeMode);}
+return $default(_that.themeMode,_that.accentValue);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -185,10 +192,10 @@ return $default(_that.themeMode);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ThemeMode themeMode)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ThemeMode themeMode,  int accentValue)?  $default,) {final _that = this;
 switch (_that) {
 case _ThemeState() when $default != null:
-return $default(_that.themeMode);case _:
+return $default(_that.themeMode,_that.accentValue);case _:
   return null;
 
 }
@@ -199,11 +206,12 @@ return $default(_that.themeMode);case _:
 /// @nodoc
 
 
-class _ThemeState implements ThemeState {
-  const _ThemeState({this.themeMode = ThemeMode.system});
+class _ThemeState extends ThemeState {
+  const _ThemeState({this.themeMode = ThemeMode.system, this.accentValue = 0xFF7C4DFF}): super._();
   
 
 @override@JsonKey() final  ThemeMode themeMode;
+@override@JsonKey() final  int accentValue;
 
 /// Create a copy of ThemeState
 /// with the given fields replaced by the non-null parameter values.
@@ -215,16 +223,18 @@ _$ThemeStateCopyWith<_ThemeState> get copyWith => __$ThemeStateCopyWithImpl<_The
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ThemeState&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ThemeState&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&(identical(other.accentValue, accentValue) || other.accentValue == accentValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,themeMode);
+int get hashCode {
+    return Object.hash(runtimeType,themeMode,accentValue);
+}
 
 @override
 String toString() {
-  return 'ThemeState(themeMode: $themeMode)';
+    return 'ThemeState(themeMode: $themeMode, accentValue: $accentValue)';
 }
 
 
@@ -235,7 +245,7 @@ abstract mixin class _$ThemeStateCopyWith<$Res> implements $ThemeStateCopyWith<$
   factory _$ThemeStateCopyWith(_ThemeState value, $Res Function(_ThemeState) _then) = __$ThemeStateCopyWithImpl;
 @override @useResult
 $Res call({
- ThemeMode themeMode
+ ThemeMode themeMode, int accentValue
 });
 
 
@@ -252,10 +262,11 @@ class __$ThemeStateCopyWithImpl<$Res>
 
 /// Create a copy of ThemeState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? themeMode = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? themeMode = null,Object? accentValue = null,}) {
   return _then(_ThemeState(
 themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
-as ThemeMode,
+as ThemeMode,accentValue: null == accentValue ? _self.accentValue : accentValue // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

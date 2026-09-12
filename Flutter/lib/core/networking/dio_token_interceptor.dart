@@ -54,13 +54,13 @@ final class DioTokenInterceptor extends Interceptor {
           body: body,
         );
 
-        AppRouter.router.go(RoutesNames.login);
+        AppRouter.router.go(RoutesNames.base);
       } else {
         await Future.wait([
           _tokenProvider.removeData(key: PrefKeys.userToken),
           _tokenProvider.removeData(key: PrefKeys.isRememberMe),
         ]);
-        AppRouter.router.go(RoutesNames.login);
+        AppRouter.router.go(RoutesNames.base);
       }
     }
     handler.next(err);

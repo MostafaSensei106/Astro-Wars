@@ -145,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Image.asset('assets/images/$_ship',
                               width: 64, height: 64, fit: BoxFit.contain,
-                              errorBuilder: (_, __, ___) => const Icon(
+                              errorBuilder: (_, _, _) => const Icon(
                                   Icons.rocket_launch_rounded,
                                   size: 56,
                                   color: Colors.white70)),

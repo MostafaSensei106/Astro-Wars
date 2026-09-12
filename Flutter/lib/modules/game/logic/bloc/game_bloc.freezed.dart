@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'game_bloc.dart';
@@ -9,6 +9,7 @@ part of 'game_bloc.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$GameEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is GameEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'GameEvent()';
+    return 'GameEvent()';
 }
 
 
@@ -208,16 +209,18 @@ _$ScoreIncreasedCopyWith<_ScoreIncreased> get copyWith => __$ScoreIncreasedCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScoreIncreased&&(identical(other.amount, amount) || other.amount == amount));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScoreIncreased&&(identical(other.amount, amount) || other.amount == amount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,amount);
+int get hashCode {
+    return Object.hash(runtimeType,amount);
+}
 
 @override
 String toString() {
-  return 'GameEvent.scoreIncreased(amount: $amount)';
+    return 'GameEvent.scoreIncreased(amount: $amount)';
 }
 
 
@@ -274,16 +277,18 @@ _$PlayerDamagedCopyWith<_PlayerDamaged> get copyWith => __$PlayerDamagedCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerDamaged&&(identical(other.damage, damage) || other.damage == damage));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerDamaged&&(identical(other.damage, damage) || other.damage == damage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,damage);
+int get hashCode {
+    return Object.hash(runtimeType,damage);
+}
 
 @override
 String toString() {
-  return 'GameEvent.playerDamaged(damage: $damage)';
+    return 'GameEvent.playerDamaged(damage: $damage)';
 }
 
 
@@ -335,7 +340,7 @@ class _BossDefeated implements GameEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BossDefeated);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BossDefeated);
 }
 
 
@@ -344,7 +349,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'GameEvent.bossDefeated()';
+    return 'GameEvent.bossDefeated()';
 }
 
 
@@ -367,7 +372,7 @@ class _GameRestarted implements GameEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameRestarted);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameRestarted);
 }
 
 
@@ -376,7 +381,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'GameEvent.gameRestarted()';
+    return 'GameEvent.gameRestarted()';
 }
 
 
@@ -399,16 +404,21 @@ $GameStateCopyWith<GameState> get copyWith => _$GameStateCopyWithImpl<GameState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameState&&(identical(other.entity, entity) || other.entity == entity));
+  final _this = this as GameState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameState&&(identical(other.entity, _this.entity) || other.entity == _this.entity));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,entity);
+int get hashCode {
+  final _this = this as GameState;
+  return Object.hash(runtimeType,_this.entity);
+}
 
 @override
 String toString() {
-  return 'GameState(entity: $entity)';
+  final _this = this as GameState;
+  return 'GameState(entity: ${_this.entity})';
 }
 
 
@@ -616,16 +626,18 @@ _$InitialCopyWith<_Initial> get copyWith => __$InitialCopyWithImpl<_Initial>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.entity, entity) || other.entity == entity));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.entity, entity) || other.entity == entity));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,entity);
+int get hashCode {
+    return Object.hash(runtimeType,entity);
+}
 
 @override
 String toString() {
-  return 'GameState.initial(entity: $entity)';
+    return 'GameState.initial(entity: $entity)';
 }
 
 
@@ -691,16 +703,18 @@ _$PlayingCopyWith<_Playing> get copyWith => __$PlayingCopyWithImpl<_Playing>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Playing&&(identical(other.entity, entity) || other.entity == entity));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Playing&&(identical(other.entity, entity) || other.entity == entity));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,entity);
+int get hashCode {
+    return Object.hash(runtimeType,entity);
+}
 
 @override
 String toString() {
-  return 'GameState.playing(entity: $entity)';
+    return 'GameState.playing(entity: $entity)';
 }
 
 
@@ -766,16 +780,18 @@ _$GameOverCopyWith<_GameOver> get copyWith => __$GameOverCopyWithImpl<_GameOver>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameOver&&(identical(other.entity, entity) || other.entity == entity));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameOver&&(identical(other.entity, entity) || other.entity == entity));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,entity);
+int get hashCode {
+    return Object.hash(runtimeType,entity);
+}
 
 @override
 String toString() {
-  return 'GameState.gameOver(entity: $entity)';
+    return 'GameState.gameOver(entity: $entity)';
 }
 
 

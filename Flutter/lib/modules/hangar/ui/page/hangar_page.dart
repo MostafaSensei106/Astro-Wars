@@ -106,7 +106,7 @@ class _HangarPageState extends State<HangarPage> {
                           child: Image.asset(
                             'assets/images/${ship.asset}',
                             fit: BoxFit.contain,
-                            errorBuilder: (_, __, ___) => Icon(
+                            errorBuilder: (_, _, _) => Icon(
                                 Icons.rocket_launch_rounded,
                                 size: 120,
                                 color: scheme.primary),

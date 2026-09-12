@@ -9,6 +9,7 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+
 import 'package:astro/core/di/injection_module.dart' as _i840;
 import 'package:astro/core/networking/api_service/api_service.dart' as _i814;
 import 'package:astro/core/networking/network_info/interface/base_network_info.dart'

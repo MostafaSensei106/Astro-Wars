@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'game_state_entity.dart';
@@ -9,6 +9,7 @@ part of 'game_state_entity.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $GameStateEntityCopyWith<GameStateEntity> get copyWith => _$GameStateEntityCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameStateEntity&&(identical(other.score, score) || other.score == score)&&(identical(other.health, health) || other.health == health)&&(identical(other.isGameOver, isGameOver) || other.isGameOver == isGameOver));
+  final _this = this as GameStateEntity;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameStateEntity&&(identical(other.score, _this.score) || other.score == _this.score)&&(identical(other.health, _this.health) || other.health == _this.health)&&(identical(other.isGameOver, _this.isGameOver) || other.isGameOver == _this.isGameOver));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,score,health,isGameOver);
+int get hashCode {
+  final _this = this as GameStateEntity;
+  return Object.hash(runtimeType,_this.score,_this.health,_this.isGameOver);
+}
 
 @override
 String toString() {
-  return 'GameStateEntity(score: $score, health: $health, isGameOver: $isGameOver)';
+  final _this = this as GameStateEntity;
+  return 'GameStateEntity(score: ${_this.score}, health: ${_this.health}, isGameOver: ${_this.isGameOver})';
 }
 
 
@@ -63,7 +69,7 @@ class _$GameStateEntityCopyWithImpl<$Res>
 /// Create a copy of GameStateEntity
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? score = null,Object? health = null,Object? isGameOver = null,}) {
-  return _then(_self.copyWith(
+  return _then(GameStateEntity(
 score: null == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
 as int,health: null == health ? _self.health : health // ignore: cast_nullable_to_non_nullable
 as int,isGameOver: null == isGameOver ? _self.isGameOver : isGameOver // ignore: cast_nullable_to_non_nullable
@@ -225,16 +231,18 @@ _$GameStateEntityCopyWith<_GameStateEntity> get copyWith => __$GameStateEntityCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameStateEntity&&(identical(other.score, score) || other.score == score)&&(identical(other.health, health) || other.health == health)&&(identical(other.isGameOver, isGameOver) || other.isGameOver == isGameOver));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameStateEntity&&(identical(other.score, score) || other.score == score)&&(identical(other.health, health) || other.health == health)&&(identical(other.isGameOver, isGameOver) || other.isGameOver == isGameOver));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,score,health,isGameOver);
+int get hashCode {
+    return Object.hash(runtimeType,score,health,isGameOver);
+}
 
 @override
 String toString() {
-  return 'GameStateEntity(score: $score, health: $health, isGameOver: $isGameOver)';
+    return 'GameStateEntity(score: $score, health: $health, isGameOver: $isGameOver)';
 }
 
 

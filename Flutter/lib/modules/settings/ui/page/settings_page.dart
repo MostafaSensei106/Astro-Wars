@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/utils/theme/astro_design.dart';
@@ -110,12 +109,13 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
       ),
     );
-    if (ok == true && context.mounted) {
-      await AstroDesign.resetProgress();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Progress erased. Fresh start, Commander.')),
-      );
-    }
+    if (ok != true) return;
+    if (!context.mounted) return;
+    await AstroDesign.resetProgress();
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Progress erased. Fresh start, Commander.')),
+    );
   }
 }
 

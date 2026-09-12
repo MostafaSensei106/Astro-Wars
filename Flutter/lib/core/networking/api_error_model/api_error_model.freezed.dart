@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'api_error_model.dart';
@@ -9,6 +9,7 @@ part of 'api_error_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $APIErrorModelCopyWith<APIErrorModel> get copyWith => _$APIErrorModelCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is APIErrorModel&&(identical(other.code, code) || other.code == code)&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other.errors, errors)&&(identical(other.success, success) || other.success == success));
+  final _this = this as APIErrorModel;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is APIErrorModel&&(identical(other.code, _this.code) || other.code == _this.code)&&(identical(other.message, _this.message) || other.message == _this.message)&&const DeepCollectionEquality().equals(other.errors, _this.errors)&&(identical(other.success, _this.success) || other.success == _this.success));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,code,message,const DeepCollectionEquality().hash(errors),success);
+int get hashCode {
+  final _this = this as APIErrorModel;
+  return Object.hash(runtimeType,_this.code,_this.message,const DeepCollectionEquality().hash(_this.errors),_this.success);
+}
 
 @override
 String toString() {
-  return 'APIErrorModel(code: $code, message: $message, errors: $errors, success: $success)';
+  final _this = this as APIErrorModel;
+  return 'APIErrorModel(code: ${_this.code}, message: ${_this.message}, errors: ${_this.errors}, success: ${_this.success})';
 }
 
 
@@ -66,7 +72,7 @@ class _$APIErrorModelCopyWithImpl<$Res>
 /// Create a copy of APIErrorModel
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? code = null,Object? message = null,Object? errors = freezed,Object? success = null,}) {
-  return _then(_self.copyWith(
+  return _then(APIErrorModel(
 code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as int,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,errors: freezed == errors ? _self.errors : errors // ignore: cast_nullable_to_non_nullable
@@ -212,7 +218,7 @@ return $default(_that.code,_that.message,_that.errors,_that.success);case _:
 @JsonSerializable()
 
 class _APIErrorModel implements APIErrorModel {
-  const _APIErrorModel({@JsonKey(name: 'code') this.code = 0, @JsonKey(name: 'message') this.message = '', @JsonKey(name: 'errors') final  List<String>? errors, @JsonKey(name: 'success') this.success = false}): _errors = errors;
+  const _APIErrorModel({@JsonKey(name: 'code') this.code = 0, @JsonKey(name: 'message') this.message = '', @JsonKey(name: 'errors')  List<String>? errors, @JsonKey(name: 'success') this.success = false}): _errors = errors;
   factory _APIErrorModel.fromJson(Map<String, dynamic> json) => _$APIErrorModelFromJson(json);
 
 @override@JsonKey(name: 'code') final  int code;
@@ -241,16 +247,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _APIErrorModel&&(identical(other.code, code) || other.code == code)&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other._errors, _errors)&&(identical(other.success, success) || other.success == success));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _APIErrorModel&&(identical(other.code, code) || other.code == code)&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other.errors, _errors)&&(identical(other.success, success) || other.success == success));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,code,message,const DeepCollectionEquality().hash(_errors),success);
+int get hashCode {
+    return Object.hash(runtimeType,code,message,const DeepCollectionEquality().hash(_errors),success);
+}
 
 @override
 String toString() {
-  return 'APIErrorModel(code: $code, message: $message, errors: $errors, success: $success)';
+    return 'APIErrorModel(code: $code, message: $message, errors: $errors, success: $success)';
 }
 
 
