@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/router/routes_names.dart';
@@ -7,38 +8,25 @@ import '../../../../core/utils/theme/astro_design.dart';
 import '../../../../core/constants/assets_images.dart';
 
 /// Mission-control home: title, best score, big launch button, level grid.
-class HomePage extends StatefulWidget {
+class HomePage extends HookWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  int _best = 0;
-  int _unlocked = 1;
-  String _ship = AstroDesign.kDefaultShip;
-
-  @override
-  void initState() {
-    super.initState();
-    _refresh();
-  }
-
-  Future<void> _refresh() async {
-    final best = await AstroDesign.bestScore();
-    final unlocked = await AstroDesign.maxLevel();
-    final ship = await AstroDesign.selectedShip();
-    if (!mounted) return;
-    setState(() {
-      _best = best;
-      _unlocked = unlocked;
-      _ship = ship;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final best = useState(0);
+    final unlocked = useState(1);
+    final ship = useState(AstroDesign.kDefaultShip);
+
+    Future<void> refresh() async {
+      best.value = await AstroDesign.bestScore();
+      unlocked.value = await AstroDesign.maxLevel();
+      ship.value = await AstroDesign.selectedShip();
+    }
+
+    useEffect(() {
+      refresh();
+      return null;
+    }, const []);
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
       body: Container(
@@ -61,7 +49,7 @@ class _HomePageState extends State<HomePage> {
           ),
           child: SafeArea(
             child: RefreshIndicator(
-              onRefresh: _refresh,
+              onRefresh: refresh,
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
                 children: [
@@ -114,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                       Expanded(
                         child: _StatCard(
                             label: 'BEST SCORE',
-                            value: '$_best',
+                            value: '${best.value}',
                             icon: Icons.emoji_events_rounded,
                             color: AstroDesign.neonAmber),
                       ),
@@ -122,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                       Expanded(
                         child: _StatCard(
                             label: 'SECTORS OPEN',
-                            value: '$_unlocked/10',
+                            value: '${unlocked.value}/10',
                             icon: Icons.grid_view_rounded,
                             color: AstroDesign.neonCyan),
                       ),
@@ -144,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       child: Row(
                         children: [
-                          Image.asset(AssetsImages.path(_ship),
+                          Image.asset(AssetsImages.path(ship.value),
                               width: 64, height: 64, fit: BoxFit.contain,
                               errorBuilder: (_, _, _) => const Icon(
                                   Icons.rocket_launch_rounded,
@@ -220,7 +208,7 @@ class _HomePageState extends State<HomePage> {
                     itemCount: 10,
                     itemBuilder: (context, i) {
                       final level = i + 1;
-                      final locked = level > _unlocked;
+                      final locked = level > unlocked.value;
                       return Material(
                         color: locked
                             ? Colors.white.withValues(alpha: 0.05)

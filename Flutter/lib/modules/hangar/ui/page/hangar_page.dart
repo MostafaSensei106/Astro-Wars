@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/router/routes_names.dart';
@@ -6,42 +7,28 @@ import '../../../../core/utils/theme/astro_design.dart';
 import '../../../../core/constants/assets_images.dart';
 
 /// Ship hangar: swipe carousel with real stats + persistent selection.
-class HangarPage extends StatefulWidget {
+class HangarPage extends HookWidget {
   const HangarPage({super.key});
 
   @override
-  State<HangarPage> createState() => _HangarPageState();
-}
-
-class _HangarPageState extends State<HangarPage> {
-  final _controller = PageController(viewportFraction: 0.82);
-  String _selected = AstroDesign.kDefaultShip;
-  int _page = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    AstroDesign.selectedShip().then((ship) {
-      if (!mounted) return;
-      final idx = AstroDesign.ships
-          .indexWhere((s) => s.asset == ship)
-          .clamp(0, AstroDesign.ships.length - 1);
-      setState(() {
-        _selected = AstroDesign.ships[idx].asset;
-        _page = idx;
-      });
-      _controller.jumpToPage(idx);
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final controller = usePageController(viewportFraction: 0.82);
+    final selected = useState(AstroDesign.kDefaultShip);
+    final page = useState(0);
+
+    useEffect(() {
+      var alive = true;
+      AstroDesign.selectedShip().then((ship) {
+        if (!alive) return;
+        final idx = AstroDesign.ships
+            .indexWhere((s) => s.asset == ship)
+            .clamp(0, AstroDesign.ships.length - 1);
+        selected.value = AstroDesign.ships[idx].asset;
+        page.value = idx;
+        controller.jumpToPage(idx);
+      });
+      return () => alive = false;
+    }, const []);
     final scheme = Theme.of(context).colorScheme;
     final ships = AstroDesign.ships;
     return Scaffold(
