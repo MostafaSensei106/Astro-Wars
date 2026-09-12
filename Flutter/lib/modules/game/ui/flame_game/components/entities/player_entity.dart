@@ -100,7 +100,7 @@ class PlayerEntity extends BaseSpriteEntity with HealthBehavior {
     super.onLoad();
     final prefs = await SharedPreferences.getInstance();
     final shipAsset =
-        prefs.getString('selected_ship') ?? 'hd_ship_sleek_1781686447510.png';
+        prefs.getString('selected_ship') ?? 'ship_sleek.png';
     await loadAsset(shipAsset);
     position = Vector2(game.size.x / 2, game.size.y - 100);
     add(RectangleHitbox());

@@ -1,7 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:math';
 import '../../../../../../core/utils/theme/astro_design.dart';
 import 'package:flame/effects.dart';
 import '../base/base_sprite_entity.dart';
@@ -141,9 +140,10 @@ class BossEntity extends BaseSpriteEntity
     game.gameBloc.add(const GameEvent.bossDefeated());
     game.bossActive = false; // Notify game boss is dead
 
-    // Big cartoon finale: shockwave ring + feathers + smoke.
+    // Heavy finale: shockwave ring + hull shards + smoke.
     Fx.ring(game, position.clone(), Colors.redAccent, maxRadius: 200);
-    Fx.feathers(game, position.clone(), Colors.redAccent, count: 24);
+    Fx.debris(game, position.clone(), const Color(0xFF9AA2B5), count: 22);
+    Fx.debris(game, position.clone(), Colors.redAccent, count: 10);
     Fx.smoke(game, position.clone(), Colors.grey, count: 12, size: 10);
   }
 }

@@ -3,7 +3,7 @@ import 'package:flame/components.dart';
 import 'package:flame/collisions.dart';
 import 'package:flutter/material.dart';
 import '../../astro_game.dart';
-import '../../../../../core/utils/theme/astro_design.dart';
+import '../../../../../../core/utils/theme/astro_design.dart';
 import '../particles/fx.dart';
 
 /// Commit pickup (CI drumstick equivalent): drifts down, magnets toward

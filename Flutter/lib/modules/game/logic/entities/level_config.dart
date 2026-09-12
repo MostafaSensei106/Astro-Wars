@@ -21,36 +21,56 @@ class LevelConfig {
     required this.wavesBeforeBoss,
   });
 
+  static const List<String> enemyRotation = [
+    'enemy_bug.png',
+    'enemy_noodle.png',
+    'enemy_chick.png',
+    'enemy_ufo.png',
+    'enemy_crab.png',
+    'enemy_jelly.png',
+    'enemy_metal.png',
+    'enemy_ghost.png',
+  ];
+
+  static const List<String> bossRotation = [
+    'boss_dreadnought.png',
+    'boss_mothership.png',
+    'boss_yolk.png',
+    'boss_worm.png',
+  ];
+
   static LevelConfig getLevel(int level) {
+    final enemy = enemyRotation[(level - 1) % enemyRotation.length];
+    final boss = bossRotation[(level - 1) % bossRotation.length];
     switch (level) {
       case 1:
-        return const LevelConfig(
+        return LevelConfig(
           level: 1,
-          bgGradient: [Color(0xFF03011A), Color(0xFF0B0D17), Color(0xFF000000)],
-          enemySprite: 'hd_enemy_bug_1781686468572.png',
-          bossSprite: 'hd_boss_car_1781686478720.png',
+          bgGradient: const [Color(0xFF03011A), Color(0xFF0B0D17), Color(0xFF000000)],
+          enemySprite: enemy,
+          bossSprite: boss,
           enemySpeedMultiplier: 1.0,
           rows: 2,
           cols: 5,
           wavesBeforeBoss: 2,
         );
       case 2:
-        return const LevelConfig(
+        return LevelConfig(
           level: 2,
-          bgGradient: [Color(0xFF1A0105), Color(0xFF170B0B), Color(0xFF000000)], // Reddish
-          enemySprite: 'hd_enemy_spaghetti_1781686763386.png',
-          bossSprite: 'hd_boss_professor_1781686774890.png',
+          bgGradient: const [Color(0xFF1A0105), Color(0xFF170B0B), Color(0xFF000000)], // Reddish
+          enemySprite: enemy,
+          bossSprite: boss,
           enemySpeedMultiplier: 1.2,
           rows: 3,
           cols: 6,
           wavesBeforeBoss: 3,
         );
       case 3:
-        return const LevelConfig(
+        return LevelConfig(
           level: 3,
-          bgGradient: [Color(0xFF011A0E), Color(0xFF0B1710), Color(0xFF000000)], // Greenish
-          enemySprite: 'hd_enemy_bug_1781686468572.png',
-          bossSprite: 'hd_boss_car_1781686478720.png',
+          bgGradient: const [Color(0xFF011A0E), Color(0xFF0B1710), Color(0xFF000000)], // Greenish
+          enemySprite: enemy,
+          bossSprite: boss,
           enemySpeedMultiplier: 1.5,
           rows: 4,
           cols: 7,
@@ -65,8 +85,8 @@ class LevelConfig {
             const Color(0xFF0B0D17),
             const Color(0xFF000000)
           ],
-          enemySprite: level % 2 == 0 ? 'hd_enemy_spaghetti_1781686763386.png' : 'hd_enemy_bug_1781686468572.png',
-          bossSprite: level % 2 == 0 ? 'hd_boss_professor_1781686774890.png' : 'hd_boss_car_1781686478720.png',
+          enemySprite: enemy,
+          bossSprite: boss,
           enemySpeedMultiplier: 1.5 + (level * 0.1),
           rows: 4,
           cols: 8,

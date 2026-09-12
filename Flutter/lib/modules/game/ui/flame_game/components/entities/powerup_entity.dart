@@ -33,7 +33,7 @@ class PowerUpEntity extends PositionComponent
   Future<void> onLoad() async {
     super.onLoad();
 
-    String spriteName = 'hd_powerup_1781686488826.png'; // generic
+    String spriteName = 'gift_flutter.png'; // generic gift
     String label = 'POWER';
     Color auraColor = Colors.yellowAccent;
 
@@ -41,23 +41,27 @@ class PowerUpEntity extends PositionComponent
       label = 'LASER';
       auraColor = Colors.blueAccent;
     } else if (type == PowerUpType.backend) {
-      spriteName = 'hd_powerup_backend_1781686742263.png';
+      spriteName = 'gift_backend.png';
       label = 'BOMB';
       auraColor = Colors.orangeAccent;
     } else if (type == PowerUpType.uiux) {
-      spriteName = 'hd_powerup_uiux_1781686753399.png';
+      spriteName = 'gift_stun.png';
       label = 'STUN';
       auraColor = Colors.purpleAccent;
     } else if (type == PowerUpType.cybersecurity) {
+      spriteName = 'gift_shield.png';
       label = 'SHIELD';
       auraColor = Colors.cyanAccent;
     } else if (type == PowerUpType.hr) {
+      spriteName = 'gift_heal.png';
       label = 'HEAL';
       auraColor = Colors.greenAccent;
     } else if (type == PowerUpType.logistics) {
-      label = 'WIPE';
+      spriteName = 'gift_missile.png';
+      label = 'MISSILE';
       auraColor = Colors.redAccent;
     } else if (type == PowerUpType.coolant) {
+      spriteName = 'gift_coolant.png';
       label = 'COOLANT';
       auraColor = Colors.lightBlueAccent;
     }

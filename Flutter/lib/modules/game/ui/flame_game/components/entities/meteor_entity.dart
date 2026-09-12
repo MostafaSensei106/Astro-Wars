@@ -136,6 +136,6 @@ class MeteorEntity extends PositionComponent
 
     // Rocky breakup: smoke + tumbling debris.
     Fx.smoke(game, position.clone(), meteorColor, count: 8, size: size.x / 6);
-    Fx.feathers(game, position.clone(), const Color(0xFF8A7A6A), count: 8);
+    Fx.debris(game, position.clone(), const Color(0xFF8A7A6A), count: 8);
   }
 }

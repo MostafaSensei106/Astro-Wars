@@ -12,10 +12,14 @@ uv sync
 ## Generate
 
 ```bash
-uv run scripts/generate_sfx.py --out out
-uv run scripts/generate_bgm.py --out out
+uv run scripts/generate_sfx.py --out out        # legacy arcade set (reference)
+uv run scripts/generate_sfx2.py --out out       # warm cartoon set (used)
+uv run scripts/generate_bgm.py --out out        # legacy synthwave (reference)
+uv run scripts/generate_music.py --out out      # mission + boss loops (used)
 uv run scripts/generate_bg_layers.py --out out
+uv run scripts/generate_missions.py             # sector_1..3.json missions
 uv run scripts/audit_assets.py
+uv run scripts/check_l10n.py
 ```
 
 ## Install into Flutter

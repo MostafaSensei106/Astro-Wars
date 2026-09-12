@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import '../../astro_game.dart';
-import '../../../../../core/utils/theme/astro_design.dart';
+import '../../../../../../core/utils/theme/astro_design.dart';
 
 /// Cartoon particle kit (CI-inspired): feathers, splats, rings, puffs.
 ///
@@ -11,20 +11,20 @@ import '../../../../../core/utils/theme/astro_design.dart';
 abstract final class Fx {
   static final _rnd = Random();
 
-  /// Feather burst for kills + cottony pop sound.
-  static void feathers(AstroGame game, Vector2 pos, Color color,
-      {int count = 14}) {
+  /// Metal debris burst for kills + dull clang.
+  static void debris(AstroGame game, Vector2 pos, Color color,
+      {int count = 12}) {
     for (int i = 0; i < count; i++) {
-      game.add(_Feather(
+      game.add(_Shard(
         position: pos.clone(),
         color: color,
         velocity: Vector2(
-          (_rnd.nextDouble() - 0.5) * 360,
-          (_rnd.nextDouble() - 0.7) * 360,
+          (_rnd.nextDouble() - 0.5) * 380,
+          (_rnd.nextDouble() - 0.7) * 380,
         ),
       ));
     }
-    Sfx.play('feather_pop', volume: 0.5);
+    Sfx.play('hit.wav', volume: 0.45);
   }
 
   /// Egg splat: yolk + white blob that sticks briefly.
@@ -92,24 +92,22 @@ abstract final class Fx {
   }
 }
 
-/// Rotating feather: small tilted ellipse with flutter.
-class _Feather extends PositionComponent with HasGameReference<AstroGame> {
+/// Tumbling angular hull shard.
+class _Shard extends PositionComponent with HasGameReference<AstroGame> {
   final Color color;
   Vector2 velocity;
-  final double lifespan = 0.8;
+  final double lifespan = 0.7;
   double age = 0;
   final double spin;
-  final double w;
-  final double h;
+  final double shardSize;
 
-  _Feather({
+  _Shard({
     required super.position,
     required this.color,
     required this.velocity,
-  })  : spin = (Random().nextDouble() - 0.5) * 12,
-        w = 5 + Random().nextDouble() * 6,
-        h = 2.5 + Random().nextDouble() * 3,
-        super(size: Vector2(12, 12), anchor: Anchor.center);
+  })  : spin = (Random().nextDouble() - 0.5) * 14,
+        shardSize = 4 + Random().nextDouble() * 6,
+        super(anchor: Anchor.center);
 
   @override
   void update(double dt) {
@@ -119,8 +117,8 @@ class _Feather extends PositionComponent with HasGameReference<AstroGame> {
       removeFromParent();
       return;
     }
-    velocity.y += 260 * dt; // gentle gravity
-    velocity *= (1 - 1.6 * dt); // air drag
+    velocity.y += 300 * dt; // gravity
+    velocity *= (1 - 1.4 * dt); // drag
     position.add(velocity * dt);
     angle += spin * dt;
   }
@@ -130,15 +128,19 @@ class _Feather extends PositionComponent with HasGameReference<AstroGame> {
     final t = age / lifespan;
     final paint = Paint()..color = color.withValues(alpha: 1 - t);
     canvas.save();
-    canvas.translate(size.x / 2, size.y / 2);
+    canvas.translate(0, 0);
     canvas.rotate(angle);
-    // Feather vane + shaft.
-    canvas.drawOval(Rect.fromCenter(center: Offset.zero, width: w, height: h), paint);
-    canvas.drawLine(
-      Offset(-w / 2, 0),
-      Offset(w / 2 + 2, 0),
+    final path = Path()
+      ..moveTo(0, -shardSize)
+      ..lineTo(shardSize * 0.8, shardSize * 0.7)
+      ..lineTo(-shardSize * 0.8, shardSize * 0.4)
+      ..close();
+    canvas.drawPath(path, paint);
+    canvas.drawPath(
+      path,
       Paint()
-        ..color = Colors.white.withValues(alpha: (1 - t) * 0.8)
+        ..color = Colors.white.withValues(alpha: (1 - t) * 0.5)
+        ..style = PaintingStyle.stroke
         ..strokeWidth = 1,
     );
     canvas.restore();

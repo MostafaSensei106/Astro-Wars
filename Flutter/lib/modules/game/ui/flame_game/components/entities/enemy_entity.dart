@@ -15,33 +15,53 @@ enum EnemyState { flyingIn, formation, swooping, returning }
 
 class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
   late Timer shootTimer;
-  
+
+  /// Per-type tuning: (hp, base speed, shoot min/max seconds, swoop chance).
+  /// Tanks shoot often but crawl; chicks dive constantly; UFOs strafe-fire.
+  static const Map<String, (int, double, double, double, double)> stats = {
+    'enemy_bug.png': (25, 60.0, 3.0, 7.0, 0.002),
+    'enemy_noodle.png': (25, 60.0, 3.0, 7.0, 0.002),
+    'enemy_chick.png': (15, 90.0, 5.0, 9.0, 0.008),
+    'enemy_ufo.png': (40, 48.0, 1.5, 3.0, 0.001),
+    'enemy_crab.png': (70, 38.0, 4.0, 8.0, 0.001),
+    'enemy_jelly.png': (20, 42.0, 4.0, 9.0, 0.002),
+    'enemy_metal.png': (100, 42.0, 2.0, 4.0, 0.001),
+    'enemy_ghost.png': (30, 72.0, 3.0, 6.0, 0.004),
+  };
+
   Vector2 formationPosition;
   EnemyState state = EnemyState.flyingIn;
   double _time = 0;
   Vector2 _velocity = Vector2.zero();
   double speed = 60.0;
-  
+  double _swoopChance = 0.002;
+
   String assetName;
 
   EnemyEntity({
     required this.formationPosition,
     required Vector2 startPosition,
-    this.assetName = 'hd_enemy_bug_1781686468572.png',
+    this.assetName = 'enemy_bug.png',
   }) : super(size: Vector2(48, 48), anchor: Anchor.center) {
     position = startPosition;
-    health = 25;
+    final s = stats[assetName] ?? stats['enemy_bug.png']!;
+    health = s.$1;
+    speed = s.$2;
   }
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
 
-    await loadAsset(game.currentConfig.enemySprite);
+    // NOTE: load the per-wave sprite, not the sector default.
+    await loadAsset(assetName);
+    final s = stats[assetName] ?? stats['enemy_bug.png']!;
     speed *= game.currentConfig.enemySpeedMultiplier * game.waveSpeedMult;
+    _swoopChance = s.$5;
 
     final random = Random();
-    shootTimer = Timer(3.0 + random.nextDouble() * 4, onTick: shoot, repeat: true);
+    shootTimer = Timer(s.$3 + random.nextDouble() * (s.$4 - s.$3),
+        onTick: shoot, repeat: true);
   }
 
   @override
@@ -92,8 +112,8 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
         position.y = formationPosition.y + cos(_time * 3) * 10;
         angle = pi; // Point straight down when in formation
         
-        // Randomly break formation and swoop!
-        if (Random().nextDouble() < 0.002) { 
+        // Randomly break formation and swoop (per-type appetite)!
+        if (Random().nextDouble() < _swoopChance) { 
            state = EnemyState.swooping;
            _velocity = Vector2(0, -150); // slight jump back before diving
         }
@@ -177,14 +197,13 @@ class EnemyEntity extends BaseSpriteEntity with HealthBehavior {
     HapticFeedback.lightImpact();
     game.registerKill(10);
 
-    // Cartoon kill: feather burst tinted by enemy type + occasional cluck.
-    final featherColor = assetName.contains('spaghetti')
-        ? const Color(0xFFFFC233)
-        : const Color(0xFF3DFF88);
-    Fx.feathers(game, position.clone(), featherColor);
-    if (Random().nextDouble() < 0.3) {
-      Sfx.play('cluck', volume: 0.4);
-    }
+    // Hull breakup: tumbling metal shards tinted by enemy type.
+    final debrisColor = assetName.contains('noodle')
+        ? const Color(0xFFFFAA28)
+        : assetName.contains('ghost') || assetName.contains('ufo')
+            ? const Color(0xFF3CE6FF)
+            : const Color(0xFF9AA2B5);
+    Fx.debris(game, position.clone(), debrisColor);
     // Drumstick economy: 60% chance to drop a commit pickup.
     if (Random().nextDouble() < 0.6) {
       game.add(CommitEntity(startPosition: position.clone()));

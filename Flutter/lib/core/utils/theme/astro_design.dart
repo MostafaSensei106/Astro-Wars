@@ -48,12 +48,12 @@ abstract final class AstroDesign {
   static const String kRunsPlayed = 'runs_played';
   static const String kSfxEnabled = 'sfx_enabled';
   static const String kBgmEnabled = 'bgm_enabled';
-  static const String kDefaultShip = 'hd_ship_sleek_1781686447510.png';
+  static const String kDefaultShip = 'ship_sleek.png';
 
   // --- Ships catalog ---
   static const List<ShipSpec> ships = [
     ShipSpec(
-      asset: 'hd_ship_sleek_1781686447510.png',
+      asset: 'ship_sleek.png',
       name: 'Sleek Fighter',
       role: 'Balanced interceptor',
       firepower: 3,
@@ -61,7 +61,7 @@ abstract final class AstroDesign {
       armor: 2,
     ),
     ShipSpec(
-      asset: 'hd_ship_heavy_1781686457671.png',
+      asset: 'ship_heavy.png',
       name: 'Heavy Cruiser',
       role: 'Slow siege platform',
       firepower: 5,
@@ -69,7 +69,7 @@ abstract final class AstroDesign {
       armor: 4,
     ),
     ShipSpec(
-      asset: 'hd_ship_pixel_1781686721018.png',
+      asset: 'ship_pixel.png',
       name: 'Pixel Glider',
       role: 'Fragile speedster',
       firepower: 2,
@@ -77,7 +77,7 @@ abstract final class AstroDesign {
       armor: 1,
     ),
     ShipSpec(
-      asset: 'hd_ship_cipher_1781686731026.png',
+      asset: 'ship_cipher.png',
       name: 'Cipher Stealth',
       role: 'Tricky striker',
       firepower: 4,
