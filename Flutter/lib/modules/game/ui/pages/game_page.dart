@@ -242,14 +242,14 @@ class GameView extends HookWidget {
                           ),
                         ],
                         // Weapon status: type + level pips.
-                        if (_game.player.isMounted &&
-                            _game.player.activeWeapon != null) ...[
+                        if (game.player.isMounted &&
+                            game.player.activeWeapon != null) ...[
                           const SizedBox(height: 6),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                '${_game.player.activeWeapon!.name.toUpperCase()} LV${_game.player.weaponLevel}',
+                                '${game.player.activeWeapon!.name.toUpperCase()} LV${game.player.weaponLevel}',
                                 style: const TextStyle(
                                   color: Colors.white70,
                                   fontSize: 10,
@@ -261,7 +261,7 @@ class GameView extends HookWidget {
                               SizedBox(
                                 width: 90,
                                 child: LinearProgressIndicator(
-                                  value: _game.player.weaponLevel / 10,
+                                  value: game.player.weaponLevel / 10,
                                   minHeight: 4,
                                   backgroundColor: Colors.white12,
                                   color: Colors.blueAccent,

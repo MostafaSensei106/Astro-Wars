@@ -15,7 +15,7 @@ class BossEntity extends BaseSpriteEntity
     with MovementBehavior, HealthBehavior {
   late Timer shootTimer;
   int direction = 1;
-  final int maxHealth = 500;
+  final int maxHealth = 300;
 
   BossEntity() : super(size: Vector2(150, 150), anchor: Anchor.center) {
     health = maxHealth; // Big health
@@ -153,7 +153,8 @@ class BossEntity extends BaseSpriteEntity
     Sfx.play(AssetsAudio.explosion, volume: 0.8);
     game.gameBloc.add(const GameEvent.scoreIncreased(200));
     game.gameBloc.add(const GameEvent.bossDefeated());
-    game.bossActive = false; // Notify game boss is dead
+    // NOTE: do NOT clear game.bossActive here — AstroGame.update owns the
+    // flag and detects the kill via (bossActive && bosses.isEmpty).
 
     // Heavy finale: shockwave ring + hull shards + smoke.
     Fx.ring(game, position.clone(), Colors.redAccent, maxRadius: 200);

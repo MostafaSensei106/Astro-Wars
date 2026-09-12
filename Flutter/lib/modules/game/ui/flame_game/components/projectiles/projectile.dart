@@ -15,7 +15,7 @@ class Projectile extends PositionComponent
   Projectile({
     required Vector2 startPosition,
     required Vector2 direction,
-    this.damage = 25.0,
+    this.damage = 30.0,
     this.isEnemyProjectile = false,
     this.isAoE = false,
   }) : super(size: Vector2(8, 30), anchor: Anchor.center) {
