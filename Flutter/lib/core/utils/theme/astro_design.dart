@@ -171,6 +171,8 @@ abstract final class Sfx {
 
   static void play(String file, {double volume = 1.0}) {
     if (!enabled) return;
-    FlameAudio.play(file, volume: volume);
+    // FlameAudio needs the full filename — accept bare names too.
+    final name = file.endsWith('.wav') ? file : '$file.wav';
+    FlameAudio.play(name, volume: volume);
   }
 }

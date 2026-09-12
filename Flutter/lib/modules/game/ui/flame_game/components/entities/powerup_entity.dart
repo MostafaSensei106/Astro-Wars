@@ -6,7 +6,6 @@ import '../../../../../../core/constants/assets_images.dart';
 import '../../../../../../core/utils/theme/astro_design.dart';
 import 'dart:math';
 import '../base/behaviors.dart';
-import '../../../../../../core/constants/assets_images.dart';
 import '../particles/fx.dart';
 import 'player_entity.dart';
 import 'enemy_entity.dart';

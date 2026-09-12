@@ -13,7 +13,7 @@ final class AssetsImages {
 
   // --- Backgrounds ---
   static const String spaceBg = 'space_bg.jpg';
-  static String get spaceBgPath => path(spaceBg);
+  static const String spaceBgPath = 'assets/images/space_bg.jpg';
   static const String parallaxFar = 'parallax_far.png';
   static const String parallaxMid = 'parallax_mid.png';
   static const String parallaxNear = 'parallax_near.png';
